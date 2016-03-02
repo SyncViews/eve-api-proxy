@@ -156,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TcpSocket.cpp" />
+    <ClCompile Include="tests\Crest.cpp" />
     <ClCompile Include="tests\Main.cpp" />
     <ClCompile Include="tests\TlsSocket.cpp" />
   </ItemGroup>

@@ -125,7 +125,14 @@ size_t TlsSocket::recv(uint8_t * bytes, size_t len)
     size_t len_out = 0;
     while (true)
     {
-        if (do_read) recv_encrypted();
+        if (do_read)
+        {
+            if (!recv_encrypted())
+            {
+                if (recv_encrypted_buffer.empty()) break; //remote disconnected
+                else throw NetworkError("Unexpected socket disconnect");
+            }
+        }
         do_read = true;
         //Prepare decryption buffers
         SecBuffer buffers[4];
@@ -319,10 +326,11 @@ void TlsSocket::send_sec_buffers(const SecBufferDesc &buffers)
     }
 }
 
-void TlsSocket::recv_encrypted()
+bool TlsSocket::recv_encrypted()
 {
     uint8_t buf[4096];
     size_t len = tcp.recv(buf, sizeof(buf));
     recv_encrypted_buffer.insert(recv_encrypted_buffer.end(), buf, buf + len);
+    return len > 0;
 }
 

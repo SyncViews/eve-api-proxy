@@ -34,5 +34,5 @@ private:
     void client_handshake();
     void send_sec_buffers(const SecBufferDesc &buffers);
     /**recv some data into recv_encrypted_buffer*/
-    void recv_encrypted();
+    bool recv_encrypted();
 };

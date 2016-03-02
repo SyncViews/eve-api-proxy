@@ -21,6 +21,12 @@
   <ItemGroup>
     <ClInclude Include="source\CppServers.hpp" />
     <ClInclude Include="source\Error.hpp" />
+    <ClInclude Include="source\http\core\HttpHeader.hpp" />
+    <ClInclude Include="source\http\core\HttpHeaders.hpp" />
+    <ClInclude Include="source\http\core\HttpRequest.hpp" />
+    <ClInclude Include="source\http\core\HttpResponseParser.hpp" />
+    <ClInclude Include="source\http\core\HttpWriter.hpp" />
+    <ClInclude Include="source\http\CrestRequest.hpp" />
     <ClInclude Include="source\Init.hpp" />
     <ClInclude Include="source\Precompiled.hpp" />
     <ClInclude Include="source\SmartPtr.hpp" />
@@ -31,6 +37,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Error.cpp" />
+    <ClCompile Include="source\http\core\HttpResponseParser.cpp" />
+    <ClCompile Include="source\http\CrestRequest.cpp" />
     <ClCompile Include="source\Init.cpp" />
     <ClCompile Include="source\Precompiled.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
