@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eve-api-proxy", "eve-api-proxy\eve-api-proxy.vcxproj", "{A84BC611-B9FB-444C-AD81-7F5A676198C3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DA8D6A13-0477-4A7F-9297-C81A5ABC4B4A} = {DA8D6A13-0477-4A7F-9297-C81A5ABC4B4A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libeve-api-proxy", "libeve-api-proxy\libeve-api-proxy.vcxproj", "{DA8D6A13-0477-4A7F-9297-C81A5ABC4B4A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testeve-api-proxy", "testeve-api-proxy\testeve-api-proxy.vcxproj", "{A55F83FC-6FEA-4E85-9752-45CA95B41616}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A84BC611-B9FB-444C-AD81-7F5A676198C3} = {A84BC611-B9FB-444C-AD81-7F5A676198C3}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CD07A93E-C754-45C3-8093-0B41922B3C73}"
+	ProjectSection(SolutionItems) = preProject
+		common.props = common.props
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A84BC611-B9FB-444C-AD81-7F5A676198C3}.Debug|x64.ActiveCfg = Debug|x64
+		{A84BC611-B9FB-444C-AD81-7F5A676198C3}.Debug|x64.Build.0 = Debug|x64
+		{A84BC611-B9FB-444C-AD81-7F5A676198C3}.Debug|x86.ActiveCfg = Debug|Win32
+		{A84BC611-B9FB-444C-AD81-7F5A676198C3}.Debug|x86.Build.0 = Debug|Win32
+		{A84BC611-B9FB-444C-AD81-7F5A676198C3}.Release|x64.ActiveCfg = Release|x64
+		{A84BC611-B9FB-444C-AD81-7F5A676198C3}.Release|x64.Build.0 = Release|x64
+		{A84BC611-B9FB-444C-AD81-7F5A676198C3}.Release|x86.ActiveCfg = Release|Win32
+		{A84BC611-B9FB-444C-AD81-7F5A676198C3}.Release|x86.Build.0 = Release|Win32
+		{DA8D6A13-0477-4A7F-9297-C81A5ABC4B4A}.Debug|x64.ActiveCfg = Debug|x64
+		{DA8D6A13-0477-4A7F-9297-C81A5ABC4B4A}.Debug|x64.Build.0 = Debug|x64
+		{DA8D6A13-0477-4A7F-9297-C81A5ABC4B4A}.Debug|x86.ActiveCfg = Debug|Win32
+		{DA8D6A13-0477-4A7F-9297-C81A5ABC4B4A}.Debug|x86.Build.0 = Debug|Win32
+		{DA8D6A13-0477-4A7F-9297-C81A5ABC4B4A}.Release|x64.ActiveCfg = Release|x64
+		{DA8D6A13-0477-4A7F-9297-C81A5ABC4B4A}.Release|x64.Build.0 = Release|x64
+		{DA8D6A13-0477-4A7F-9297-C81A5ABC4B4A}.Release|x86.ActiveCfg = Release|Win32
+		{DA8D6A13-0477-4A7F-9297-C81A5ABC4B4A}.Release|x86.Build.0 = Release|Win32
+		{A55F83FC-6FEA-4E85-9752-45CA95B41616}.Debug|x64.ActiveCfg = Debug|x64
+		{A55F83FC-6FEA-4E85-9752-45CA95B41616}.Debug|x64.Build.0 = Debug|x64
+		{A55F83FC-6FEA-4E85-9752-45CA95B41616}.Debug|x86.ActiveCfg = Debug|Win32
+		{A55F83FC-6FEA-4E85-9752-45CA95B41616}.Debug|x86.Build.0 = Debug|Win32
+		{A55F83FC-6FEA-4E85-9752-45CA95B41616}.Release|x64.ActiveCfg = Release|x64
+		{A55F83FC-6FEA-4E85-9752-45CA95B41616}.Release|x64.Build.0 = Release|x64
+		{A55F83FC-6FEA-4E85-9752-45CA95B41616}.Release|x86.ActiveCfg = Release|Win32
+		{A55F83FC-6FEA-4E85-9752-45CA95B41616}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,12 @@
+/eve-api-proxy.opensdf
+/eve-api-proxy.sdf
+/.vs
+/third-party/boost
+/third-party/zlib
+/eve-api-proxy/~AutoRecover.eve-api-proxy.vcxproj
+/libeve-api-proxy/~AutoRecover.libeve-api-proxy.vcxproj
+/testeve-api-proxy/~AutoRecover.testeve-api-proxy.vcxproj
+/Intermediate
+/x64
+/Win32
+/eve-api-proxy.VC.opendb
