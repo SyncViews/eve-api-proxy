@@ -24,8 +24,8 @@
     <ClInclude Include="source\Init.hpp" />
     <ClInclude Include="source\Precompiled.hpp" />
     <ClInclude Include="source\SmartPtr.hpp" />
-    <ClInclude Include="source\socket\BaseSocket.hpp" />
     <ClInclude Include="source\socket\Socket.hpp" />
+    <ClInclude Include="source\socket\TcpSocket.hpp" />
     <ClInclude Include="source\String.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -37,8 +37,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="source\socket\BaseSocket.cpp" />
     <ClCompile Include="source\socket\Socket.cpp" />
+    <ClCompile Include="source\socket\TcpSocket.cpp" />
     <ClCompile Include="source\String.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

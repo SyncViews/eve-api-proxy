@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include "socket/Socket.hpp"
+#include "socket/TcpSocket.hpp"
 #include "Error.hpp"
 #include <iostream>
 
@@ -7,7 +7,7 @@ BOOST_AUTO_TEST_SUITE(socket_Socket)
 
 BOOST_AUTO_TEST_CASE(invalid_host)
 {
-    Socket sock;
+    TcpSocket sock;
     BOOST_CHECK_THROW(sock.connect("not#a@valid@domain", 80), NetworkError);
 }
 
@@ -20,7 +20,7 @@ BOOST_AUTO_TEST_CASE(invalid_host)
 
 BOOST_AUTO_TEST_CASE(no_connect)
 {
-    Socket sock;
+    TcpSocket sock;
     BOOST_CHECK_THROW(sock.connect("willnewbery.co.uk", 3432), NetworkError);
 }
 
@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(connect)
         "GET / HTTP/1.0\r\n"
         "Host: willnewbery.co.uk\r\n"
         "\r\n";
-    Socket sock;
+    TcpSocket sock;
     sock.connect("willnewbery.co.uk", 80);
     sock.send_all((const uint8_t*)HTTP_REQ, strlen(HTTP_REQ));
 

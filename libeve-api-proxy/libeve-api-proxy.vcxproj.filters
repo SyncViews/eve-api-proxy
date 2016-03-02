@@ -16,9 +16,6 @@
     <ClInclude Include="source\CppServers.hpp">
       <Filter>source</Filter>
     </ClInclude>
-    <ClInclude Include="source\socket\Socket.hpp">
-      <Filter>source\socket</Filter>
-    </ClInclude>
     <ClInclude Include="source\Init.hpp">
       <Filter>source</Filter>
     </ClInclude>
@@ -34,7 +31,10 @@
     <ClInclude Include="source\SmartPtr.hpp">
       <Filter>source</Filter>
     </ClInclude>
-    <ClInclude Include="source\socket\BaseSocket.hpp">
+    <ClInclude Include="source\socket\TcpSocket.hpp">
+      <Filter>source\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="source\socket\Socket.hpp">
       <Filter>source\socket</Filter>
     </ClInclude>
   </ItemGroup>
@@ -51,10 +51,10 @@
     <ClCompile Include="source\String.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="source\socket\Socket.cpp">
+    <ClCompile Include="source\socket\TcpSocket.cpp">
       <Filter>source\socket</Filter>
     </ClCompile>
-    <ClCompile Include="source\socket\BaseSocket.cpp">
+    <ClCompile Include="source\socket\Socket.cpp">
       <Filter>source\socket</Filter>
     </ClCompile>
   </ItemGroup>

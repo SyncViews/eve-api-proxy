@@ -1,21 +1,16 @@
 #pragma once
-#include "BaseSocket.hpp"
-class Socket : public BaseSocket
+#include "../Precompiled.hpp"
+#include <cstdint>
+#include <string>
+class Socket
 {
 public:
-    Socket();
-    ~Socket();
+    virtual ~Socket() {}
+    /**Get a printable address / info string for this socket.*/
+    virtual std::string address_str()const = 0;
+    virtual size_t send(const uint8_t *bytes, size_t len) = 0;
+    virtual size_t recv(uint8_t *bytes, size_t len) = 0;
 
-    virtual void connect(const std::string &host, uint16_t port);
-    virtual bool is_connected()const;
-
-    virtual void close();
-
-    virtual std::string address_str()const;
-    virtual size_t send(const unsigned char *bytes, size_t len);
-    virtual size_t recv(unsigned char *bytes, size_t len);
-private:
-    std::string host;
-    uint16_t port;
-    SOCKET sock;
+    void send_all(const uint8_t *bytes, size_t len);
+    void recv_all(uint8_t *bytes, size_t len);
 };
