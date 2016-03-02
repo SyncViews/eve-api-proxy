@@ -18,7 +18,10 @@
     <None Include="..\common.props" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="tests\Test.cpp">
+    <ClCompile Include="Socket.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

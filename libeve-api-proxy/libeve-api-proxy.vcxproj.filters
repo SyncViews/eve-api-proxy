@@ -8,18 +8,54 @@
     <Filter Include="source">
       <UniqueIdentifier>{377c61cc-d083-4ab7-9d80-bce27eb64aaa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\socket">
+      <UniqueIdentifier>{52e85b13-e895-4cdb-b695-2a795a74aea0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\CppServers.hpp">
       <Filter>source</Filter>
     </ClInclude>
-    <ClInclude Include="source\Test.hpp">
+    <ClInclude Include="source\socket\Socket.hpp">
+      <Filter>source\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Init.hpp">
       <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Precompiled.hpp">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Error.hpp">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\String.hpp">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SmartPtr.hpp">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\socket\BaseSocket.hpp">
+      <Filter>source\socket</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\Test.cpp">
+    <ClCompile Include="source\Init.cpp">
       <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Precompiled.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Error.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\String.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\socket\Socket.cpp">
+      <Filter>source\socket</Filter>
+    </ClCompile>
+    <ClCompile Include="source\socket\BaseSocket.cpp">
+      <Filter>source\socket</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
