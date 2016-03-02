@@ -3,7 +3,7 @@
 #include "SmartPtr.hpp"
 #include "String.hpp"
 
-std::string wsa_error_string(int err)
+std::string win_error_string(int err)
 {
     std::unique_ptr<wchar_t[], LocalFreeDeleter> buffer;
     FormatMessageW(

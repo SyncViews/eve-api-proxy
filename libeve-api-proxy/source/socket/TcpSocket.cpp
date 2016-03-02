@@ -1,6 +1,13 @@
 #include "Precompiled.hpp"
 #include "TcpSocket.hpp"
 #include "Error.hpp"
+std::string TcpSocket::address_str(const std::string &host, uint16_t port)
+{
+    std::stringstream ss;
+    ss << host << ":" << port;
+    return ss.str();
+}
+
 TcpSocket::TcpSocket()
     : host(), port(0), sock()
 {}
@@ -47,7 +54,7 @@ void TcpSocket::connect(const std::string &host, uint16_t port)
         return;
     }
     //TODO: Better error report
-    throw NetworkError("Failed to connect to " + host + ":" + std::to_string(port));
+    throw NetworkError("Failed to connect to " + address_str(host, port));
 }
 bool TcpSocket::is_connected()const
 {
@@ -70,12 +77,7 @@ void TcpSocket::close()
 
 std::string TcpSocket::address_str()const
 {
-    if (is_connected())
-    {
-        std::stringstream ss;
-        ss << host << ":" << port;
-        return ss.str();
-    }
+    if (is_connected()) return address_str(host, port);
     else return "Not connected";
 }
 

@@ -1,6 +1,10 @@
 #pragma once
 
-std::string wsa_error_string(int err);
+std::string win_error_string(int err);
+inline std::string wsa_error_string(int err)
+{
+    return win_error_string(err);
+}
 
 class NetworkError : public std::runtime_error
 {
@@ -17,5 +21,16 @@ public:
     {}
     explicit WsaError()
         : WsaError(WSAGetLastError())
+    {}
+};
+
+class WinError : public std::runtime_error
+{
+public:
+    explicit WinError(int err)
+        : std::runtime_error(win_error_string(err))
+    {}
+    explicit WinError()
+        : WinError(GetLastError())
     {}
 };

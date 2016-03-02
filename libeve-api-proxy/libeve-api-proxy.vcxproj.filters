@@ -37,6 +37,9 @@
     <ClInclude Include="source\socket\Socket.hpp">
       <Filter>source\socket</Filter>
     </ClInclude>
+    <ClInclude Include="source\socket\TlsSocket.hpp">
+      <Filter>source\socket</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Init.cpp">
@@ -55,6 +58,9 @@
       <Filter>source\socket</Filter>
     </ClCompile>
     <ClCompile Include="source\socket\Socket.cpp">
+      <Filter>source\socket</Filter>
+    </ClCompile>
+    <ClCompile Include="source\socket\TlsSocket.cpp">
       <Filter>source\socket</Filter>
     </ClCompile>
   </ItemGroup>
