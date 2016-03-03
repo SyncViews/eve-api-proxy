@@ -3,6 +3,7 @@
 #include "http/CrestRequest.hpp"
 #include "http/core/HttpResponseParser.hpp"
 #include "Error.hpp"
+#include "Gzip.hpp"
 #include <iostream>
 
 BOOST_AUTO_TEST_SUITE(socket_Crest)
@@ -28,7 +29,8 @@ BOOST_AUTO_TEST_CASE(index)
     {
         std::cout << i.name << ": " << i.value << std::endl;
     }
-    std::cout.write((const char*)response.get_body().data(), response.get_body().size());
+    auto body = gzip_decompress(response.get_body());
+    std::cout.write((const char*)body.data(), body.size());
     std::cout << std::endl;
     std::cout << std::endl;
 }

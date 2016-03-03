@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="source\CppServers.hpp" />
     <ClInclude Include="source\Error.hpp" />
+    <ClInclude Include="source\Gzip.hpp" />
     <ClInclude Include="source\http\core\HttpHeader.hpp" />
     <ClInclude Include="source\http\core\HttpHeaders.hpp" />
     <ClInclude Include="source\http\core\HttpRequest.hpp" />
@@ -37,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Error.cpp" />
+    <ClCompile Include="source\Gzip.cpp" />
     <ClCompile Include="source\http\core\HttpResponseParser.cpp" />
     <ClCompile Include="source\http\CrestRequest.cpp" />
     <ClCompile Include="source\Init.cpp" />

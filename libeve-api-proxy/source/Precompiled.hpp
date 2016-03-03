@@ -25,3 +25,6 @@
 #include <vector>
 
 #include <sstream>
+
+#pragma comment(lib, "Secur32.Lib")
+#pragma comment(lib, "zlibstat.lib")

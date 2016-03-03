@@ -64,6 +64,9 @@
     <ClInclude Include="source\http\core\HttpResponseParser.hpp">
       <Filter>source\http\core</Filter>
     </ClInclude>
+    <ClInclude Include="source\Gzip.hpp">
+      <Filter>source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Init.cpp">
@@ -92,6 +95,9 @@
     </ClCompile>
     <ClCompile Include="source\http\core\HttpResponseParser.cpp">
       <Filter>source\http\core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Gzip.cpp">
+      <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
