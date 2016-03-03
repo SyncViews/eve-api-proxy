@@ -22,61 +22,90 @@ namespace http
         std::string line;
         auto p = data, end = data + len;
         size_t len2 = 0;
-        if (parser_status == NOT_STARTED && read_line(&line, &len2, p, end - p))
-        {
-            assert(buffer.empty());
-            p += len2;
-            parser_status = READING_HEADERS;
-            auto ver_end = line.find(' ', 0);
-            auto code_end = line.find(' ', ver_end + 1);
-            std::string code_str = line.substr(ver_end + 1, code_end - ver_end);
-            status_code = std::stoi(code_str);
-            status_message = line.substr(code_end + 1);
-        }
 
-        while (p != end && parser_status == READING_HEADERS && read_line(&line, &len2, p, end - p))
+        while (p != end)
         {
-            assert(buffer.empty());
-            p += len2;
-            if (line.empty())
+            if (parser_status == NOT_STARTED && read_line(&line, &len2, p, end - p))
             {
-                //end of headers
-                auto header_len = headers.find("Content-Length");
-                if (!header_len) throw std::runtime_error("Content-Length required");
-                expected_body_len = std::stoul(header_len->value);
-                parser_status = READING_BODY;
+                assert(buffer.empty());
+                p += len2;
+                parser_status = READING_HEADERS;
+                auto ver_end = line.find(' ', 0);
+                auto code_end = line.find(' ', ver_end + 1);
+                std::string code_str = line.substr(ver_end + 1, code_end - ver_end);
+                status_code = std::stoi(code_str);
+                status_message = line.substr(code_end + 1);
             }
-            else
-            {
-                auto colon = line.find(':', 0);
-                auto first_val = line.find_first_not_of(' ', colon + 1);
-                std::string name = line.substr(0, colon);
-                std::string value = line.substr(first_val);
-                headers.add(name, value);
-            }
-        }
 
-        if (parser_status == READING_BODY && p != end)
-        {
-            assert(!buffer.size());
-            assert(expected_body_len > 0);
-            auto remaining = expected_body_len - body.size();
-            size_t len = end - p;
-            if (len >= remaining)
+            if (parser_status == READING_HEADERS && read_line(&line, &len2, p, end - p))
             {
-                body.insert(body.end(), p, p + remaining);
-                p += remaining;
-                parser_status = COMPLETED;
-                expected_body_len = 0;
+                assert(buffer.empty());
+                p += len2;
+                if (line.empty())
+                {
+                    //end of headers
+                    if (headers.get("Transfer-Encoding") == "chunked")
+                    {
+                        expected_body_len = 0;
+                        parser_status = READING_BODY_CHUNKED_LENGTH;
+                    }
+                    else
+                    {
+                        auto header_len = headers.find("Content-Length");
+                        if (!header_len) throw std::runtime_error("'Content-Length' or 'Transfer-Encoding: chunked' required");
+                        expected_body_len = std::stoul(header_len->value);
+                        parser_status = READING_BODY;
+                    }
+                }
+                else add_header(line);
             }
-            else
+
+            if (parser_status == READING_BODY || parser_status == READING_BODY_CHUNKED)
             {
-                body.insert(body.end(), p, p + len);
-                p = end;
+                assert(!buffer.size());
+                assert(expected_body_len > 0);
+                auto remaining = expected_body_len - body.size();
+                size_t len = end - p;
+                if (len >= remaining)
+                {
+                    body.insert(body.end(), p, p + remaining);
+                    p += remaining;
+                    parser_status = parser_status == READING_BODY ? COMPLETED : READING_BODY_CHUNKED_TERMINATOR;
+                    expected_body_len = 0;
+                }
+                else
+                {
+                    body.insert(body.end(), p, p + len);
+                    p = end;
+                }
+            }
+
+            if (parser_status == READING_BODY_CHUNKED_TERMINATOR && read_line(&line, &len2, p, end - p))
+            {
+                p += len2;
+                if (line.empty()) parser_status = READING_BODY_CHUNKED_LENGTH;
+                else throw std::runtime_error("Expected chunk \r\n terminator");
+            }
+
+            if (parser_status == READING_BODY_CHUNKED_LENGTH && read_line(&line, &len2, p, end - p))
+            {
+                p += len2;
+                expected_body_len = std::stoul(line, nullptr, 16);
+                if (expected_body_len) parser_status = READING_BODY_CHUNKED;
+                else parser_status = READING_TRAILER_HEADERS;
+            }
+            
+            if (parser_status == READING_TRAILER_HEADERS && read_line(&line, &len2, p, end - p))
+            {
+                assert(buffer.empty());
+                p += len2;
+                if (line.empty()) parser_status = COMPLETED; //end of headers
+                else add_header(line);
             }
         }
 
         assert(p > data && p <= end);
+        assert(p == end || is_completed());
         return p - data;
     }
     bool HttpResponseParser::read_line(std::string * line, size_t *consumed_len, const uint8_t *data, size_t len)
@@ -119,5 +148,14 @@ namespace http
         buffer.insert(buffer.end(), data, data + len);
         *consumed_len = len;
         return false;
+    }
+
+    void HttpResponseParser::add_header(const std::string &line)
+    {
+        auto colon = line.find(':', 0);
+        auto first_val = line.find_first_not_of(' ', colon + 1);
+        std::string name = line.substr(0, colon);
+        std::string value = line.substr(first_val);
+        headers.add(name, value);
     }
 }

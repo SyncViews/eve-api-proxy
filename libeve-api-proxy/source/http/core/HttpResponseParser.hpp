@@ -13,6 +13,10 @@ namespace http
             NOT_STARTED,
             READING_HEADERS,
             READING_BODY,
+            READING_BODY_CHUNKED,
+            READING_BODY_CHUNKED_LENGTH,
+            READING_BODY_CHUNKED_TERMINATOR,
+            READING_TRAILER_HEADERS,
             COMPLETED
         };
 
@@ -51,5 +55,7 @@ namespace http
          * a full line being read, with false being returned but consumed_len greater than 0.
          */
         bool read_line(std::string *line, size_t *consumed_len, const uint8_t *data, size_t len);
+
+        void add_header(const std::string &line);
     };
 }
