@@ -20,10 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\CppServers.hpp" />
+    <ClInclude Include="source\CrestConnectionPool.hpp" />
+    <ClInclude Include="source\CrestHttpRequest.hpp" />
     <ClInclude Include="source\Error.hpp" />
     <ClInclude Include="source\Gzip.hpp" />
     <ClInclude Include="source\http\core\HttpHeader.hpp" />
     <ClInclude Include="source\http\core\HttpHeaders.hpp" />
+    <ClInclude Include="source\http\core\HttpClientPipeline.hpp" />
     <ClInclude Include="source\http\core\HttpRequest.hpp" />
     <ClInclude Include="source\http\core\HttpResponseParser.hpp" />
     <ClInclude Include="source\http\core\HttpWriter.hpp" />
@@ -37,6 +40,8 @@
     <ClInclude Include="source\String.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\CrestConnectionPool.cpp" />
+    <ClCompile Include="source\CrestHttpRequest.cpp" />
     <ClCompile Include="source\Error.cpp" />
     <ClCompile Include="source\Gzip.cpp" />
     <ClCompile Include="source\http\core\HttpResponseParser.cpp" />

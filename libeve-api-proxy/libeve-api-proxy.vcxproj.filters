@@ -67,6 +67,15 @@
     <ClInclude Include="source\Gzip.hpp">
       <Filter>source</Filter>
     </ClInclude>
+    <ClInclude Include="source\http\core\HttpClientPipeline.hpp">
+      <Filter>source\http\core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CrestConnectionPool.hpp">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CrestHttpRequest.hpp">
+      <Filter>source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Init.cpp">
@@ -97,6 +106,12 @@
       <Filter>source\http\core</Filter>
     </ClCompile>
     <ClCompile Include="source\Gzip.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CrestConnectionPool.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CrestHttpRequest.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

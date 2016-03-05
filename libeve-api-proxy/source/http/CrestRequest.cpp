@@ -13,6 +13,5 @@ void send_crest_get_request(Socket *socket, const std::string &path)
         "User-Agent: eve-api-proxy server admin@willnewbery.co.uk\r\n"
         "Accept-Encoding: gzip\r\n"
         "\r\n";
-    std::cout << req << std::endl;
     socket->send_all((const uint8_t*)req.data(), req.size());
 }
