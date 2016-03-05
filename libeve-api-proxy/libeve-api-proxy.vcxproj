@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\CppServers.hpp" />
+    <ClInclude Include="source\CrestCache.hpp" />
+    <ClInclude Include="source\CrestCacheEntry.hpp" />
     <ClInclude Include="source\CrestConnectionPool.hpp" />
     <ClInclude Include="source\CrestHttpRequest.hpp" />
     <ClInclude Include="source\Error.hpp" />
@@ -40,6 +42,7 @@
     <ClInclude Include="source\String.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\CrestCache.cpp" />
     <ClCompile Include="source\CrestConnectionPool.cpp" />
     <ClCompile Include="source\CrestHttpRequest.cpp" />
     <ClCompile Include="source\Error.cpp" />

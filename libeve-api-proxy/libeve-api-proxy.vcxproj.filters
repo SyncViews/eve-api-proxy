@@ -76,6 +76,12 @@
     <ClInclude Include="source\CrestHttpRequest.hpp">
       <Filter>source</Filter>
     </ClInclude>
+    <ClInclude Include="source\CrestCacheEntry.hpp">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CrestCache.hpp">
+      <Filter>source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Init.cpp">
@@ -112,6 +118,9 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="source\CrestHttpRequest.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CrestCache.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
