@@ -21,14 +21,13 @@ namespace http
     {
         std::string line;
         auto p = data, end = data + len;
-        size_t len2 = 0;
 
         while (p != end)
         {
+            size_t len2 = 0;
             if (parser_status == NOT_STARTED && read_line(&line, &len2, p, end - p))
             {
                 assert(buffer.empty());
-                p += len2;
                 parser_status = READING_HEADERS;
                 auto ver_end = line.find(' ', 0);
                 auto code_end = line.find(' ', ver_end + 1);
@@ -36,11 +35,11 @@ namespace http
                 status_code = std::stoi(code_str);
                 status_message = line.substr(code_end + 1);
             }
+            p += len2; len2 = 0;
 
             if (parser_status == READING_HEADERS && read_line(&line, &len2, p, end - p))
             {
                 assert(buffer.empty());
-                p += len2;
                 if (line.empty())
                 {
                     //end of headers
@@ -59,6 +58,7 @@ namespace http
                 }
                 else add_header(line);
             }
+            p += len2; len2 = 0;
 
             if (parser_status == READING_BODY || parser_status == READING_BODY_CHUNKED)
             {
@@ -82,26 +82,26 @@ namespace http
 
             if (parser_status == READING_BODY_CHUNKED_TERMINATOR && read_line(&line, &len2, p, end - p))
             {
-                p += len2;
                 if (line.empty()) parser_status = READING_BODY_CHUNKED_LENGTH;
                 else throw std::runtime_error("Expected chunk \r\n terminator");
             }
+            p += len2; len2 = 0;
 
             if (parser_status == READING_BODY_CHUNKED_LENGTH && read_line(&line, &len2, p, end - p))
             {
-                p += len2;
                 expected_body_len = std::stoul(line, nullptr, 16);
                 if (expected_body_len) parser_status = READING_BODY_CHUNKED;
                 else parser_status = READING_TRAILER_HEADERS;
             }
+            p += len2; len2 = 0;
             
             if (parser_status == READING_TRAILER_HEADERS && read_line(&line, &len2, p, end - p))
             {
                 assert(buffer.empty());
-                p += len2;
                 if (line.empty()) parser_status = COMPLETED; //end of headers
                 else add_header(line);
             }
+            p += len2; len2 = 0;
         }
 
         assert(p > data && p <= end);
