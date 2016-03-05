@@ -187,6 +187,11 @@ size_t TlsSocket::recv(uint8_t * bytes, size_t len)
 
             if (buffer_data) break;
         }
+        else if (status == SEC_E_INCOMPLETE_MESSAGE)
+        {
+            //Read more data
+            continue;
+        }
         else
         {
             throw NetworkError("DescyptMessage failed");
