@@ -110,6 +110,8 @@ namespace http
     }
     bool HttpResponseParser::read_line(std::string * line, size_t *consumed_len, const uint8_t *data, size_t len)
     {
+        if (!len) return false;
+
         //The last byte of buffer might be a \r, and the first byte of data might be a \n
         if (buffer.size() && buffer.back() == '\r' && data[0] == '\n')
         {
