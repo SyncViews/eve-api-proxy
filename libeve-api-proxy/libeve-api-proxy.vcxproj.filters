@@ -17,6 +17,9 @@
     <Filter Include="source\http\core">
       <UniqueIdentifier>{2092a21d-494f-4c30-aca5-44f14c18511b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\pages">
+      <UniqueIdentifier>{ab85c7df-cba6-42ad-9e7a-d55bd9ac118e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\CppServers.hpp">
@@ -97,6 +100,12 @@
     <ClInclude Include="source\http\core\UrlParser.hpp">
       <Filter>source\http\core</Filter>
     </ClInclude>
+    <ClInclude Include="source\pages\BulkMarketOrders.hpp">
+      <Filter>source\pages</Filter>
+    </ClInclude>
+    <ClInclude Include="source\pages\Errors.hpp">
+      <Filter>source\pages</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Init.cpp">
@@ -146,6 +155,12 @@
     </ClCompile>
     <ClCompile Include="source\http\core\HttpStatusCode.cpp">
       <Filter>source\http\core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\pages\BulkMarketOrders.cpp">
+      <Filter>source\pages</Filter>
+    </ClCompile>
+    <ClCompile Include="source\pages\Errors.cpp">
+      <Filter>source\pages</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

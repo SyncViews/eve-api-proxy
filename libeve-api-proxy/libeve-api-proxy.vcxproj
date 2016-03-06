@@ -38,6 +38,8 @@
     <ClInclude Include="source\http\core\UrlParser.hpp" />
     <ClInclude Include="source\http\CrestRequest.hpp" />
     <ClInclude Include="source\Init.hpp" />
+    <ClInclude Include="source\pages\BulkMarketOrders.hpp" />
+    <ClInclude Include="source\pages\Errors.hpp" />
     <ClInclude Include="source\Precompiled.hpp" />
     <ClInclude Include="source\Server.hpp" />
     <ClInclude Include="source\SmartPtr.hpp" />
@@ -57,6 +59,8 @@
     <ClCompile Include="source\http\core\HttpStatusCode.cpp" />
     <ClCompile Include="source\http\CrestRequest.cpp" />
     <ClCompile Include="source\Init.cpp" />
+    <ClCompile Include="source\pages\BulkMarketOrders.cpp" />
+    <ClCompile Include="source\pages\Errors.cpp" />
     <ClCompile Include="source\Precompiled.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

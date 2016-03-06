@@ -1,5 +1,6 @@
 #pragma once
 #include "socket/TcpSocket.hpp"
+#include "CrestCache.hpp"
 #include <thread>
 namespace http
 {
@@ -32,6 +33,7 @@ private:
         http::HttpResponse process_request(http::HttpRequest &request);
     };
 
+    CrestCache crest_cache;
     std::atomic<bool> exiting;
     std::list<ServerConnection> connections;
     SOCKET listen_socket;

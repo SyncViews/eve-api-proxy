@@ -7,6 +7,9 @@
 #include "http/core/HttpStatusCode.hpp"
 #include "http/core/HttpWriter.hpp"
 
+#include "pages/Errors.hpp"
+#include "pages/BulkMarketOrders.hpp"
+
 Server::Server()
     : exiting(false), connections(), listen_socket(INVALID_SOCKET)
 {
@@ -115,7 +118,10 @@ void Server::ServerConnection::main()
                 bool keep_alive = !server->exiting && parser.get_headers().get("Connection") == "keep-alive";
 
                 //process request
-                http::HttpRequest request = { parser.get_method(), parser.get_url(), parser.get_headers() };
+                http::HttpRequest request = {
+                    parser.get_method(),
+                    http::UrlParser(parser.get_url()),
+                    parser.get_headers() };
                 auto response = process_request(request);
 
                 //Default headers
@@ -154,8 +160,9 @@ void Server::ServerConnection::main()
 
 http::HttpResponse Server::ServerConnection::process_request(http::HttpRequest &request)
 {
-    std::string body_str = "{\"error\": \"not found\"}";
-    std::vector<uint8_t> body((uint8_t*)body_str.data(), (uint8_t*)body_str.data() + body_str.size());
-    http::HttpHeaders headers;
-    return {404, headers, body };
+    if (request.url.path == "/bulk-market-orders")
+    {
+        return http_get_bulk_market_orders(server->crest_cache, request);
+    }
+    else return http_simple_error_page(request, 404, request.url.path + " was not found");
 }

@@ -14,11 +14,4 @@ namespace http
     {
         for (auto &header : headers.headers) write_http_header(os, header);
     }
-
-    inline void write_http_request(std::ostream &os, const HttpRequest &request)
-    {
-        os << request.method << " " << request.url << " HTTP/1.0\r\n";
-        write_http_headers(os, request.headers);
-        os << "\r\n";
-    }
 }
