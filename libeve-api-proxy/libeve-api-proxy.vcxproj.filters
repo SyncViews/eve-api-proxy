@@ -106,6 +106,9 @@
     <ClInclude Include="source\pages\Errors.hpp">
       <Filter>source\pages</Filter>
     </ClInclude>
+    <ClInclude Include="source\EveRegions.hpp">
+      <Filter>source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Init.cpp">

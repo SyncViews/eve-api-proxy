@@ -26,6 +26,7 @@
     <ClInclude Include="source\CrestConnectionPool.hpp" />
     <ClInclude Include="source\CrestHttpRequest.hpp" />
     <ClInclude Include="source\Error.hpp" />
+    <ClInclude Include="source\EveRegions.hpp" />
     <ClInclude Include="source\Gzip.hpp" />
     <ClInclude Include="source\http\core\HttpStatusCode.hpp" />
     <ClInclude Include="source\http\core\HttpHeader.hpp" />

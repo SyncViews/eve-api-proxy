@@ -2,6 +2,9 @@
 #include "Errors.hpp"
 #include "BulkMarketOrders.hpp"
 #include "CrestBulkMarketOrders.hpp"
+#include "EveRegions.hpp"
+#include <iostream>
+#include <chrono>
 http::HttpResponse http_get_bulk_market_orders(CrestCache &cache, http::HttpRequest &request)
 {
     // Get params
@@ -11,11 +14,18 @@ http::HttpResponse http_get_bulk_market_orders(CrestCache &cache, http::HttpRequ
     if (!buy && !sell) return http_bad_request(request, "At least 'buy' or 'sell' param required.");
 
     std::vector<int> regions;
-    for (auto &i : request.url.query_array_param("region"))
+    if (request.url.query_param("region") == "all")
     {
-        regions.push_back(std::stoi(i));
+        regions.assign(EVE_REGION_IDS, EVE_REGION_IDS + sizeof(EVE_REGION_IDS) / sizeof(EVE_REGION_IDS[0]));
     }
-    if (regions.empty()) return http_bad_request(request, "At least one region required.");
+    else
+    {
+        for (auto &i : request.url.query_array_param("region"))
+        {
+            regions.push_back(std::stoi(i));
+        }
+        if (regions.empty()) return http_bad_request(request, "At least one region required.");
+    }
 
     std::vector<int> types;
     for (auto &i : request.url.query_array_param("type"))
@@ -26,6 +36,8 @@ http::HttpResponse http_get_bulk_market_orders(CrestCache &cache, http::HttpRequ
 
     // Build requests
     size_t count = ((buy ? 1 : 0) + (sell ? 1 : 0)) * regions.size() * types.size();
+    std::cout << "GET /bulk-market-orders with " << count << " order sets" << std::endl;
+
     std::vector<MarketOrderList> order_sets;
     order_sets.reserve(count);
     for (auto i : regions)
@@ -37,7 +49,12 @@ http::HttpResponse http_get_bulk_market_orders(CrestCache &cache, http::HttpRequ
         }
     }
     // Make requests
+    auto start = std::chrono::high_resolution_clock::now();
     get_crest_bulk_market_orders(cache, order_sets);
+    auto end = std::chrono::high_resolution_clock::now();
+    std::cout << "Cache lookup took "
+        << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+        << "ms." << std::endl;
     // Response
     std::string resp_str = market_order_lists_json(order_sets);
 
