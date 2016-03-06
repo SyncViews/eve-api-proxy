@@ -9,7 +9,7 @@ std::string TcpSocket::address_str(const std::string &host, uint16_t port)
 }
 
 TcpSocket::TcpSocket()
-    : host(), port(0), sock()
+    : host(), port(0), sock(INVALID_SOCKET)
 {}
 
 TcpSocket::TcpSocket(SOCKET sock, const sockaddr_in &addr)

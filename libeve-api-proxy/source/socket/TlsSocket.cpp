@@ -29,7 +29,7 @@ namespace
 }
 
 TlsSocket::TlsSocket()
-    : tcp(tcp), context{0}, recv_encrypted_buffer()
+    : tcp(), context{0}, recv_encrypted_buffer()
 {
 }
 
