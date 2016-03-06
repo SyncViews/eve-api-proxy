@@ -35,6 +35,7 @@
     <ClInclude Include="source\http\core\HttpParser.hpp" />
     <ClInclude Include="source\http\core\HttpResponse.hpp" />
     <ClInclude Include="source\http\core\HttpWriter.hpp" />
+    <ClInclude Include="source\http\core\UrlParser.hpp" />
     <ClInclude Include="source\http\CrestRequest.hpp" />
     <ClInclude Include="source\Init.hpp" />
     <ClInclude Include="source\Precompiled.hpp" />

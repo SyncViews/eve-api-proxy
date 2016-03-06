@@ -163,6 +163,7 @@
     <ClCompile Include="tests\HttpParser.cpp" />
     <ClCompile Include="tests\Main.cpp" />
     <ClCompile Include="tests\TlsSocket.cpp" />
+    <ClCompile Include="tests\UrlParser.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

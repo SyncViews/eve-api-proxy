@@ -94,6 +94,9 @@
     <ClInclude Include="source\http\core\HttpStatusCode.hpp">
       <Filter>source\http\core</Filter>
     </ClInclude>
+    <ClInclude Include="source\http\core\UrlParser.hpp">
+      <Filter>source\http\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Init.cpp">
