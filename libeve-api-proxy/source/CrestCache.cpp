@@ -7,6 +7,11 @@ CrestCache::CrestCache()
 
 CrestCache::~CrestCache()
 {
+    stop();
+}
+
+void CrestCache::stop()
+{
     crest_connection_pool.exit();
 }
 

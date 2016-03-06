@@ -30,7 +30,8 @@ public:
     
     CrestCache();
     ~CrestCache();
-    
+    void stop();
+
     CrestCacheEntry *get(const std::string &path);
     /**Get CREST data.
      * @param path The path to get from CREST.

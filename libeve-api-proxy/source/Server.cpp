@@ -10,6 +10,8 @@
 #include "pages/Errors.hpp"
 #include "pages/BulkMarketOrders.hpp"
 
+#include <iostream>
+
 Server::Server()
     : exiting(false), connections(), listen_socket(INVALID_SOCKET)
 {
@@ -38,10 +40,13 @@ void Server::stop()
 
     for (auto & conn : connections)
     {
+        //TODO: Might not be safe!
         conn.socket.close();
         conn.thread.join();
     }
     connections.clear();
+
+    crest_cache.stop();
 }
 
 void Server::server_main()
@@ -74,11 +79,22 @@ void Server::server_main()
         }
         //process
         connections.emplace_back(this, client_socket, client_addr);
+        //also clear out any dead entries
+        for (auto conn = connections.begin(); conn != connections.end(); )
+        {
+            if (conn->thread_running) ++conn;
+            else
+            {
+                conn->thread.join();
+                conn = connections.erase(conn);
+            }
+        }
+        std::cout << connections.size() << " active server connections" << std::endl;
     }
 }
 
 Server::ServerConnection::ServerConnection(Server *server, SOCKET socket, sockaddr_in addr)
-    : server(server), thread(), socket(socket, addr)
+    : server(server), thread_running(true), thread(), socket(socket, addr)
 {
     thread = std::thread(&Server::ServerConnection::main, this);
 }
@@ -88,6 +104,19 @@ Server::ServerConnection::~ServerConnection()
 }
 
 void Server::ServerConnection::main()
+{
+    try
+    {
+        main2();
+    }
+    catch (const std::exception &e)
+    {
+        thread_running = false;
+        std::cerr << "HTTP server connection thread crashed. Terminating.\n" << e.what() << std::endl;
+    }
+}
+
+void Server::ServerConnection::main2()
 {
     http::HttpParser parser(true);
     uint8_t buffer[4096];

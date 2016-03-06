@@ -27,9 +27,11 @@ private:
         friend class Server;
 
         Server *server;
+        std::atomic<bool> thread_running;
         std::thread thread;
         TcpSocket socket;
 
+        void main2();
         http::HttpResponse process_request(http::HttpRequest &request);
     };
 
