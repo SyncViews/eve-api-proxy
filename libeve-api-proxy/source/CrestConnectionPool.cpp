@@ -2,7 +2,7 @@
 #include "CrestConnectionPool.hpp"
 #include "CppServers.hpp"
 #include "http/CrestRequest.hpp"
-#include "http/core/HttpResponseParser.hpp"
+#include "http/core/HttpParser.hpp"
 #include "Gzip.hpp"
 
 CrestConnectionPool::CrestConnectionPool()
@@ -96,7 +96,7 @@ void CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * re
     //request
     send_crest_get_request(&socket, request->get_uri_path());
     //response
-    http::HttpResponseParser response;
+    http::HttpParser response(false);
     while (!response.is_completed())
     {
         uint8_t buffer[4096];

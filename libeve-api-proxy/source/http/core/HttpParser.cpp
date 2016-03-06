@@ -1,13 +1,14 @@
 #include "Precompiled.hpp"
-#include "HttpResponseParser.hpp"
+#include "HttpParser.hpp"
 
 namespace http
 {
-    HttpResponseParser::HttpResponseParser()
+    HttpParser::HttpParser(bool request_parser)
+        : request_parser(request_parser)
     {
         reset();
     }
-    void HttpResponseParser::reset()
+    void HttpParser::reset()
     {
         parser_status = NOT_STARTED;
         status_code = 0;
@@ -17,7 +18,7 @@ namespace http
         body.clear();
         buffer.clear();
     }
-    size_t HttpResponseParser::read(const uint8_t * data, size_t len)
+    size_t HttpParser::read(const uint8_t * data, size_t len)
     {
         std::string line;
         auto p = data, end = data + len;
@@ -29,11 +30,24 @@ namespace http
             {
                 assert(buffer.empty());
                 parser_status = READING_HEADERS;
-                auto ver_end = line.find(' ', 0);
-                auto code_end = line.find(' ', ver_end + 1);
-                std::string code_str = line.substr(ver_end + 1, code_end - ver_end);
-                status_code = std::stoi(code_str);
-                status_message = line.substr(code_end + 1);
+                if (request_parser)
+                {
+                    //e.g. 'GET /index.html HTTP/1.1'
+                    auto method_end = line.find(' ');
+                    auto url_end = line.find_last_of(' ');
+                    method = line.substr(0, method_end);
+                    url = line.substr(method_end + 1, url_end - method_end - 1);
+                    //TODO: Handle version
+                }
+                else
+                {
+                    //e.g. 'HTTP/1.1 200 OK'
+                    auto ver_end = line.find(' ', 0);
+                    auto code_end = line.find(' ', ver_end + 1);
+                    std::string code_str = line.substr(ver_end + 1, code_end - ver_end);
+                    status_code = std::stoi(code_str);
+                    status_message = line.substr(code_end + 1);
+                }
             }
             p += len2; len2 = 0;
 
@@ -51,9 +65,15 @@ namespace http
                     else
                     {
                         auto header_len = headers.find("Content-Length");
-                        if (!header_len) throw std::runtime_error("'Content-Length' or 'Transfer-Encoding: chunked' required");
-                        expected_body_len = std::stoul(header_len->value);
-                        parser_status = READING_BODY;
+                        if (header_len)
+                        {
+                            expected_body_len = std::stoul(header_len->value);
+                            parser_status = READING_BODY;
+                        }
+                        else
+                        {
+                            parser_status = COMPLETED;
+                        }
                     }
                 }
                 else add_header(line);
@@ -108,7 +128,7 @@ namespace http
         assert(p == end || is_completed());
         return p - data;
     }
-    bool HttpResponseParser::read_line(std::string * line, size_t *consumed_len, const uint8_t *data, size_t len)
+    bool HttpParser::read_line(std::string * line, size_t *consumed_len, const uint8_t *data, size_t len)
     {
         if (!len) return false;
 
@@ -152,7 +172,7 @@ namespace http
         return false;
     }
 
-    void HttpResponseParser::add_header(const std::string &line)
+    void HttpParser::add_header(const std::string &line)
     {
         auto colon = line.find(':', 0);
         auto first_val = line.find_first_not_of(' ', colon + 1);

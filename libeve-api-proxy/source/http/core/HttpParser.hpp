@@ -1,11 +1,12 @@
 #pragma once
 #include "HttpHeaders.hpp"
+#include "../../Precompiled.hpp"
 #include <cstdint>
 #include <string>
 #include <vector>
 namespace http
 {
-    class HttpResponseParser
+    class HttpParser
     {
     public:
         enum ParserStatus
@@ -20,20 +21,26 @@ namespace http
             COMPLETED
         };
 
-        HttpResponseParser();
+        explicit HttpParser(bool request_parser);
         void reset();
 
         size_t read(const uint8_t *data, size_t len);
         int get_status_code()const { return status_code; }
         const std::string &get_status_message()const { return status_message; }
 
+        const std::string &get_method()const { return method; }
+        const std::string &get_url()const { return url; }
+
         bool is_completed()const { return parser_status == COMPLETED; }
         const std::vector<uint8_t> &get_body()const { return body; }
         const HttpHeaders &get_headers()const { return headers; }
     private:
+        bool request_parser;
         ParserStatus parser_status;
         int status_code;
         std::string status_message;
+        std::string method;
+        std::string url;
         HttpHeaders headers;
         /**The expected final length of body from the Content-Length header.*/
         size_t expected_body_len;

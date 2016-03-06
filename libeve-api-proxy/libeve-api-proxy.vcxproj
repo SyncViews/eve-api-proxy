@@ -31,7 +31,7 @@
     <ClInclude Include="source\http\core\HttpHeaders.hpp" />
     <ClInclude Include="source\http\core\HttpClientPipeline.hpp" />
     <ClInclude Include="source\http\core\HttpRequest.hpp" />
-    <ClInclude Include="source\http\core\HttpResponseParser.hpp" />
+    <ClInclude Include="source\http\core\HttpParser.hpp" />
     <ClInclude Include="source\http\core\HttpWriter.hpp" />
     <ClInclude Include="source\http\CrestRequest.hpp" />
     <ClInclude Include="source\Init.hpp" />
@@ -49,7 +49,7 @@
     <ClCompile Include="source\CrestHttpRequest.cpp" />
     <ClCompile Include="source\Error.cpp" />
     <ClCompile Include="source\Gzip.cpp" />
-    <ClCompile Include="source\http\core\HttpResponseParser.cpp" />
+    <ClCompile Include="source\http\core\HttpParser.cpp" />
     <ClCompile Include="source\http\CrestRequest.cpp" />
     <ClCompile Include="source\Init.cpp" />
     <ClCompile Include="source\Precompiled.cpp">

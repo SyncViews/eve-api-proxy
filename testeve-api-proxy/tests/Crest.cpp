@@ -1,7 +1,7 @@
 #include <boost/test/unit_test.hpp>
 #include "socket/TlsSocket.hpp"
 #include "http/CrestRequest.hpp"
-#include "http/core/HttpResponseParser.hpp"
+#include "http/core/HttpParser.hpp"
 #include "Error.hpp"
 #include "Gzip.hpp"
 #include <iostream>
@@ -15,7 +15,7 @@ BOOST_AUTO_TEST_CASE(index)
     sock.connect("public-crest.eveonline.com", 443);
     send_crest_get_request(&sock, "/");
 
-    http::HttpResponseParser response;
+    http::HttpParser response(false);
     while (!response.is_completed())
     {
         uint8_t buffer[4096];

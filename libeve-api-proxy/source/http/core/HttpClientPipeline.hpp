@@ -2,7 +2,7 @@
 #include <memory>
 #include <queue>
 #include "HttpRequest.hpp"
-#include "HttpResponseParser.hpp"
+#include "HttpParser.hpp"
 #include "socket/Socket.hpp"
 namespace http
 {
@@ -30,7 +30,7 @@ namespace http
         /**Returns a completed request. Use get_response and finish_response.*/
         HttpRequest *completed_request();
         /**Get the response for completed_request*/
-        const HttpResponseParser &get_response();
+        const HttpParser &get_response();
         /**Finish with the response for completed_request so can start on the next one.*/
         void finish_response();
 
@@ -38,6 +38,6 @@ namespace http
         std::unique_ptr<Socket> socket;
         std::queue<HttpRequest*> queued_requests;
         std::queue<HttpRequest*> inprogress_requests;
-        HttpResponseParser response_parser;
+        HttpParser response_parser;
     };
 }
