@@ -8,7 +8,7 @@ void send_crest_get_request(Socket *socket, const std::string &path)
 {
     std::string req =
         "GET " + path + " HTTP/1.1\r\n"
-        "Connection: close\r\n"
+        "Connection: keep-alive\r\n"
         "Host: public-crest.eveonline.com\r\n"
         "User-Agent: eve-api-proxy server admin@willnewbery.co.uk\r\n"
         "Accept-Encoding: gzip\r\n"

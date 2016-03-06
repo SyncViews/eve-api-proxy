@@ -4,6 +4,7 @@
 #include "http/CrestRequest.hpp"
 #include "http/core/HttpParser.hpp"
 #include "Gzip.hpp"
+#include <iostream>
 
 CrestConnectionPool::CrestConnectionPool()
     : exiting(false), mutex(), request_queued(), request_queue(), connections()
@@ -91,6 +92,7 @@ void CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * re
 {
     if (!socket.is_connected())
     {
+        std::cout << "Connecting to " << PCREST_HOST << ":" << PCREST_PORT << std::endl;
         socket.connect(PCREST_HOST, PCREST_PORT);
     }
     //request
@@ -119,6 +121,7 @@ void CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * re
     }
     if (response.get_headers().get("Connection") != "keep-alive")
     {
+        std::cout << "Terminating public-crest connection because Connection: " << response.get_headers().get("Connection") << std::endl;
         socket.close();
     }
 
