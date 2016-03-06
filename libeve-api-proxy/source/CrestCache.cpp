@@ -10,6 +10,12 @@ CrestCache::~CrestCache()
     crest_connection_pool.exit();
 }
 
+CrestCacheEntry *CrestCache::get(const std::string &path)
+{
+    std::unique_lock<std::mutex> entry_lock;
+    return get_locked(path, entry_lock);
+}
+
 CrestCache::CacheLookupFutureResults CrestCache::get_future(const std::string &path)
 {
     std::unique_lock<std::mutex> entry_lock;

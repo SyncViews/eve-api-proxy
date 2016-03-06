@@ -60,4 +60,9 @@ struct CrestCacheEntry
             update_wait.wait(lock);
         }
     }
+
+    bool is_data_valid()const
+    {
+        return status != FAILED;
+    }
 };

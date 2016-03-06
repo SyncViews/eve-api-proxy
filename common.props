@@ -8,7 +8,7 @@
   <PropertyGroup>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Intermediate\$(ProjectName)-$(Platform)-$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)\third-party\zlib;$(SolutionDir)\third-party\boost;$(SolutionDir)\libeve-api-proxy\source;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\third-party\rapidjson\include;$(SolutionDir)\third-party\zlib;$(SolutionDir)\third-party\boost;$(SolutionDir)\libeve-api-proxy\source;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\third-party\zlib\contrib\vstudio\vc11\$(PlatformShort)\ZlibStat$(Configuration)\;$(SolutionDir)\third-party\boost\stage-$(Platform)\lib;$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup />
