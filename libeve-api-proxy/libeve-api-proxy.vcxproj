@@ -27,15 +27,18 @@
     <ClInclude Include="source\CrestHttpRequest.hpp" />
     <ClInclude Include="source\Error.hpp" />
     <ClInclude Include="source\Gzip.hpp" />
+    <ClInclude Include="source\http\core\HttpStatusCode.hpp" />
     <ClInclude Include="source\http\core\HttpHeader.hpp" />
     <ClInclude Include="source\http\core\HttpHeaders.hpp" />
     <ClInclude Include="source\http\core\HttpClientPipeline.hpp" />
     <ClInclude Include="source\http\core\HttpRequest.hpp" />
     <ClInclude Include="source\http\core\HttpParser.hpp" />
+    <ClInclude Include="source\http\core\HttpResponse.hpp" />
     <ClInclude Include="source\http\core\HttpWriter.hpp" />
     <ClInclude Include="source\http\CrestRequest.hpp" />
     <ClInclude Include="source\Init.hpp" />
     <ClInclude Include="source\Precompiled.hpp" />
+    <ClInclude Include="source\Server.hpp" />
     <ClInclude Include="source\SmartPtr.hpp" />
     <ClInclude Include="source\socket\Socket.hpp" />
     <ClInclude Include="source\socket\TcpSocket.hpp" />
@@ -50,6 +53,7 @@
     <ClCompile Include="source\Error.cpp" />
     <ClCompile Include="source\Gzip.cpp" />
     <ClCompile Include="source\http\core\HttpParser.cpp" />
+    <ClCompile Include="source\http\core\HttpStatusCode.cpp" />
     <ClCompile Include="source\http\CrestRequest.cpp" />
     <ClCompile Include="source\Init.cpp" />
     <ClCompile Include="source\Precompiled.cpp">
@@ -58,6 +62,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="source\Server.cpp" />
     <ClCompile Include="source\socket\Socket.cpp" />
     <ClCompile Include="source\socket\TcpSocket.cpp" />
     <ClCompile Include="source\socket\TlsSocket.cpp" />

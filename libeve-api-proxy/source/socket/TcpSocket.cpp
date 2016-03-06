@@ -11,6 +11,14 @@ std::string TcpSocket::address_str(const std::string &host, uint16_t port)
 TcpSocket::TcpSocket()
     : host(), port(0), sock()
 {}
+
+TcpSocket::TcpSocket(SOCKET sock, const sockaddr_in &addr)
+    : host(), port(), sock(sock)
+{
+    port = ntohs(addr.sin_port);
+    host = inet_ntoa(addr.sin_addr);
+}
+
 TcpSocket::~TcpSocket()
 {
     if (is_connected()) close();
@@ -58,19 +66,26 @@ void TcpSocket::connect(const std::string &host, uint16_t port)
 }
 bool TcpSocket::is_connected()const
 {
-    return !host.empty();
+    return sock != INVALID_SOCKET;
+}
+
+void TcpSocket::shutdown()
+{
+    if (is_connected())
+    {
+        if (::shutdown(sock, SD_BOTH))
+            throw WsaError();
+    }
 }
 
 void TcpSocket::close()
 {
     if (is_connected())
     {
-        if(shutdown(sock, SD_BOTH))
+        if(::shutdown(sock, SD_BOTH))
             throw WsaError();
         ::closesocket(sock);
-        sock = 0;
-        host.clear();
-        port = 0;
+        sock = INVALID_SOCKET;
     }
     assert(!is_connected());
 }
@@ -86,7 +101,12 @@ size_t TcpSocket::send(const uint8_t *bytes, size_t len)
     assert(is_connected());
     assert(len < std::numeric_limits<int>::max());
     auto ret = ::send(sock, (const char*)bytes, (int)len, 0);
-    if (ret == SOCKET_ERROR) throw WsaError();
+    if (ret == SOCKET_ERROR)
+    {
+        auto err = WSAGetLastError();
+        if (err == WSAEINTR) return 0;
+        else throw WsaError(err);
+    }
     return (size_t) ret;
 }
 
@@ -95,6 +115,11 @@ size_t TcpSocket::recv(uint8_t *bytes, size_t len)
     assert(is_connected());
     assert(len < std::numeric_limits<int>::max());
     auto ret = ::recv(sock, (char*)bytes, (int)len, 0);
-    if (ret == SOCKET_ERROR) throw WsaError();
+    if (ret == SOCKET_ERROR)
+    {
+        auto err = WSAGetLastError();
+        if (err == WSAEINTR) return 0;
+        else throw WsaError(err);
+    }
     return (size_t)ret;
 }

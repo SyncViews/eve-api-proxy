@@ -2,11 +2,11 @@
 #include "HttpHeaders.hpp"
 namespace http
 {
-    class HttpRequest
+    class HttpResponse
     {
     public:
-        std::string method;
-        std::string url;
+        int status_code;
         HttpHeaders headers;
+        std::vector<uint8_t> body;
     };
 }

@@ -17,7 +17,7 @@ namespace http
 
     inline void write_http_request(std::ostream &os, const HttpRequest &request)
     {
-        os << request.method << " " << request.path << " HTTP/1.0\r\n";
+        os << request.method << " " << request.url << " HTTP/1.0\r\n";
         write_http_headers(os, request.headers);
         os << "\r\n";
     }

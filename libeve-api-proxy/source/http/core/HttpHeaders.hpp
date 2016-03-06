@@ -37,5 +37,10 @@ namespace http
         {
             headers.emplace_back(name, value);
         }
+        void set_default(const std::string &name, const std::string &value)
+        {
+            auto header = find(name);
+            if (!header) add(name, value);
+        }
     };
 }

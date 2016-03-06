@@ -85,6 +85,15 @@
     <ClInclude Include="source\http\core\HttpParser.hpp">
       <Filter>source\http\core</Filter>
     </ClInclude>
+    <ClInclude Include="source\Server.hpp">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\http\core\HttpResponse.hpp">
+      <Filter>source\http\core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\http\core\HttpStatusCode.hpp">
+      <Filter>source\http\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Init.cpp">
@@ -127,6 +136,12 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="source\http\core\HttpParser.cpp">
+      <Filter>source\http\core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Server.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\http\core\HttpStatusCode.cpp">
       <Filter>source\http\core</Filter>
     </ClCompile>
   </ItemGroup>

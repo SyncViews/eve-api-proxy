@@ -1,4 +1,5 @@
 #pragma once
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define NOMINMAX //remove min and max macros, since they clash with things like std::numeric_limits
 #define SECURITY_WIN32
 #include <WinSock2.h> //Must go before windows.h
@@ -16,6 +17,7 @@
 #include <ctime>
 
 #include <algorithm>
+#include <atomic>
 #include <codecvt>
 #include <condition_variable>
 #include <exception>
