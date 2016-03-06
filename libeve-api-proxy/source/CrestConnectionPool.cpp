@@ -123,4 +123,5 @@ void CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * re
     }
 
     request->promise.set_value(request);
+    if (request->on_completion) request->on_completion(request);
 }

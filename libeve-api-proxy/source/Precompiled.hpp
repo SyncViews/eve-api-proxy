@@ -19,6 +19,7 @@
 #include <codecvt>
 #include <condition_variable>
 #include <exception>
+#include <functional>
 #include <limits>
 #include <list>
 #include <locale>

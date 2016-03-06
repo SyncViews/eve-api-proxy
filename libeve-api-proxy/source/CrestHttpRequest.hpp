@@ -1,17 +1,20 @@
 #pragma once
+#include <functional>
 #include <future>
 #include <string>
 class CrestHttpRequest
 {
 public:
+    typedef std::function<void(CrestHttpRequest*)> CompletionFunc;
     struct Response
     {
         int status_code;
         std::string status_msg;
         std::vector<uint8_t> body;
     };
-    explicit CrestHttpRequest(const std::string &uri_path)
-        : promise(), uri_path(uri_path), response()
+    CrestHttpRequest() {}
+    explicit CrestHttpRequest(const std::string &uri_path, CompletionFunc on_completion = nullptr)
+        : promise(), on_completion(on_completion), uri_path(uri_path), response()
     {
     }
 
@@ -25,6 +28,7 @@ public:
 private:
     friend class CrestConnectionPool;
     std::promise<CrestHttpRequest*> promise;
+    CompletionFunc on_completion;
     std::string uri_path;
     Response response;
 };

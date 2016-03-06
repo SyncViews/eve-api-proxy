@@ -1,4 +1,5 @@
 #pragma once
+#include "CrestHttpRequest.hpp"
 #include <condition_variable>
 #include <ctime>
 #include <mutex>
@@ -37,6 +38,7 @@ struct CrestCacheEntry
         std::unique_lock<std::mutex> lock(mutex);
         if (status == UPDATING) update_wait.wait(lock);
     }
+
     Status status;
     /**"row" level locking*/
     std::mutex mutex;
@@ -48,4 +50,14 @@ struct CrestCacheEntry
     time_t cache_until;
     /**The cached data (gzipped)*/
     std::vector<uint8_t> data;
+
+    CrestHttpRequest http_request;
+
+    void wait(std::unique_lock<std::mutex> &lock)
+    {
+        if (status == CrestCacheEntry::UPDATING)
+        {
+            update_wait.wait(lock);
+        }
+    }
 };
