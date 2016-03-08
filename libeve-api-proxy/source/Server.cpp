@@ -69,13 +69,19 @@ void Server::server_main()
     {
         //accept
         sockaddr_in client_addr = { 0 };
-        int client_addr_len = (int)sizeof(client_addr);
+        socklen_t client_addr_len = (socklen_t)sizeof(client_addr);
         auto client_socket = accept(listen_socket, (sockaddr*)&client_addr, &client_addr_len);
         if (client_socket == INVALID_SOCKET)
         {
+#ifdef _WIN32
             auto err = WSAGetLastError();
             if (err == WSAEINTR) break; //exit
             else throw WsaError(err);
+#else
+            auto err = errno;
+            if (err == EINVAL) break; //exit
+            else throw SocketError(err);
+#endif
         }
         //process
         connections.emplace_back(this, client_socket, client_addr);

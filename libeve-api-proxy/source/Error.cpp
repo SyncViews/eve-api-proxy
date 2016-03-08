@@ -3,6 +3,14 @@
 #include "SmartPtr.hpp"
 #include "String.hpp"
 
+std::string errno_string(int err)
+{
+    //TODO: Used for GCC/Linux, need to use a thread safe version
+    return strerror(err);
+}
+
+#ifdef _WIN32
+
 std::string win_error_string(int err)
 {
     std::unique_ptr<wchar_t[], LocalFreeDeleter> buffer;
@@ -12,3 +20,5 @@ std::string win_error_string(int err)
         (LPWSTR)(wchar_t**)unique_out_ptr(buffer), 0, nullptr);
     return utf16_to_utf8(buffer.get());
 }
+
+#endif

@@ -12,3 +12,5 @@
 /eve-api-proxy.VC.opendb
 /ipch
 /third-party/rapidjson
+/bin
+/obj

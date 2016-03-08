@@ -12,12 +12,12 @@ namespace http
 
         HttpHeader *find(const std::string &name)
         {
-            auto it = std::find_if(headers.begin(), headers.end(), [&name](auto &x) { return x.name == name; });
+            auto it = std::find_if(headers.begin(), headers.end(), [&name](const HttpHeader &x) { return x.name == name; });
             return it != headers.end() ? &*it : nullptr;
         }
         const HttpHeader *find(const std::string &name) const
         {
-            auto it = std::find_if(headers.begin(), headers.end(), [&name](auto &x) { return x.name == name; });
+            auto it = std::find_if(headers.begin(), headers.end(), [&name](const HttpHeader &x) { return x.name == name; });
             return it != headers.end() ? &*it : nullptr;
         }
 

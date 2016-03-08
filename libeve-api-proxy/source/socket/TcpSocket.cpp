@@ -38,9 +38,9 @@ void TcpSocket::connect(const std::string &host, uint16_t port)
     hints.ai_protocol = IPPROTO_TCP;
 
     auto ret = getaddrinfo(host.c_str(), port_str.c_str(), &hints, &result);
-    if (ret) throw WsaError();
+    if (ret) throw SocketError();
 
-    int lastError = 0;
+    //int lastError = 0;
     for (auto p = result; p; p = p->ai_next)
     {
         SOCKET sock =:: socket(p->ai_family, p->ai_socktype, p->ai_protocol);
@@ -48,7 +48,7 @@ void TcpSocket::connect(const std::string &host, uint16_t port)
 
         if (::connect(sock, p->ai_addr, (int)p->ai_addrlen) == SOCKET_ERROR)
         {
-            lastError = WSAGetLastError();
+            //lastError = WSAGetLastError();
             ::closesocket(sock);
             continue;
         }
@@ -74,7 +74,7 @@ void TcpSocket::shutdown()
     if (is_connected())
     {
         if (::shutdown(sock, SD_BOTH))
-            throw WsaError();
+            throw SocketError();
     }
 }
 
@@ -82,8 +82,7 @@ void TcpSocket::close()
 {
     if (is_connected())
     {
-        if(::shutdown(sock, SD_BOTH))
-            throw WsaError();
+        ::shutdown(sock, SD_BOTH);
         ::closesocket(sock);
         sock = INVALID_SOCKET;
     }
@@ -103,9 +102,15 @@ size_t TcpSocket::send(const uint8_t *bytes, size_t len)
     auto ret = ::send(sock, (const char*)bytes, (int)len, 0);
     if (ret == SOCKET_ERROR)
     {
+#ifdef _WIN32
         auto err = WSAGetLastError();
-        if (err == WSAEINTR) return 0;
+        if (err == WSAEINTR) return 0; //disconnect
         else throw WsaError(err);
+#else
+        auto err = errno;
+        if (err == EINTR) return 0; //disconnect
+        else throw SocketError(err);
+#endif
     }
     return (size_t) ret;
 }
@@ -117,9 +122,15 @@ size_t TcpSocket::recv(uint8_t *bytes, size_t len)
     auto ret = ::recv(sock, (char*)bytes, (int)len, 0);
     if (ret == SOCKET_ERROR)
     {
+#ifdef _WIN32
         auto err = WSAGetLastError();
-        if (err == WSAEINTR) return 0;
+        if (err == WSAEINTR) return 0; //disconnect
         else throw WsaError(err);
+#else
+        auto err = errno;
+        if (err == EINTR) return 0; //disconnect
+        else throw SocketError(err);
+#endif
     }
     return (size_t)ret;
 }

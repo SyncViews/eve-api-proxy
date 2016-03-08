@@ -21,6 +21,8 @@ public:
     virtual size_t send(const uint8_t *bytes, size_t len) override;
     virtual size_t recv(uint8_t *bytes, size_t len) override;
 
+
+    SOCKET get_socket() { return sock; }
 private:
     std::string host;
     uint16_t port;

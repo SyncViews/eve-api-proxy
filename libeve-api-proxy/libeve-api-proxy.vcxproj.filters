@@ -109,6 +109,12 @@
     <ClInclude Include="source\EveRegions.hpp">
       <Filter>source</Filter>
     </ClInclude>
+    <ClInclude Include="source\socket\WinTlsSocket.hpp">
+      <Filter>source\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="source\socket\OpenSslSocket.hpp">
+      <Filter>source\socket</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Init.cpp">
@@ -127,9 +133,6 @@
       <Filter>source\socket</Filter>
     </ClCompile>
     <ClCompile Include="source\socket\Socket.cpp">
-      <Filter>source\socket</Filter>
-    </ClCompile>
-    <ClCompile Include="source\socket\TlsSocket.cpp">
       <Filter>source\socket</Filter>
     </ClCompile>
     <ClCompile Include="source\http\CrestRequest.cpp">
@@ -164,6 +167,12 @@
     </ClCompile>
     <ClCompile Include="source\pages\Errors.cpp">
       <Filter>source\pages</Filter>
+    </ClCompile>
+    <ClCompile Include="source\socket\WinTlsSocket.cpp">
+      <Filter>source\socket</Filter>
+    </ClCompile>
+    <ClCompile Include="source\socket\OpenSslSocket.cpp">
+      <Filter>source\socket</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

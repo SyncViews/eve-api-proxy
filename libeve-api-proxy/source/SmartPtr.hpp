@@ -1,4 +1,7 @@
 #pragma once
+
+#ifdef _WIN32
+
 struct LocalFreeDeleter
 {
     void operator()(wchar_t *s)const
@@ -6,6 +9,8 @@ struct LocalFreeDeleter
         LocalFree(s);
     }
 };
+
+#endif
 
 
 template<class T>

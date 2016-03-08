@@ -44,9 +44,11 @@
     <ClInclude Include="source\Precompiled.hpp" />
     <ClInclude Include="source\Server.hpp" />
     <ClInclude Include="source\SmartPtr.hpp" />
+    <ClInclude Include="source\socket\OpenSslSocket.hpp" />
     <ClInclude Include="source\socket\Socket.hpp" />
     <ClInclude Include="source\socket\TcpSocket.hpp" />
     <ClInclude Include="source\socket\TlsSocket.hpp" />
+    <ClInclude Include="source\socket\WinTlsSocket.hpp" />
     <ClInclude Include="source\String.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -69,9 +71,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="source\Server.cpp" />
+    <ClCompile Include="source\socket\OpenSslSocket.cpp" />
     <ClCompile Include="source\socket\Socket.cpp" />
     <ClCompile Include="source\socket\TcpSocket.cpp" />
-    <ClCompile Include="source\socket\TlsSocket.cpp" />
+    <ClCompile Include="source\socket\WinTlsSocket.cpp" />
     <ClCompile Include="source\String.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
