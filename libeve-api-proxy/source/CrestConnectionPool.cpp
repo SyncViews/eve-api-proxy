@@ -1,13 +1,15 @@
 #include "Precompiled.hpp"
 #include "CrestConnectionPool.hpp"
+#include "CrestCache.hpp"
 #include "CppServers.hpp"
 #include "http/CrestRequest.hpp"
 #include "http/core/HttpParser.hpp"
 #include "Gzip.hpp"
 #include <iostream>
 
-CrestConnectionPool::CrestConnectionPool()
-    : exiting(false), mutex(), request_queued(), request_queue(), connections()
+CrestConnectionPool::CrestConnectionPool(CrestCache *cache)
+    : cache(cache)
+    , exiting(false), mutex(), request_queued(), request_queue(), connections()
     , request_allowance(0)
     , request_allowance_time(0)
 {
@@ -114,6 +116,10 @@ void CrestConnectionPool::CrestConnection::main()
                 else if (pool->exiting)
                 {
                     return;
+                }
+                else if (pool->cache && (request = pool->cache->get_preload_request()))
+                {
+                    break;
                 }
                 else
                 {

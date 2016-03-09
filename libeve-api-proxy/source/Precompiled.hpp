@@ -58,7 +58,9 @@ inline void closesocket(SOCKET sock)
 #include <atomic>
 #include <condition_variable>
 #include <exception>
+#include <fstream>
 #include <functional>
+#include <iostream>
 #include <limits>
 #include <list>
 #include <locale>

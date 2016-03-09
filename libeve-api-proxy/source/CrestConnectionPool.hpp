@@ -8,10 +8,11 @@
 #include <queue>
 #include <condition_variable>
 
+class CrestCache;
 class CrestConnectionPool
 {
 public:
-    CrestConnectionPool();
+    CrestConnectionPool(CrestCache *cache = nullptr);
     ~CrestConnectionPool();
     void exit();
     void queue(CrestHttpRequest *request);
@@ -29,6 +30,7 @@ private:
         std::thread thread;
         TlsSocket socket;
     };
+    CrestCache *cache;
     std::atomic<bool> exiting;
     std::mutex mutex;
     std::condition_variable request_queued;

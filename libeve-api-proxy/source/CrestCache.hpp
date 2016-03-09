@@ -39,12 +39,19 @@ public:
     CacheLookupFutureResults get_future(const std::string &path);
     CacheLookupResults get_now(const std::string &path);
 
+    /**Used by CrestConnectionPool to use up spare bandwidth by getting requests to cache in
+     * advance.
+     */
+    CrestHttpRequest *get_preload_request();
 private:
     std::mutex cache_mutex;
     std::unordered_map<std::string, CrestCacheEntry> cache;
     /**CrestConnectionPool for updating cache entries.*/
+    std::vector<std::string> preload_requests;
+    size_t preload_request_next;
     CrestConnectionPool crest_connection_pool;
 
+    CrestCacheEntry &get_entry(const std::string &path);
     CrestCacheEntry *get_locked(const std::string &path, std::unique_lock<std::mutex> &lock);
     void update_entry(CrestCacheEntry &entry);
     void update_entry_completion(CrestCacheEntry *entry, CrestHttpRequest *request);
