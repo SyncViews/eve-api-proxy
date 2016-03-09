@@ -107,6 +107,7 @@ void Server::server_main()
         }
         std::cout << connections.size() << " active server connections" << std::endl;
     }
+    std::cout << "Server::server_main exiting" << std::endl;
 }
 
 Server::ServerConnection::ServerConnection(Server *server, SOCKET socket, sockaddr_in addr)

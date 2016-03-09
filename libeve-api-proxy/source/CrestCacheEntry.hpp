@@ -23,14 +23,18 @@ struct CrestCacheEntry
          */
         EXPIRED,
         /**Has no local data at all, and CCP servers were unavailable (e.g. downtime)*/
-        FAILED
+        FAILED,
+        /**Had data, but it was purged*/
+        PURGED
     };
     CrestCacheEntry()
         : status(NEW)
+        , preloaded(false)
         , mutex()
         , update_wait()
         , path()
         , cache_until(0)
+        , last_used(0)
         , data()
     {}
     ~CrestCacheEntry()
@@ -40,6 +44,10 @@ struct CrestCacheEntry
     }
 
     Status status;
+    /** Used as a flag to show this is a preloaded entry. Preloaded entries never get purged,
+     *  since they would just immediately get reloaded regardless of usage.
+     */
+    bool preloaded;
     /**"row" level locking*/
     std::mutex mutex;
     /**For waiting for updates.*/
@@ -48,6 +56,8 @@ struct CrestCacheEntry
     std::string path;
     /**When the cache expires.*/
     time_t cache_until;
+    /**When the data was last used. Used to inform the cache purge policy.*/
+    time_t last_used;
     /**The cached data (gzipped)*/
     std::vector<uint8_t> data;
 
@@ -63,6 +73,11 @@ struct CrestCacheEntry
 
     bool is_data_valid()const
     {
-        return status != FAILED;
+        return status != NEW && status != FAILED && status != PURGED;
+    }
+    /**Has data within expiry*/
+    bool is_current_data()const
+    {
+        return is_data_valid() && time(nullptr) < cache_until;
     }
 };

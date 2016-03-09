@@ -44,10 +44,19 @@ public:
      */
     CrestHttpRequest *get_preload_request();
 private:
+    typedef std::unique_lock<std::mutex> unique_lock;
+    typedef std::unordered_map<std::string, CrestCacheEntry> Cache;
+    static const size_t MAX_CACHE_SIZE = 1024*1024*20;//10MB
+
+    /**Lock for the cache map.
+     * @warning Never attempt to lock this if already holding any entry lock. Always lock this
+     * before locking an entry. Failure to do so may result in dead lock.
+     */
     std::mutex cache_mutex;
-    std::unordered_map<std::string, CrestCacheEntry> cache;
+    size_t cache_size;
+    Cache cache;
     /**CrestConnectionPool for updating cache entries.*/
-    std::vector<std::string> preload_requests;
+    std::vector<CrestCacheEntry*> preload_entries;
     size_t preload_request_next;
     CrestConnectionPool crest_connection_pool;
 
@@ -55,4 +64,8 @@ private:
     CrestCacheEntry *get_locked(const std::string &path, std::unique_lock<std::mutex> &lock);
     void update_entry(CrestCacheEntry &entry);
     void update_entry_completion(CrestCacheEntry *entry, CrestHttpRequest *request);
+    /**With the cache already locked, see if any data must be purged to remaining within
+     * cache size limits.
+     */
+    void check_cache_purge();
 };
