@@ -73,8 +73,7 @@ void TcpSocket::shutdown()
 {
     if (is_connected())
     {
-        if (::shutdown(sock, SD_BOTH))
-            throw SocketError();
+        ::shutdown(sock, SD_BOTH);
     }
 }
 
@@ -132,5 +131,6 @@ size_t TcpSocket::recv(uint8_t *bytes, size_t len)
         else throw SocketError(err);
 #endif
     }
+    assert(ret >= 0);
     return (size_t)ret;
 }

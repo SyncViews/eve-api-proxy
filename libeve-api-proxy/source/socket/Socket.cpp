@@ -4,21 +4,23 @@
 
 void Socket::send_all(const uint8_t *bytes, size_t len)
 {
-    while (len)
+    auto remaining = len;
+    while (remaining)
     {
-        auto len2 = send(bytes, len);
+        auto len2 = send(bytes, remaining);
         if (!len2) throw NetworkError("Socket closed before send_all complete");
-        len -= len2;
+        remaining -= len2;
         bytes += len2;
     }
 }
 void Socket::recv_all(uint8_t *bytes, size_t len)
 {
-    while (len)
+    auto remaining = len;
+    while (remaining)
     {
-        auto len2 = recv(bytes, len);
+        auto len2 = recv(bytes, remaining);
         if (!len2) throw NetworkError("Socket closed before recv_all complete");
-        len -= len2;
+        remaining -= len2;
         bytes += len2;
     }
 }

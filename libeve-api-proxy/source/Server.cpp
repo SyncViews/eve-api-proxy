@@ -13,7 +13,7 @@
 #include <iostream>
 
 Server::Server()
-    : exiting(false), connections(), listen_socket(INVALID_SOCKET)
+    : crest_cache(), exiting(false), connections(), listen_socket(INVALID_SOCKET), thread()
 {
 }
 
@@ -32,21 +32,24 @@ void Server::run()
 
 void Server::stop()
 {
+    std::cout << "Server::stop" << std::endl;
     exiting = true;
     ::shutdown(listen_socket, SD_BOTH);
     ::closesocket(listen_socket);
     listen_socket = INVALID_SOCKET;
-    thread.join();
+    if (thread.joinable()) thread.join();
 
     for (auto & conn : connections)
     {
         //TODO: Might not be safe!
-        conn.socket.close();
+        conn.socket.shutdown();
         conn.thread.join();
     }
     connections.clear();
 
+    std::cout << "Server::stop  crest_cache.stop" << std::endl;
     crest_cache.stop();
+    std::cout << "Server::stop  complete" << std::endl;
 }
 
 void Server::server_main()
@@ -55,6 +58,11 @@ void Server::server_main()
     //create socket
     listen_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (listen_socket == INVALID_SOCKET) throw std::runtime_error("Failed to create listen socket");
+    //allow fast restart
+#ifndef _WIN32
+    int yes = 1;
+    setsockopt(listen_socket, SOL_SOCKET, SO_REUSEADDR, (const char*)&yes, sizeof(yes));
+#endif
     //bind socket
     sockaddr_in bind_addr = { 0 };
     bind_addr.sin_family = AF_INET;
@@ -84,6 +92,7 @@ void Server::server_main()
             else throw SocketError(err);
 #endif
         }
+        std::cout << "New client connection, spawning handler thread" << std::endl;
         //process
         connections.emplace_back(this, client_socket, client_addr);
         //also clear out any dead entries
@@ -169,7 +178,7 @@ void Server::ServerConnection::main2()
 
                 //response header
                 std::stringstream response_ss;
-                response_ss << "HTTP1/1 " << response.status_code << " " << http::get_status_code_str(response.status_code) << "\r\n";
+                response_ss << "HTTP/1.1 " << response.status_code << " " << http::get_status_code_str(response.status_code) << "\r\n";
                 http::write_http_headers(response_ss, response.headers);
                 response_ss << "\r\n";
                 std::string response_head = response_ss.str();
