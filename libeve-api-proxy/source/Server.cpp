@@ -51,6 +51,7 @@ void Server::stop()
 
 void Server::server_main()
 {
+    set_thread_name("server-main");
     //create socket
     listen_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (listen_socket == INVALID_SOCKET) throw std::runtime_error("Failed to create listen socket");
@@ -113,6 +114,7 @@ void Server::ServerConnection::main()
 {
     try
     {
+        set_thread_name("client-conn");
         main2();
     }
     catch (const std::exception &e)

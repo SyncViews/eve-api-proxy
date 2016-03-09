@@ -75,3 +75,17 @@ inline void closesocket(SOCKET sock)
 
 #pragma comment(lib, "Secur32.Lib")
 #pragma comment(lib, "zlibstat.lib")
+
+
+#ifdef _WIN32
+inline void set_thread_name(const std::string &str)
+{
+    //TODO: implement
+}
+#else
+inline void set_thread_name(const std::string &str)
+{
+    //TODO: implement
+    pthread_setname_np(pthread_self(), str.c_str());
+}
+#endif

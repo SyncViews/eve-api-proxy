@@ -23,7 +23,7 @@ private:
         ~CrestConnection();
 
         void main();
-        void process_request(CrestHttpRequest *request);
+        bool process_request(CrestHttpRequest *request);
         
         CrestConnectionPool *pool;
         std::thread thread;
@@ -35,4 +35,11 @@ private:
     std::queue<CrestHttpRequest *> request_queue;
     std::list<CrestConnection> connections;
     
+    std::atomic<int> request_allowance;
+    std::chrono::seconds request_allowance_time;
+
+    /**Used by threads to wait until they are allowed to execute a request within the rate-limit.
+     * May block upto 1 second waiting for the new request allowance.
+     */
+    void wait_for_request_allowance();
 };

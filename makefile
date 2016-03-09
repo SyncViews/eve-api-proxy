@@ -8,12 +8,12 @@ TEST_OBJ := $(addprefix obj/, $(TEST_CPP:.cpp=.o))
 
 all: bin/eve-api-proxy test
 
-CC_VARIATION_FLAGS := -O3 -DNDEBUG
-debug: CC_VARIATION_FLAGS := -ggdb -Og -D_DEBUG
+CC_VARIATION_FLAGS = -O3 -DNDEBUG
+debug: CC_VARIATION_FLAGS = -ggdb -Og -D_DEBUG
 debug: all
 
 LD_FLAGS := -pthread
-CC_FLAGS := $(CC_VARIATION_FLAGS) -std=c++11 -pthread -Ilibeve-api-proxy/source/ -Ithird-party/rapidjson/include -DBOOST_TEST_DYN_LINK
+CC_FLAGS := -std=c++11 -pthread -Ilibeve-api-proxy/source/ -Ithird-party/rapidjson/include -DBOOST_TEST_DYN_LINK
 
 LIBS := -lz -lssl -lcrypto
 TEST_LIBS := -lboost_unit_test_framework
@@ -29,7 +29,7 @@ clean:
 
 obj/%.o: %.cpp
 	@mkdir -p $(@D)
-	g++ $(CC_FLAGS) -MT $@ -MMD -MP -MF $(patsubst %.o,%.d,$@) -c -o $@ $<
+	g++ $(CC_VARIATION_FLAGS) $(CC_FLAGS) -MT $@ -MMD -MP -MF $(patsubst %.o,%.d,$@) -c -o $@ $<
 
 bin/eve-api-proxy: $(LIB_OBJ) obj/eve-api-proxy/source/Main.o
 	@mkdir -p $(@D)

@@ -20,6 +20,7 @@ namespace http
     }
     size_t HttpParser::read(const uint8_t * data, size_t len)
     {
+        assert(len > 0);
         std::string line;
         auto p = data, end = data + len;
 
