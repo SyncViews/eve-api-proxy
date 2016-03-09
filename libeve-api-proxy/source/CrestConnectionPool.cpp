@@ -145,7 +145,17 @@ bool CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * re
         socket.connect(PCREST_HOST, PCREST_PORT);
     }
     //request
-    send_crest_get_request(&socket, request->get_uri_path());
+    try
+    {
+        send_crest_get_request(&socket, request->get_uri_path());
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "Unexpected CREST disconnect, retry\n";
+        std::cerr << e.what() << std::endl;
+        socket.close();
+        return false;
+    }
     //response
     http::HttpParser response(false);
     while (!response.is_completed())
