@@ -125,6 +125,7 @@ void Server::ServerConnection::main()
     {
         set_thread_name("client-conn");
         main2();
+        thread_running = false;
     }
     catch (const std::exception &e)
     {

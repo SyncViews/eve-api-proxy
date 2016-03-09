@@ -11,7 +11,8 @@ CrestCache::CrestCache()
     std::string line;
     while (std::getline(is, line))
     {
-        preload_requests.push_back(line);
+        if (!line.empty() && line[0] != '#')
+            preload_requests.push_back(line);
     }
     std::cout << "Got " << preload_requests.size() << " CREST requests to keep preloaded" << std::endl;
 }
