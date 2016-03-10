@@ -69,13 +69,11 @@ void CrestConnectionPool::wait_for_request_allowance()
     }
     else
     {
-        request_allowance_time = nows + seconds(1);
         std::this_thread::sleep_until(steady_clock::time_point(request_allowance_time));
-
-        nows = std::chrono::duration_cast<seconds>(steady_clock::now().time_since_epoch());
+        request_allowance_time += seconds(1);
     }
     request_allowance = PCREST_MAX_REQS_PER_SEC - 1;
-    log_info() << "CREST request allowance renewed at " << nows.count() << std::endl;
+    log_info() << "CREST request allowance renewed at " << request_allowance_time.count() << std::endl;
 }
 
 
