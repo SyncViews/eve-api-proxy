@@ -130,7 +130,7 @@ void CrestConnectionPool::CrestConnection::main()
         assert(request);
         pool->wait_for_request_allowance();
 
-        for (int i = 0; !process_request(request); +i)
+        for (int i = 0; !process_request(request); ++i)
         {
             std::this_thread::sleep_for(std::chrono::seconds(i));
         }

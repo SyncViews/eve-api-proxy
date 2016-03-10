@@ -5,8 +5,9 @@
 
 std::string errno_string(int err)
 {
-    //TODO: Used for GCC/Linux, need to use a thread safe version
-    return strerror(err);
+    char buffer[1024];
+    if (!strerror_s(buffer, sizeof(buffer), err)) throw std::runtime_error("strerror_s failed");
+    return buffer;
 }
 
 #ifdef _WIN32
