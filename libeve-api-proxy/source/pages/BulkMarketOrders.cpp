@@ -36,7 +36,7 @@ http::HttpResponse http_get_bulk_market_orders(CrestCache &cache, http::HttpRequ
 
     // Build requests
     size_t count = ((buy ? 1 : 0) + (sell ? 1 : 0)) * regions.size() * types.size();
-    std::cout << "GET /bulk-market-orders with " << count << " order sets" << std::endl;
+    log_info() << "GET /bulk-market-orders with " << count << " order sets" << std::endl;
 
     std::vector<MarketOrderList> order_sets;
     order_sets.reserve(count);
@@ -52,7 +52,7 @@ http::HttpResponse http_get_bulk_market_orders(CrestCache &cache, http::HttpRequ
     auto start = std::chrono::high_resolution_clock::now();
     get_crest_bulk_market_orders(cache, order_sets);
     auto end = std::chrono::high_resolution_clock::now();
-    std::cout << "Cache lookup took "
+    log_info() << "Cache lookup took "
         << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
         << "ms." << std::endl;
     // Response

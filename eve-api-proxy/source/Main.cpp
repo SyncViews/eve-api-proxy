@@ -8,9 +8,9 @@ int main()
     init();
     
     Server server;
-    std::cout << "Start" << std::endl;
+    log_info() << "Start" << std::endl;
     server.run();
-    std::cout << "Waiting for terminate" << std::endl;
+    log_info() << "Waiting for terminate" << std::endl;
 
 #ifdef _WIN32
     //TODO: Implement as a proper service
@@ -22,9 +22,9 @@ int main()
     int sig;
     sigwait(&sigset, &sig);
 #endif
-    std::cout << "Stopping" << std::endl;
+    log_info() << "Stopping" << std::endl;
     server.stop();
-    std::cout << "Stopped" << std::endl;
+    log_info() << "Stopped" << std::endl;
 
     return 0;
 }

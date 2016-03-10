@@ -15,6 +15,10 @@
 //Seems G++ 4.8.x still does not support C++11...
 //on the plus side, this is only currently used in windows
 #   include <codecvt>
+
+//Replace some annoying macros
+#undef ERROR
+static const int ERROR = 0;
 #else
 #include <unistd.h>
 #include <sys/types.h>
@@ -50,6 +54,7 @@ inline void closesocket(SOCKET sock)
 #endif
 
 #include <cassert>
+#include <cstdarg>
 #include <cstdint>
 #include <cstring>
 #include <ctime>
@@ -91,3 +96,5 @@ inline void set_thread_name(const std::string &str)
     pthread_setname_np(pthread_self(), str.c_str());
 }
 #endif
+
+#include "Log.hpp"
