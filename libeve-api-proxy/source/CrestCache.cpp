@@ -19,7 +19,7 @@ CrestCache::CrestCache()
             preload_entries.push_back(entry);
         }
     }
-    std::cout << "Got " << preload_entries.size() << " CREST requests to keep preloaded" << std::endl;
+    log_info() << "Got " << preload_entries.size() << " CREST requests to keep preloaded" << std::endl;
 }
 
 CrestCache::~CrestCache()
@@ -69,7 +69,7 @@ CrestHttpRequest *CrestCache::get_preload_request()
             entry->status = CrestCacheEntry::UPDATING;
             entry->http_request = CrestHttpRequest(entry->path,
                 std::bind(&CrestCache::update_entry_completion, this, entry, std::placeholders::_1));
-            std::cout << "Preloading " << entry->path << std::endl;
+            log_debug() << "Preloading " << entry->path << std::endl;
             return &entry->http_request;
         }
 

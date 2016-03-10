@@ -39,6 +39,7 @@
     <ClInclude Include="source\http\core\UrlParser.hpp" />
     <ClInclude Include="source\http\CrestRequest.hpp" />
     <ClInclude Include="source\Init.hpp" />
+    <ClInclude Include="source\Log.hpp" />
     <ClInclude Include="source\pages\BulkMarketOrders.hpp" />
     <ClInclude Include="source\pages\Errors.hpp" />
     <ClInclude Include="source\Precompiled.hpp" />
@@ -62,6 +63,7 @@
     <ClCompile Include="source\http\core\HttpStatusCode.cpp" />
     <ClCompile Include="source\http\CrestRequest.cpp" />
     <ClCompile Include="source\Init.cpp" />
+    <ClCompile Include="source\Log.cpp" />
     <ClCompile Include="source\pages\BulkMarketOrders.cpp" />
     <ClCompile Include="source\pages\Errors.cpp" />
     <ClCompile Include="source\Precompiled.cpp">

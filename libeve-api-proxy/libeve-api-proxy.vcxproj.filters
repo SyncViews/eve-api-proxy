@@ -115,6 +115,9 @@
     <ClInclude Include="source\socket\OpenSslSocket.hpp">
       <Filter>source\socket</Filter>
     </ClInclude>
+    <ClInclude Include="source\Log.hpp">
+      <Filter>source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Init.cpp">
@@ -173,6 +176,9 @@
     </ClCompile>
     <ClCompile Include="source\socket\OpenSslSocket.cpp">
       <Filter>source\socket</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Log.cpp">
+      <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

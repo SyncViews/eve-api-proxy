@@ -63,10 +63,10 @@ void CrestConnectionPool::wait_for_request_allowance()
     auto now = steady_clock::now();
     auto nows = std::chrono::duration_cast<seconds>(now.time_since_epoch());
 
-    std::cout << "CREST request allowance used. Renewing. ";
-    std::cout << " allowance_time: " << request_allowance_time.count();
-    std::cout << " now: " << nows.count();
-    std::cout << std::endl;
+    log_info() << "CREST request allowance used. Renewing. "
+        << " allowance_time: " << request_allowance_time.count()
+        << " now: " << nows.count()
+        << std::endl;
 
     
     if (request_allowance_time < nows)
@@ -79,7 +79,7 @@ void CrestConnectionPool::wait_for_request_allowance()
         std::this_thread::sleep_until(steady_clock::time_point(request_allowance_time));
 
         nows = std::chrono::duration_cast<seconds>(steady_clock::now().time_since_epoch());
-        std::cout << "CREST request allowance renewed at " << nows.count() << std::endl;
+        log_info() << "CREST request allowance renewed at " << nows.count() << std::endl;
     }
     request_allowance = PCREST_MAX_REQS_PER_SEC - 1;
 }
@@ -141,7 +141,7 @@ bool CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * re
 {
     if (!socket.is_connected())
     {
-        std::cout << "Connecting to " << PCREST_HOST << ":" << PCREST_PORT << std::endl;
+        log_debug() << "Connecting to " << PCREST_HOST << ":" << PCREST_PORT << std::endl;
         socket.connect(PCREST_HOST, PCREST_PORT);
     }
     //request
@@ -151,8 +151,8 @@ bool CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * re
     }
     catch (const std::exception &e)
     {
-        std::cerr << "Unexpected CREST disconnect, retry\n";
-        std::cerr << e.what() << std::endl;
+        log_debug() << "Unexpected CREST disconnect, retry\n"
+             << e.what() << std::endl;
         socket.close();
         return false;
     }
@@ -164,7 +164,7 @@ bool CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * re
         auto len = socket.recv(buffer, sizeof(buffer));
         if (!len)
         {
-            std::cerr << "Unexpected CREST disconnect, retry" << std::endl;
+            log_debug() << "Unexpected CREST disconnect, retry" << std::endl;
             socket.close();
             return false;
         }
@@ -186,7 +186,7 @@ bool CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * re
     }
     if (response.get_headers().get("Connection") != "keep-alive")
     {
-        std::cout << "Terminating public-crest connection because Connection: " << response.get_headers().get("Connection") << std::endl;
+        log_warning() << "Terminating public-crest connection because Connection: " << response.get_headers().get("Connection") << std::endl;
         socket.close();
     }
 

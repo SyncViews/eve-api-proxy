@@ -32,7 +32,7 @@ void Server::run()
 
 void Server::stop()
 {
-    std::cout << "Server::stop" << std::endl;
+    log_info() << "Server::stop" << std::endl;
     exiting = true;
     ::shutdown(listen_socket, SD_BOTH);
     ::closesocket(listen_socket);
@@ -47,9 +47,9 @@ void Server::stop()
     }
     connections.clear();
 
-    std::cout << "Server::stop  crest_cache.stop" << std::endl;
+    log_info() << "Server::stop  crest_cache.stop" << std::endl;
     crest_cache.stop();
-    std::cout << "Server::stop  complete" << std::endl;
+    log_info() << "Server::stop  complete" << std::endl;
 }
 
 void Server::server_main()
@@ -92,7 +92,7 @@ void Server::server_main()
             else throw SocketError(err);
 #endif
         }
-        std::cout << "New client connection, spawning handler thread" << std::endl;
+        log_info() << "New client connection, spawning handler thread" << std::endl;
         //process
         connections.emplace_back(this, client_socket, client_addr);
         //also clear out any dead entries
@@ -105,9 +105,9 @@ void Server::server_main()
                 conn = connections.erase(conn);
             }
         }
-        std::cout << connections.size() << " active server connections" << std::endl;
+        log_info() << connections.size() << " active server connections" << std::endl;
     }
-    std::cout << "Server::server_main exiting" << std::endl;
+    log_info() << "Server::server_main exiting" << std::endl;
 }
 
 Server::ServerConnection::ServerConnection(Server *server, SOCKET socket, sockaddr_in addr)
@@ -131,7 +131,7 @@ void Server::ServerConnection::main()
     catch (const std::exception &e)
     {
         thread_running = false;
-        std::cerr << "HTTP server connection thread crashed. Terminating.\n" << e.what() << std::endl;
+        log_fatal() << "HTTP server connection thread crashed. Terminating.\n" << e.what() << std::endl;
     }
 }
 
