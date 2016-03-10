@@ -10,6 +10,21 @@ namespace
     const char *SEV_DEBUG = "Debug";
     thread_local std::stringstream log_buf;
     std::ostream &log_os = std::cout;
+
+    tm localtime(time_t t)
+    {
+        tm tm;
+#ifdef _WIN32
+        localtime_s(&tm, &t);
+#else
+        localtime_r(&t, &tm);
+#endif
+        return tm;
+    }
+    tm localtime_now()
+    {
+        return localtime(time(nullptr));
+    }
 }
 
 
@@ -21,8 +36,8 @@ LogStream::LogStream(const char *sev)
         log_buf.copyfmt(std::ios(NULL));
         //YYYY-MM-DD HH:MM:SS 
         char time_buf[(4 + 1 + 2 + 1 + 2) + 1 + (2 + 1 + 2 + 1 + 2) + 1] = { 0 };
-        auto now = time(nullptr);
-        strftime(time_buf, sizeof(time_buf), "%Y-%m-%d %H:%M:%S", localtime(&now));
+        tm tm = localtime_now();
+        strftime(time_buf, sizeof(time_buf), "%Y-%m-%d %H:%M:%S", &tm);
 
         log_buf << time_buf << ' ' << sev << ':' << ' ';
     }
