@@ -41,6 +41,9 @@ http::HttpResponse http_get_jita_5p_sell(CrestCache &cache, http::HttpRequest &r
             });
         int64_t total_volume = 0;
         for (auto &a : i.orders) total_volume += a.volume;
+
+        if (!total_volume) continue; //no orders
+
         auto avg_volume = (total_volume + 20 - 1) / 20;
         auto remaining_volume = avg_volume;
         double total_price = 0;
