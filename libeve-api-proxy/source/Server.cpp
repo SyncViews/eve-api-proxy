@@ -1,6 +1,7 @@
 #include "Precompiled.hpp"
 #include "Server.hpp"
 #include "Error.hpp"
+#include "http/HttpStatusErrors.hpp"
 #include "http/core/HttpParser.hpp"
 #include "http/core/HttpRequest.hpp"
 #include "http/core/HttpResponse.hpp"
@@ -8,6 +9,7 @@
 #include "http/core/HttpWriter.hpp"
 
 #include "pages/Errors.hpp"
+#include "pages/BulkMarketHistory.hpp"
 #include "pages/BulkMarketOrders.hpp"
 #include "pages/Jita5pSell.hpp"
 
@@ -209,13 +211,29 @@ void Server::ServerConnection::main2()
 
 http::HttpResponse Server::ServerConnection::process_request(http::HttpRequest &request)
 {
-    if (request.url.path == "/bulk-market-orders")
+    try
     {
-        return http_get_bulk_market_orders(server->crest_cache, request);
+        if (request.url.path == "/bulk-market-history")
+        {
+            return http_get_bulk_market_history(server->crest_cache, request);
+        }
+        else if (request.url.path == "/bulk-market-orders")
+        {
+            return http_get_bulk_market_orders(server->crest_cache, request);
+        }
+        else if (request.url.path == "/jita-5p-sell")
+        {
+            return http_get_jita_5p_sell(server->crest_cache, request);
+        }
+        else return http_simple_error_page(request, 404, request.url.path + " was not found");
     }
-    else if (request.url.path == "/jita-5p-sell")
+    catch (const http::HttpStatusError &e)
     {
-        return http_get_jita_5p_sell(server->crest_cache, request);
+        return http_simple_error_page(request, e.status_code(), e.message());
     }
-    else return http_simple_error_page(request, 404, request.url.path + " was not found");
+    catch (const std::runtime_error &e)
+    {
+        log_error() << "std::runtime_error: " << e.what() << "\n" << request.url.url;
+        return http_simple_error_page(request, 500, "An error ocurred while processing the request");
+    }
 }

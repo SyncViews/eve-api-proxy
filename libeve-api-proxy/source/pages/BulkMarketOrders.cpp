@@ -3,6 +3,7 @@
 #include "BulkMarketOrders.hpp"
 #include "CrestBulkMarketOrders.hpp"
 #include "EveRegions.hpp"
+#include "lib/Params.hpp"
 #include <iostream>
 #include <chrono>
 http::HttpResponse http_get_bulk_market_orders(CrestCache &cache, http::HttpRequest &request)
@@ -13,26 +14,8 @@ http::HttpResponse http_get_bulk_market_orders(CrestCache &cache, http::HttpRequ
 
     if (!buy && !sell) return http_bad_request(request, "At least 'buy' or 'sell' param required.");
 
-    std::vector<int> regions;
-    if (request.url.query_param("region") == "all")
-    {
-        regions.assign(EVE_REGION_IDS, EVE_REGION_IDS + sizeof(EVE_REGION_IDS) / sizeof(EVE_REGION_IDS[0]));
-    }
-    else
-    {
-        for (auto &i : request.url.query_array_param("region"))
-        {
-            regions.push_back(std::stoi(i));
-        }
-        if (regions.empty()) return http_bad_request(request, "At least one region required.");
-    }
-
-    std::vector<int> types;
-    for (auto &i : request.url.query_array_param("type"))
-    {
-        types.push_back(std::stoi(i));
-    }
-    if (types.empty()) return http_bad_request(request, "At least one type required.");
+    std::vector<int> regions = params_regions(request);
+    std::vector<int> types = params_inv_types(request);
 
     // Build requests
     size_t count = ((buy ? 1 : 0) + (sell ? 1 : 0)) * regions.size() * types.size();

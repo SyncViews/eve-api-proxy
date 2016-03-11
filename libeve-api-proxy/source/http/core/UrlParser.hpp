@@ -7,6 +7,8 @@ namespace http
     class UrlParser
     {
     public:
+        std::string url;
+
         std::string protocol;
         std::string host;
         std::string port;
@@ -14,6 +16,7 @@ namespace http
         std::multimap<std::string, std::string> query_params;
 
         explicit UrlParser(const std::string &url)
+            : url(url)
         {
             //  [<protocol>://<host>[:<port>]<path>[?<query>]
             size_t p = 0;
