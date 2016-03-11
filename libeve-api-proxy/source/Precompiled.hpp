@@ -1,5 +1,8 @@
 #pragma once
 
+//For rapidjson
+#define RAPIDJSON_HAS_STDSTRING 1
+
 #ifdef _WIN32
     #define _WINSOCK_DEPRECATED_NO_WARNINGS
     #define NOMINMAX //remove min and max macros, since they clash with things like std::numeric_limits

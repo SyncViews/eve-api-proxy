@@ -9,6 +9,7 @@
 
 #include "pages/Errors.hpp"
 #include "pages/BulkMarketOrders.hpp"
+#include "pages/Jita5pSell.hpp"
 
 #include <iostream>
 
@@ -211,6 +212,10 @@ http::HttpResponse Server::ServerConnection::process_request(http::HttpRequest &
     if (request.url.path == "/bulk-market-orders")
     {
         return http_get_bulk_market_orders(server->crest_cache, request);
+    }
+    else if (request.url.path == "/jita-5p-sell")
+    {
+        return http_get_jita_5p_sell(server->crest_cache, request);
     }
     else return http_simple_error_page(request, 404, request.url.path + " was not found");
 }

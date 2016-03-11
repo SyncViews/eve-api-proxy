@@ -118,6 +118,9 @@
     <ClInclude Include="source\Log.hpp">
       <Filter>source</Filter>
     </ClInclude>
+    <ClInclude Include="source\pages\Jita5pSell.hpp">
+      <Filter>source\pages</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Init.cpp">
@@ -179,6 +182,9 @@
     </ClCompile>
     <ClCompile Include="source\Log.cpp">
       <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\pages\Jita5pSell.cpp">
+      <Filter>source\pages</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
