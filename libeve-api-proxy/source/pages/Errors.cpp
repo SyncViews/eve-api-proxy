@@ -21,5 +21,5 @@ http::HttpResponse http_simple_error_page(http::HttpRequest &request, int code, 
 
 http::HttpResponse http_bad_request(http::HttpRequest &request, const std::string &message)
 {
-    return http_simple_error_page(request, 404, message);
+    return http_simple_error_page(request, 400, message);
 }
