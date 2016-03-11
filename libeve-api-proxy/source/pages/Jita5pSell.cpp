@@ -35,19 +35,26 @@ http::HttpResponse http_get_jita_5p_sell(CrestCache &cache, http::HttpRequest &r
     json.StartObject();
     for (auto &i : order_sets)
     {
-        std::sort(i.orders.begin(), i.orders.end(),
+        //only jita 4-4
+        std::vector<MarketOrder> orders;
+        for (auto &j : i.orders)
+        {
+            if (j.station_id == EVE_JITA_4_4_ID) orders.push_back(j);
+        }
+
+        std::sort(orders.begin(), orders.end(),
             [](const MarketOrder &a, const MarketOrder &b) {
                 return a.price < b.price;
             });
         int64_t total_volume = 0;
-        for (auto &a : i.orders) total_volume += a.volume;
+        for (auto &a : orders) total_volume += a.volume;
 
         if (!total_volume) continue; //no orders
 
         auto avg_volume = (total_volume + 20 - 1) / 20;
         auto remaining_volume = avg_volume;
         double total_price = 0;
-        for (auto &a : i.orders)
+        for (auto &a : orders)
         {
             if (remaining_volume > a.volume)
             {
