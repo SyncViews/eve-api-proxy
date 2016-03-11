@@ -44,6 +44,7 @@ public:
     int64_t get_int64(const char *key);
 
     float get_float(const char *key);
+    double get_double(const char *key);
 
     std::string get_str(const char *key);
 private:
@@ -55,6 +56,9 @@ public:
     JsonReaderArray(rapidjson::Value *value);
 
     rapidjson::Value *get_native() { return value; }
+
+    size_t size();
+    JsonReaderObject get_object(size_t i);
 private:
     rapidjson::Value *value;
 };

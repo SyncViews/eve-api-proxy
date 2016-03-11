@@ -217,6 +217,10 @@ http::HttpResponse Server::ServerConnection::process_request(http::HttpRequest &
         {
             return http_get_bulk_market_history(server->crest_cache, request);
         }
+        else if (request.url.path == "/bulk-market-history-aggregated")
+        {
+            return http_get_bulk_market_history_aggregated(server->crest_cache, request);
+        }
         else if (request.url.path == "/bulk-market-orders")
         {
             return http_get_bulk_market_orders(server->crest_cache, request);

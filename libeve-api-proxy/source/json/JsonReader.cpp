@@ -70,6 +70,13 @@ float JsonReaderObject::get_float(const char * key)
     return v->GetFloat();
 }
 
+double JsonReaderObject::get_double(const char * key)
+{
+    auto v = get_native(key);
+    if (!v->IsDouble()) throw JsonReadError();
+    return v->GetDouble();
+}
+
 std::string JsonReaderObject::get_str(const char * key)
 {
     auto v = get_native(key);
@@ -80,4 +87,14 @@ std::string JsonReaderObject::get_str(const char * key)
 JsonReaderArray::JsonReaderArray(rapidjson::Value * value)
     : value(value)
 {
+}
+
+size_t JsonReaderArray::size()
+{
+    return value->Size();
+}
+
+JsonReaderObject JsonReaderArray::get_object(size_t i)
+{
+    return &value->GetArray()[i];
 }
