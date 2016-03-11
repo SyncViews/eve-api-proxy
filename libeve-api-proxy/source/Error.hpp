@@ -56,11 +56,17 @@ public:
     explicit SocketError(const std::string &str) : NetworkError(str) {}
 };
 
+inline std::string openssl_err_str(SSL *ssl, int error)
+{
+    auto str = ERR_reason_error_string(SSL_get_error(ssl, error));
+    if (str) return str;
+    else return errno_string(error);
+}
 class OpenSslSocketError : public SocketError
 {
 public:
     OpenSslSocketError(SSL *ssl, int error)
-        : SocketError(ERR_reason_error_string(SSL_get_error(ssl, error)))
+        : SocketError(openssl_err_str(ssl, error))
     {
     }
 };

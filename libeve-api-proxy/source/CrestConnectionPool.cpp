@@ -1,5 +1,6 @@
 #include "Precompiled.hpp"
 #include "CrestConnectionPool.hpp"
+#include "Error.hpp"
 #include "CrestCache.hpp"
 #include "CppServers.hpp"
 #include "http/CrestRequest.hpp"
@@ -122,8 +123,17 @@ void CrestConnectionPool::CrestConnection::main()
         assert(request);
         pool->wait_for_request_allowance();
 
-        for (int i = 0; !process_request(request); ++i)
+        for (int i = 0;; ++i)
         {
+            try
+            {
+                if (process_request(request))
+                    break;
+            }
+            catch (const NetworkError &e)
+            {
+                log_error() << "CREST request failed with: " << e.what();
+            }
             std::this_thread::sleep_for(std::chrono::seconds(i));
         }
     }
