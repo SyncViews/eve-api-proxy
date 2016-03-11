@@ -6,8 +6,12 @@
 std::string errno_string(int err)
 {
     char buffer[1024];
+#ifdef _WIN32
     if (!strerror_s(buffer, sizeof(buffer), err)) throw std::runtime_error("strerror_s failed");
     return buffer;
+#else
+    return strerror_r(err, buffer, sizeof(buffer));
+#endif
 }
 
 #ifdef _WIN32
