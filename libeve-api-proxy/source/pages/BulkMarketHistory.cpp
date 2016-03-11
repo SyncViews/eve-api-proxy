@@ -21,6 +21,8 @@ http::HttpResponse http_get_bulk_market_history(CrestCache &cache, http::HttpReq
     log_info() << "GET /bulk-market-history with " << count << " histories" << std::endl;
 
     // Start cache lookups
+    auto start = std::chrono::high_resolution_clock::now();
+
     std::vector<CrestCacheEntry*> cache_entries;
     cache_entries.reserve(count);
     for (auto i : regions)
@@ -63,6 +65,10 @@ http::HttpResponse http_get_bulk_market_history(CrestCache &cache, http::HttpReq
         }
     }
     json.EndArray();
+    auto end = std::chrono::high_resolution_clock::now();
+    log_info() << "Cache lookup took "
+        << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+        << "ms." << std::endl;
 
     http::HttpResponse resp;
     resp.status_code = 200;
