@@ -54,7 +54,7 @@ const char *do_parse_crest_orders(
 
         it = item.FindMember("price");
         if (it == item.MemberEnd() || !it->value.IsFloat()) return "Invalid item price";
-        order.price = it->value.GetFloat();
+        order.price = it->value.IsFloat();
 
 
         it = item.FindMember("location");
