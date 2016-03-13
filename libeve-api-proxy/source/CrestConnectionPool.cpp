@@ -127,19 +127,20 @@ void CrestConnectionPool::CrestConnection::main()
         {
             try
             {
-                if (process_request(request))
-                    break;
+                process_request(request);
+                break;
             }
             catch (const NetworkError &e)
             {
-                log_error() << "CREST request failed with: " << e.what();
+                log_error() << "CREST request failed with: " << e.what() << std::endl;
+                socket.close();
             }
             std::this_thread::sleep_for(std::chrono::seconds(i));
         }
     }
 }
 
-bool CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * request)
+void CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * request)
 {
     if (!socket.is_connected())
     {
@@ -147,17 +148,7 @@ bool CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * re
         socket.connect(PCREST_HOST, PCREST_PORT);
     }
     //request
-    try
-    {
-        send_crest_get_request(&socket, request->get_uri_path());
-    }
-    catch (const std::exception &e)
-    {
-        log_debug() << "Unexpected CREST disconnect, retry\n"
-             << e.what() << std::endl;
-        socket.close();
-        return false;
-    }
+    send_crest_get_request(&socket, request->get_uri_path());
     //response
     http::HttpParser response(false);
     while (!response.is_completed())
@@ -166,9 +157,7 @@ bool CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * re
         auto len = socket.recv(buffer, sizeof(buffer));
         if (!len)
         {
-            log_debug() << "Unexpected CREST disconnect, retry" << std::endl;
-            socket.close();
-            return false;
+            throw NetworkError("Unexpected CREST disconnect while reading HTTP response");
         }
         auto len2 = response.read(buffer, len);
         //TODO: With pipelining, will need to handle the case where also read part of the
@@ -194,5 +183,4 @@ bool CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * re
 
     request->promise.set_value(request);
     if (request->on_completion) request->on_completion(request);
-    return true;
 }

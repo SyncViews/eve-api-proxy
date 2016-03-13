@@ -24,7 +24,7 @@ private:
         ~CrestConnection();
 
         void main();
-        bool process_request(CrestHttpRequest *request);
+        void process_request(CrestHttpRequest *request);
         
         CrestConnectionPool *pool;
         std::thread thread;
