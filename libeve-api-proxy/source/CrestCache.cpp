@@ -128,7 +128,11 @@ void CrestCache::update_entry_completion(CrestCacheEntry *entry, CrestHttpReques
     {
         std::unique_lock<std::mutex> entry_lock(entry->mutex);
         auto response = request->get_response();
-        if (response.status_code == 200)
+        if (!response.http_success)
+        {
+            entry->status = CrestCacheEntry::FAILED;
+        }
+        else if (response.status_code == 200)
         {
             if (!entry->data.empty())
             {

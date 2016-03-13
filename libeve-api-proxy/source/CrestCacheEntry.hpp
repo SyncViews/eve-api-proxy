@@ -5,6 +5,11 @@
 #include <mutex>
 #include <string>
 #include <vector>
+class CrestRequestFailed : public std::runtime_error
+{
+public:
+    CrestRequestFailed() : std::runtime_error("A request to CREST failed") {}
+};
 struct CrestCacheEntry
 {
     enum Status
@@ -68,6 +73,10 @@ struct CrestCacheEntry
         if (status == CrestCacheEntry::UPDATING)
         {
             update_wait.wait(lock);
+        }
+        if (status == FAILED)
+        {
+            throw CrestRequestFailed();
         }
     }
 

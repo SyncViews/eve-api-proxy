@@ -11,6 +11,8 @@ public:
         int status_code;
         std::string status_msg;
         std::vector<uint8_t> body;
+        /**The HTTP request completed, does not imply the HTTP status code was 200*/
+        bool http_success;
     };
     CrestHttpRequest() {}
     explicit CrestHttpRequest(const std::string &uri_path, CompletionFunc on_completion = nullptr)
