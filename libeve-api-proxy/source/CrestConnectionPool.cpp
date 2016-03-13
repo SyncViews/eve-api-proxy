@@ -133,7 +133,15 @@ void CrestConnectionPool::CrestConnection::main()
             catch (const NetworkError &e)
             {
                 log_error() << "CREST request failed with: " << e.what() << std::endl;
-                socket.close();
+                try
+                {
+                    if (socket.is_connected()) socket.force_close();
+                }
+                catch (const NetworkError &e)
+                {
+                    log_error() << "Closing CREST socket following failure also failed: " << e.what() << std::endl;
+                    socket.force_close();
+                }
             }
             std::this_thread::sleep_for(std::chrono::seconds(i));
         }
@@ -146,6 +154,7 @@ void CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * re
     {
         log_debug() << "Connecting to " << PCREST_HOST << ":" << PCREST_PORT << std::endl;
         socket.connect(PCREST_HOST, PCREST_PORT);
+        log_debug() << "Connected to public-crest" << std::endl;
     }
     //request
     send_crest_get_request(&socket, request->get_uri_path());

@@ -28,8 +28,8 @@ private:
 };
 
 
-struct log_fatal   : public LogStream { log_fatal()   : LogStream("Fatal")   {} };
-struct log_error   : public LogStream { log_error()   : LogStream("Error")   {} };
-struct log_warning : public LogStream { log_warning() : LogStream("Warning") {} };
-struct log_info    : public LogStream { log_info()    : LogStream("Info")    {} };
-struct log_debug   : public LogStream { log_debug()   : LogStream(nullptr)   {} };
+struct log_fatal   : public LogStream { log_fatal(); };
+struct log_error   : public LogStream { log_error(); };
+struct log_warning : public LogStream { log_warning(); };
+struct log_info    : public LogStream { log_info(); };
+struct log_debug   : public LogStream { log_debug(); };

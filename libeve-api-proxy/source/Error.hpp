@@ -58,7 +58,11 @@ public:
 
 inline std::string openssl_err_str(SSL *ssl, int error)
 {
-    auto str = ERR_reason_error_string(SSL_get_error(ssl, error));
+    auto e2 = errno;
+    auto serr = SSL_get_error(ssl, error);
+    if (serr == SSL_ERROR_SYSCALL) return errno_string(e2);
+    // Get OpenSSL error
+    auto str = ERR_error_string(serr, nullptr);
     if (str) return str;
     else return errno_string(error);
 }

@@ -36,6 +36,8 @@ void openssl_locking_callback(int mode, int type, const char *file, int line)
 
 void init()
 {
+    SSL_load_error_strings(); //OpenSSL SSL error strings
+
     OpenSSL_add_ssl_algorithms();
     openssl_method = SSLv23_client_method();//TLS_client_method();
     openssl_ctx = SSL_CTX_new(openssl_method);

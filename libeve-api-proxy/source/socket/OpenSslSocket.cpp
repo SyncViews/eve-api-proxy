@@ -39,6 +39,11 @@ void TlsSocket::close()
     tcp.close();
 }
 
+void TlsSocket::force_close()
+{
+    close();
+}
+
 std::string TlsSocket::address_str() const
 {
     return tcp.address_str();

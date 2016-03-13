@@ -88,6 +88,15 @@ void TcpSocket::close()
     assert(!is_connected());
 }
 
+void TcpSocket::force_close()
+{
+    if (sock != INVALID_SOCKET)
+    {
+        ::closesocket(sock);
+        sock = INVALID_SOCKET;
+    }
+}
+
 std::string TcpSocket::address_str()const
 {
     if (is_connected()) return address_str(host, port);

@@ -11,6 +11,7 @@ public:
     virtual bool is_connected()const = 0;
 
     virtual void close() = 0;
+    virtual void force_close() = 0;
 
     /**Get a printable address / info string for this socket.*/
     virtual std::string address_str()const = 0;
