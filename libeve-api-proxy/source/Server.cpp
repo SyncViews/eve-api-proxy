@@ -11,6 +11,7 @@
 #include "pages/Errors.hpp"
 #include "pages/BulkMarketHistory.hpp"
 #include "pages/BulkMarketOrders.hpp"
+#include "pages/HubPrices.hpp"
 #include "pages/Jita5pSell.hpp"
 
 #include <iostream>
@@ -224,6 +225,14 @@ http::HttpResponse Server::ServerConnection::process_request(http::HttpRequest &
         else if (request.url.path == "/bulk-market-orders")
         {
             return http_get_bulk_market_orders(server->crest_cache, request);
+        }
+        else if (request.url.path == "/hub-buy-prices")
+        {
+            return http_get_hub_buy_prices(server->crest_cache, request);
+        }
+        else if (request.url.path == "/hub-sell-prices")
+        {
+            return http_get_hub_sell_prices(server->crest_cache, request);
         }
         else if (request.url.path == "/jita-5p-sell")
         {
