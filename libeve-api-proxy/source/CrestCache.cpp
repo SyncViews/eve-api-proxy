@@ -207,5 +207,5 @@ void CrestCache::check_cache_purge()
     assert(purged <= cache_size);
     if (purged > cache_size) cache_size = 0; //just in case
     else cache_size -= purged;
-    std::cout << "Purged " << (purged / 1024.0 / 1024.0) << " MB from the cache" << std::endl;
+    log_info() << "Purged " << (purged / 1024.0 / 1024.0) << " MB from the cache" << std::endl;
 }
