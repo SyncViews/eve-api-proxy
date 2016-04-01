@@ -16,6 +16,7 @@ public:
 
     void shutdown();
     virtual void close() override;
+    virtual void force_close() override;
 
     virtual std::string address_str()const override;
     virtual size_t send(const uint8_t *bytes, size_t len) override;

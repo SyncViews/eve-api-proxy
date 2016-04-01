@@ -45,6 +45,7 @@
     <ClInclude Include="source\pages\BulkMarketHistory.hpp" />
     <ClInclude Include="source\pages\BulkMarketOrders.hpp" />
     <ClInclude Include="source\pages\Errors.hpp" />
+    <ClInclude Include="source\pages\HubPrices.hpp" />
     <ClInclude Include="source\pages\Jita5pSell.hpp" />
     <ClInclude Include="source\pages\lib\Params.hpp" />
     <ClInclude Include="source\Precompiled.hpp" />
@@ -73,6 +74,7 @@
     <ClCompile Include="source\pages\BulkMarketHistory.cpp" />
     <ClCompile Include="source\pages\BulkMarketOrders.cpp" />
     <ClCompile Include="source\pages\Errors.cpp" />
+    <ClCompile Include="source\pages\HubPrices.cpp" />
     <ClCompile Include="source\pages\Jita5pSell.cpp" />
     <ClCompile Include="source\pages\lib\Params.cpp" />
     <ClCompile Include="source\Precompiled.cpp">

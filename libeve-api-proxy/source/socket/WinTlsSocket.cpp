@@ -31,6 +31,8 @@ namespace
 TlsSocket::TlsSocket()
     : tcp(), context{0}, recv_encrypted_buffer()
 {
+    SecInvalidateHandle(&context);
+    SecInvalidateHandle(&credentials);
 }
 
 TlsSocket::~TlsSocket()
@@ -41,6 +43,8 @@ TlsSocket::~TlsSocket()
 
 void TlsSocket::connect(const std::string & host, uint16_t port)
 {
+    clear_schannel_handles(); //if connect partially excceeded, be sure to invalidate the schannel context
+
     recv_encrypted_buffer.clear();
     recv_decrypted_buffer.clear();
     tcp.connect(host, port);
@@ -82,10 +86,15 @@ void TlsSocket::close()
     }
 
     //cleanup
-    sspi->DeleteSecurityContext(&context);
-    sspi->FreeCredentialsHandle(&credentials);
+    clear_schannel_handles();
 
     tcp.close();
+}
+
+void TlsSocket::force_close()
+{
+    clear_schannel_handles();
+    return tcp.force_close();
 }
 
 std::string TlsSocket::address_str() const
@@ -199,6 +208,20 @@ size_t TlsSocket::recv(uint8_t * bytes, size_t len)
     }
 
     return len_out;
+}
+
+void TlsSocket::clear_schannel_handles()
+{
+    if (SecIsValidHandle(&context))
+    {
+        sspi->DeleteSecurityContext(&context);
+        SecInvalidateHandle(&context);
+    }
+    if (SecIsValidHandle(&credentials))
+    {
+        sspi->FreeCredentialsHandle(&credentials);
+        SecInvalidateHandle(&credentials);
+    }
 }
 
 void TlsSocket::init_credentials()

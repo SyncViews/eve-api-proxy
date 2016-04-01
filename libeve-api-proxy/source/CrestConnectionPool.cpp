@@ -13,6 +13,7 @@ CrestConnectionPool::CrestConnectionPool(CrestCache *cache)
     , exiting(false), mutex(), request_queued(), request_queue(), connections()
     , request_allowance(0)
     , request_allowance_time(0)
+    , crest_unavailable_at(0)
 {
     for (auto i = 0; i < PCREST_MAX_CONNECTIONS; ++i)
     {
@@ -95,11 +96,14 @@ void CrestConnectionPool::CrestConnection::main()
     while (true)
     {
         CrestHttpRequest *request = nullptr;
+        bool crest_available;
         
         {
             std::unique_lock<std::mutex> lock(pool->mutex);
             while (true)
             {
+                auto now = time(nullptr);
+                crest_available = pool->crest_unavailable_at + 10 < now;
                 if (!pool->request_queue.empty())
                 {
                     request = pool->request_queue.front();
@@ -110,7 +114,7 @@ void CrestConnectionPool::CrestConnection::main()
                 {
                     return;
                 }
-                else if (pool->cache && (request = pool->cache->get_preload_request()))
+                else if (crest_available && pool->cache && (request = pool->cache->get_preload_request()))
                 {
                     break;
                 }
@@ -120,44 +124,65 @@ void CrestConnectionPool::CrestConnection::main()
                 }
             }
         }
+        if (!crest_available)
+        {
+            // If CREST does not appear to be available, fail immediately so as to not block the request
+            // (e.g. a live web page), and to avoid making hundreds of failed connect attempts per second
+            log_warning() << "Failed CREST request because believe CREST is down" << std::endl;
+            request->response.http_success = false;
+            request->promise.set_value(request);
+            if (request->on_completion) request->on_completion(request);
+            continue;
+        }
+
         assert(request);
+        assert(crest_available);
         pool->wait_for_request_allowance();
 
         for (int i = 0;; ++i)
         {
             try
             {
-                if (process_request(request))
-                    break;
+                process_request(request);
+                break;
             }
             catch (const NetworkError &e)
             {
-                log_error() << "CREST request failed with: " << e.what();
+                log_error() << "CREST request failed with: " << e.what() << std::endl;
+                try
+                {
+                    if (socket.is_connected()) socket.force_close();
+                }
+                catch (const NetworkError &e)
+                {
+                    log_error() << "Closing CREST socket following failure also failed: " << e.what() << std::endl;
+                    socket.force_close();
+                }
+                if (i >= 2)
+                {
+                    log_error() << "Aborted CREST request after communication errors" << std::endl;
+                    pool->crest_unavailable_at = time(nullptr);
+                    request->response.http_success = false;
+                    request->promise.set_value(request);
+                    if (request->on_completion) request->on_completion(request);
+                    break;
+                }
             }
             std::this_thread::sleep_for(std::chrono::seconds(i));
         }
     }
 }
 
-bool CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * request)
+void CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * request)
 {
     if (!socket.is_connected())
     {
         log_debug() << "Connecting to " << PCREST_HOST << ":" << PCREST_PORT << std::endl;
         socket.connect(PCREST_HOST, PCREST_PORT);
+        log_debug() << "Connected to public-crest" << std::endl;
     }
     //request
-    try
-    {
-        send_crest_get_request(&socket, request->get_uri_path());
-    }
-    catch (const std::exception &e)
-    {
-        log_debug() << "Unexpected CREST disconnect, retry\n"
-             << e.what() << std::endl;
-        socket.close();
-        return false;
-    }
+    send_crest_get_request(&socket, request->get_uri_path());
     //response
     http::HttpParser response(false);
     while (!response.is_completed())
@@ -166,9 +191,7 @@ bool CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * re
         auto len = socket.recv(buffer, sizeof(buffer));
         if (!len)
         {
-            log_debug() << "Unexpected CREST disconnect, retry" << std::endl;
-            socket.close();
-            return false;
+            throw NetworkError("Unexpected CREST disconnect while reading HTTP response");
         }
         auto len2 = response.read(buffer, len);
         //TODO: With pipelining, will need to handle the case where also read part of the
@@ -176,6 +199,7 @@ bool CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * re
         assert(len == len2);
     }
 
+    request->response.http_success = true;
     request->response.status_code = response.get_status_code();
     request->response.status_msg = response.get_status_message();
     if (response.get_headers().get("Content-Encoding") == "gzip")
@@ -194,5 +218,4 @@ bool CrestConnectionPool::CrestConnection::process_request(CrestHttpRequest * re
 
     request->promise.set_value(request);
     if (request->on_completion) request->on_completion(request);
-    return true;
 }

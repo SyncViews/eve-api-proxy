@@ -13,6 +13,7 @@ public:
     virtual bool is_connected() const override;
 
     virtual void close() override;
+    virtual void force_close() override;
 
     virtual std::string address_str() const override;
 

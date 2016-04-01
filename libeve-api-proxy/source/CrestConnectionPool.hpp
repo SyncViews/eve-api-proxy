@@ -24,7 +24,7 @@ private:
         ~CrestConnection();
 
         void main();
-        bool process_request(CrestHttpRequest *request);
+        void process_request(CrestHttpRequest *request);
         
         CrestConnectionPool *pool;
         std::thread thread;
@@ -39,6 +39,8 @@ private:
     
     std::atomic<int> request_allowance;
     std::chrono::seconds request_allowance_time;
+
+    std::atomic<time_t> crest_unavailable_at;
 
     /**Used by threads to wait until they are allowed to execute a request within the rate-limit.
      * May block upto 1 second waiting for the new request allowance.

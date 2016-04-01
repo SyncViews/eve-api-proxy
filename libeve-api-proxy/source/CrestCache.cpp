@@ -128,7 +128,11 @@ void CrestCache::update_entry_completion(CrestCacheEntry *entry, CrestHttpReques
     {
         std::unique_lock<std::mutex> entry_lock(entry->mutex);
         auto response = request->get_response();
-        if (response.status_code == 200)
+        if (!response.http_success)
+        {
+            entry->status = CrestCacheEntry::FAILED;
+        }
+        else if (response.status_code == 200)
         {
             if (!entry->data.empty())
             {
@@ -203,5 +207,5 @@ void CrestCache::check_cache_purge()
     assert(purged <= cache_size);
     if (purged > cache_size) cache_size = 0; //just in case
     else cache_size -= purged;
-    std::cout << "Purged " << (purged / 1024.0 / 1024.0) << " MB from the cache" << std::endl;
+    log_info() << "Purged " << (purged / 1024.0 / 1024.0) << " MB from the cache" << std::endl;
 }

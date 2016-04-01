@@ -22,3 +22,15 @@ std::wstring utf8_to_utf16(const std::string &utf8)
 }
 #endif
 
+std::vector<std::string> splitString(const std::string &str, char delim)
+{
+    std::vector<std::string> ret;
+    size_t p = 0, p2;
+    while ((p2 = str.find(delim, p)) != std::string::npos)
+    {
+        ret.push_back(str.substr(p, p2 - p));
+        p = p2 + 1;
+    }
+    ret.push_back(str.substr(p));
+    return ret;
+}

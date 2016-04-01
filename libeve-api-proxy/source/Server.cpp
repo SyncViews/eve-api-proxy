@@ -11,6 +11,7 @@
 #include "pages/Errors.hpp"
 #include "pages/BulkMarketHistory.hpp"
 #include "pages/BulkMarketOrders.hpp"
+#include "pages/HubPrices.hpp"
 #include "pages/Jita5pSell.hpp"
 
 #include <iostream>
@@ -225,11 +226,23 @@ http::HttpResponse Server::ServerConnection::process_request(http::HttpRequest &
         {
             return http_get_bulk_market_orders(server->crest_cache, request);
         }
+        else if (request.url.path == "/hub-buy-prices")
+        {
+            return http_get_hub_buy_prices(server->crest_cache, request);
+        }
+        else if (request.url.path == "/hub-sell-prices")
+        {
+            return http_get_hub_sell_prices(server->crest_cache, request);
+        }
         else if (request.url.path == "/jita-5p-sell")
         {
             return http_get_jita_5p_sell(server->crest_cache, request);
         }
         else return http_simple_error_page(request, 404, request.url.path + " was not found");
+    }
+    catch (const CrestRequestFailed &e)
+    {
+        return http_simple_error_page(request, 500, "A request to public-crest FAILED. The EVE CREST servers may be down.");
     }
     catch (const http::HttpStatusError &e)
     {

@@ -12,5 +12,19 @@ static const int EVE_REGION_IDS[] = {
     11000024, 11000025, 11000026, 11000027, 11000028, 11000029, 11000030, 11000031, 11000032, 11000033
 };
 static const int EVE_THE_FORGE_ID = 10000002;
+static const int EVE_HEIMATAR_ID = 10000030;
+static const int EVE_METROPOLIS_ID = 10000042;
+static const int EVE_DOMAIN_ID = 10000043;
+static const int EVE_SINQ_LAISON_ID = 10000032;
+
+
 /**Jita IV - Moon 4 - Caldari Navy Assembly Plant*/
 static const int EVE_JITA_4_4_ID = 60003760;
+/**Rens VI - Moon 8 - Brutor Tribe Treasury*/
+static const int EVE_RENS_HUB_ID = 60004588;
+/**Hek VIII - Moon 12 - Boundless Creation Factory*/
+static const int EVE_HEK_HUB_ID = 60005686;
+/**Amarr VIII(Oris) - Emperor Family Academy*/
+static const int EVE_AMARR_HUB_ID = 60008494;
+/**Dodixie IX - Moon 20 - Federation Navy Assembly Plant*/
+static const int EVE_DODIXIE_HUB_ID = 60011866;

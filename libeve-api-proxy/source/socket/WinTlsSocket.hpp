@@ -13,6 +13,7 @@ public:
     virtual bool is_connected() const override;
 
     virtual void close() override;
+    virtual void force_close() override;
 
     virtual std::string address_str() const override;
 
@@ -29,6 +30,7 @@ private:
     std::unique_ptr<uint8_t[]> header_buffer;
     std::unique_ptr<uint8_t[]> trailer_buffer;
 
+    void clear_schannel_handles();
     void init_credentials();
     void client_handshake_loop(bool initial_read);
     void client_handshake();
