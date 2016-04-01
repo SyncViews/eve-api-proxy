@@ -98,7 +98,7 @@ CrestCacheEntry *CrestCache::get_locked(const std::string &path, std::unique_loc
     lock.unlock();
     //no cache lock here, but the entry is locked
 
-    if (entry.status == CrestCacheEntry::FAILED)
+    if (entry.status == CrestCacheEntry::FAILED || entry.status == CrestCacheEntry::PURGED)
     {
         update_entry(entry);
     }
@@ -181,7 +181,8 @@ void CrestCache::check_cache_purge()
             if (!entry.is_current_data())
             { // Expired, so just purge it now
                 purged += entry.data.size();
-                entry.data.clear();
+                entry.data = std::vector<uint8_t>();
+                assert(entry.data.capacity() == 0);
                 entry.status = CrestCacheEntry::PURGED;
             }
             else if (!entry.data.empty())
@@ -200,7 +201,8 @@ void CrestCache::check_cache_purge()
         {
             expired_only = false;
             purged += i->second->data.size();
-            i->second->data.clear();
+            i->second->data = std::vector<uint8_t>();
+            assert(i->second->data.capacity() == 0);
             i->second->status = CrestCacheEntry::PURGED;
         }
     }

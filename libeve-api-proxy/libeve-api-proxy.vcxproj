@@ -62,7 +62,6 @@
     <ClCompile Include="source\CrestBulkMarketOrders.cpp" />
     <ClCompile Include="source\CrestCache.cpp" />
     <ClCompile Include="source\CrestConnectionPool.cpp" />
-    <ClCompile Include="source\CrestHttpRequest.cpp" />
     <ClCompile Include="source\Error.cpp" />
     <ClCompile Include="source\Gzip.cpp" />
     <ClCompile Include="source\http\core\HttpParser.cpp" />

@@ -165,7 +165,7 @@ http::HttpResponse http_get_bulk_market_history_aggregated(CrestCache &cache, ht
         if (!days.empty())
         {
             auto key = std::to_string(i);
-            json.Key(key.data(), key.size(), true);
+            json.Key(key.data(), (unsigned)key.size(), true);
             json.StartArray();
 
             for (auto &day : days)

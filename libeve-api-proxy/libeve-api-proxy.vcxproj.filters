@@ -139,6 +139,7 @@
     <ClInclude Include="source\json\JsonReader.hpp">
       <Filter>source\json</Filter>
     </ClInclude>
+    <ClInclude Include="source\pages\HubPrices.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Init.cpp">
@@ -166,9 +167,6 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="source\CrestConnectionPool.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="source\CrestHttpRequest.cpp">
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="source\CrestCache.cpp">
@@ -213,5 +211,6 @@
     <ClCompile Include="source\json\JsonReader.cpp">
       <Filter>source\json</Filter>
     </ClCompile>
+    <ClCompile Include="source\pages\HubPrices.cpp" />
   </ItemGroup>
 </Project>

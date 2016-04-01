@@ -96,5 +96,5 @@ size_t JsonReaderArray::size()
 
 JsonReaderObject JsonReaderArray::get_object(size_t i)
 {
-    return &value->GetArray()[i];
+    return &value->GetArray()[(unsigned)i];
 }

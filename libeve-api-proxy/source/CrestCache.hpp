@@ -46,7 +46,7 @@ public:
 private:
     typedef std::unique_lock<std::mutex> unique_lock;
     typedef std::unordered_map<std::string, CrestCacheEntry> Cache;
-    static const size_t MAX_CACHE_SIZE = 1024*1024*20;//10MB
+    static const size_t MAX_CACHE_SIZE = 1024*1024*20//20MB
 
     /**Lock for the cache map.
      * @warning Never attempt to lock this if already holding any entry lock. Always lock this
