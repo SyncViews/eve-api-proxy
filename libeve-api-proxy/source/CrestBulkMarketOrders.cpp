@@ -93,7 +93,7 @@ void get_crest_bulk_market_orders(
         std::stringstream ss;
         ss << "/market/" << i.region_id << "/orders/";
         ss << (i.buy ? "buy" : "sell");
-        ss << "/?type=https://public-crest.eveonline.com/types/" << i.type_id << "/";
+        ss << "/?type=https://crest-tq.eveonline.com/inventory/types/" << i.type_id << "/";
         cache_entries.push_back(cache.get(ss.str()));
     }
 

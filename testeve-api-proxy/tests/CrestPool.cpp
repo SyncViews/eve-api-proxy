@@ -15,7 +15,7 @@ BOOST_AUTO_TEST_CASE(single_request)
     std::cout << "CrestPool::single_request" << std::endl;
 
     CrestConnectionPool pool;
-    CrestHttpRequest request("/market/10000002/orders/buy/?type=https://public-crest.eveonline.com/types/34/");
+    CrestHttpRequest request("/market/10000002/orders/buy/?type=https://crest-tq.eveonline.com/inventory/types/34/");
     pool.queue(&request);
     
     auto response = request.wait();
@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE(bulk_request)
     CrestConnectionPool pool;
     for (int i = 0; i < 100; ++i)
     {
-        std::string type = "?type=https://public-crest.eveonline.com/types/" + std::to_string(34 + i) + "/";
+        std::string type = "?type=https://crest-tq.eveonline.com/inventory/types/" + std::to_string(34 + i) + "/";
         requests.emplace_back("/market/10000002/orders/buy/" + type);
         pool.queue(&requests.back());
         requests.emplace_back("/market/10000002/orders/sell/" + type);

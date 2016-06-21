@@ -49,7 +49,7 @@ std::vector<CrestCacheEntry*> get_bulk_market_history(
         for (auto j : regions)
         {
             std::stringstream ss;
-            ss << "/market/" << j << "/types/" << i << "/history/";
+            ss << "/market/" << j << "/history/?type=https://crest-tq.eveonline.com/inventory/types/" << i << "/";
             cache_entries.push_back(cache.get(ss.str()));
         }
     }

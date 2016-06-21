@@ -10,9 +10,9 @@ BOOST_AUTO_TEST_SUITE(socket_Crest)
 
 BOOST_AUTO_TEST_CASE(index)
 {
-    std::cout << "GET https://public-crest.eveonline.com/" << std::endl;
+    std::cout << "GET https://crest-tq.eveonline.com/" << std::endl;
     TlsSocket sock;
-    sock.connect("public-crest.eveonline.com", 443);
+    sock.connect("crest-tq.eveonline.com", 443);
     send_crest_get_request(&sock, "/");
 
     http::HttpParser response(false);
