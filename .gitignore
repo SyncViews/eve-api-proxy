@@ -14,3 +14,9 @@
 /third-party/rapidjson
 /bin
 /obj
+/testeve-api-proxy/testeve-api-proxy.vcxproj.user
+/eve-api-proxy.VC.VC.opendb
+/eve-api-proxy.VC.db
+/kernel.etl
+/profile.bat
+/profile.etl

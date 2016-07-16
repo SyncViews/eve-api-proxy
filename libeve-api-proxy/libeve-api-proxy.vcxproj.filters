@@ -23,9 +23,6 @@
     <Filter Include="source\pages\lib">
       <UniqueIdentifier>{01997dfa-ae8b-4833-b129-d006a0aa3aa8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\json">
-      <UniqueIdentifier>{1526f0e6-3134-4b60-9201-e3f3fd4bc6d6}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\CppServers.hpp">
@@ -136,10 +133,10 @@
     <ClInclude Include="source\pages\BulkMarketHistory.hpp">
       <Filter>source\pages</Filter>
     </ClInclude>
-    <ClInclude Include="source\json\JsonReader.hpp">
-      <Filter>source\json</Filter>
-    </ClInclude>
     <ClInclude Include="source\pages\HubPrices.hpp" />
+    <ClInclude Include="source\CrestJson.hpp">
+      <Filter>source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Init.cpp">
@@ -207,9 +204,6 @@
     </ClCompile>
     <ClCompile Include="source\pages\BulkMarketHistory.cpp">
       <Filter>source\pages</Filter>
-    </ClCompile>
-    <ClCompile Include="source\json\JsonReader.cpp">
-      <Filter>source\json</Filter>
     </ClCompile>
     <ClCompile Include="source\pages\HubPrices.cpp" />
   </ItemGroup>

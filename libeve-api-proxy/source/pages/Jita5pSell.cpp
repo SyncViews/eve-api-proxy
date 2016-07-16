@@ -5,8 +5,7 @@
 #include "EveRegions.hpp"
 #include <iostream>
 #include <chrono>
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/writer.h>
+#include <json/Writer.hpp>
 http::HttpResponse http_get_jita_5p_sell(CrestCache &cache, http::HttpRequest &request)
 {
     // Get params
@@ -30,9 +29,8 @@ http::HttpResponse http_get_jita_5p_sell(CrestCache &cache, http::HttpRequest &r
         << "ms." << std::endl;
     
     // Response
-    rapidjson::StringBuffer buffer;
-    rapidjson::Writer<rapidjson::StringBuffer> json(buffer);
-    json.StartObject();
+    json::Writer json_writer;
+    json_writer.start_obj();
     for (auto &i : order_sets)
     {
         //only jita 4-4
@@ -69,15 +67,15 @@ http::HttpResponse http_get_jita_5p_sell(CrestCache &cache, http::HttpRequest &r
         }
         double avg_price = total_price / avg_volume;
         auto key = std::to_string(i.type_id);
-        json.Key(key.data(), (unsigned)key.size(), true);
-        json.Double(avg_price);
+
+        json_writer.prop(key, avg_price);
     }
-    json.EndObject();
+    json_writer.end_obj();
 
     http::HttpResponse resp;
     resp.status_code = 200;
     resp.body.assign(
-        (const uint8_t*)buffer.GetString(),
-        (const uint8_t*)buffer.GetString() + buffer.GetSize());
+        (const uint8_t*)json_writer.str().data(),
+        (const uint8_t*)json_writer.str().data() + json_writer.str().size());
     return resp;
 }

@@ -7,9 +7,10 @@
 #include "http/HttpStatusErrors.hpp"
 #include <iostream>
 #include <chrono>
-#include "json/JsonReader.hpp"
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/writer.h>
+#include <json/Reader.hpp>
+#include <json/Writer.hpp>
+#include <json/Copy.hpp>
+#include "CrestJson.hpp"
 
 struct MarketHistoryDay
 {
@@ -20,18 +21,27 @@ struct MarketHistoryDay
     int order_count;
     int64_t volume;
 };
-
-template<class T>
-void market_history_day_to_json(rapidjson::Writer<T> &writer, const MarketHistoryDay &day)
+void write_json(json::Writer &writer, const MarketHistoryDay &day)
 {
-    writer.StartObject();
-    writer.Key("date");         writer.String(day.date);
-    writer.Key("avg_price");    writer.Double(day.avg_price);
-    writer.Key("high_price");   writer.Double(day.high_price);
-    writer.Key("low_price");    writer.Double(day.low_price);
-    writer.Key("order_count");  writer.Int(day.order_count);
-    writer.Key("volume");       writer.Int64(day.volume);
-    writer.EndObject();
+    writer.start_obj();
+    writer.prop("date", day.date);
+    writer.prop("avg_price", day.avg_price);
+    writer.prop("high_price", day.high_price);
+    writer.prop("low_price", day.low_price);
+    writer.prop("order_count", day.order_count);
+    writer.prop("volume", day.volume);
+    writer.end_obj();
+}
+void read_json(json::Parser &parser, MarketHistoryDay *day)
+{
+    static const auto reader = json::ObjectFieldReader<MarketHistoryDay, json::IgnoreUnknown>()
+        .add<decltype(MarketHistoryDay::date), &MarketHistoryDay::date>("date")
+        .add<decltype(MarketHistoryDay::high_price), &MarketHistoryDay::high_price>("highPrice")
+        .add<decltype(MarketHistoryDay::low_price), &MarketHistoryDay::low_price>("lowPrice")
+        .add<decltype(MarketHistoryDay::order_count), &MarketHistoryDay::order_count>("orderCount")
+        .add<decltype(MarketHistoryDay::volume), &MarketHistoryDay::volume>("volume")
+        .add<decltype(MarketHistoryDay::avg_price), &MarketHistoryDay::avg_price>("avgPrice");
+    reader.read(parser, day);
 }
 
 std::vector<CrestCacheEntry*> get_bulk_market_history(
@@ -65,9 +75,8 @@ http::HttpResponse http_get_bulk_market_history(CrestCache &cache, http::HttpReq
     auto cache_entries = get_bulk_market_history(cache, request, regions, types);
 
     //Results
-    rapidjson::StringBuffer buffer;
-    rapidjson::Writer<rapidjson::StringBuffer> json(buffer);
-    json.StartArray();
+    json::Writer json_writer;
+    json_writer.start_arr();
     size_t k = 0;
     for (auto i : types)
     {
@@ -79,20 +88,25 @@ http::HttpResponse http_get_bulk_market_history(CrestCache &cache, http::HttpReq
             // Process
             if (cache_entry->is_data_valid())
             {
-                JsonReader doc(cache_entry->data);
-                auto items = doc.as_object().get_array("items").get_native();
+                //JsonReader doc(cache_entry->data);
+                //auto items = doc.as_object().get_array("items").get_native();
 
-                json.StartObject();
-                json.Key("region"); json.Int(j);
-                json.Key("type");   json.Int(i);
-                json.Key("items");
-                items->Accept(json);
+                json_writer.start_obj();
+                json_writer.prop("region", j);
+                json_writer.prop("type", i);
+                json_writer.end_obj();
 
-                json.EndObject();
+                json::Parser parser(
+                    (const char*)cache_entry->data.data(),
+                    (const char*)cache_entry->data.data() + cache_entry->data.size());
+                read_crest_items(parser, [&parser, &json_writer]() -> void
+                {
+                    json::copy(json_writer, parser);
+                });
             }
         }
     }
-    json.EndArray();
+    json_writer.end_arr();
     auto end = std::chrono::high_resolution_clock::now();
     log_info() << "Cache lookup took "
         << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
@@ -101,8 +115,8 @@ http::HttpResponse http_get_bulk_market_history(CrestCache &cache, http::HttpReq
     http::HttpResponse resp;
     resp.status_code = 200;
     resp.body.assign(
-        (const uint8_t*)buffer.GetString(),
-        (const uint8_t*)buffer.GetString() + buffer.GetSize());
+        (const uint8_t*)json_writer.str().data(),
+        (const uint8_t*)json_writer.str().data() + json_writer.str().size());
     return resp;
 }
 
@@ -114,13 +128,12 @@ http::HttpResponse http_get_bulk_market_history_aggregated(CrestCache &cache, ht
     auto cache_entries = get_bulk_market_history(cache, request, regions, types);
 
     //Results
-    rapidjson::StringBuffer buffer;
-    rapidjson::Writer<rapidjson::StringBuffer> json(buffer);
-    json.StartObject();
+    json::Writer json_writer;
+    json_writer.start_obj();
     size_t k = 0;
     for (auto i : types)
     {
-        std::map<std::string, MarketHistoryDay> days;
+        std::unordered_map<std::string, MarketHistoryDay> days;
         for (auto j : regions)
         {
             auto &cache_entry = cache_entries[k];
@@ -129,34 +142,25 @@ http::HttpResponse http_get_bulk_market_history_aggregated(CrestCache &cache, ht
             // Process
             if (cache_entry->is_data_valid())
             {
-                JsonReader doc(cache_entry->data);
-                auto items = doc.as_object().get_array("items");
-                for (auto k = 0; k < items.size(); ++k)
+                json::Parser parser(
+                    (const char*)cache_entry->data.data(),
+                    (const char*)cache_entry->data.data() + cache_entry->data.size());
+                
+                read_crest_items(parser, [&parser, &days]() -> void
                 {
-                    auto jday = items.get_object(k);
-                    auto date_str = jday.get_str("date");
-                    auto &day = days[date_str];
-                    if (day.date.empty())
+                    MarketHistoryDay day;
+                    read_json(parser, &day);
+                    auto ret = days.emplace(day.date, day);
+                    if (!ret.second)
                     {
-                        day.date = date_str;
-                        day.high_price = jday.get_float("highPrice");
-                        day.low_price = jday.get_float("lowPrice");
-                        day.order_count = jday.get_int32("orderCount");
-                        day.volume = jday.get_int64("volume");
-                        day.avg_price = jday.get_float("avgPrice") * day.volume;
+                        auto &aggregate = ret.first->second;
+                        if (day.high_price > aggregate.high_price) aggregate.high_price = day.high_price;
+                        if (day.low_price < aggregate.low_price) aggregate.low_price = day.low_price;
+                        aggregate.order_count += day.order_count;
+                        aggregate.volume += day.volume;
+                        aggregate.avg_price += day.avg_price * day.volume;
                     }
-                    else
-                    {
-                        auto high = jday.get_float("highPrice");
-                        auto low = jday.get_float("lowPrice");
-                        auto volume = jday.get_int64("volume");
-                        if (high > day.high_price) day.high_price = high;
-                        if (low  < day.low_price) day.low_price = low;
-                        day.order_count += jday.get_int32("orderCount");
-                        day.volume += volume;
-                        day.avg_price += jday.get_float("avgPrice") * volume;
-                    }
-                }
+                });
             }
 
             ++k;
@@ -164,20 +168,19 @@ http::HttpResponse http_get_bulk_market_history_aggregated(CrestCache &cache, ht
 
         if (!days.empty())
         {
-            auto key = std::to_string(i);
-            json.Key(key.data(), (unsigned)key.size(), true);
-            json.StartArray();
+            json_writer.key(std::to_string(i));
+            json_writer.start_arr();
 
             for (auto &day : days)
             {
                 day.second.avg_price /= day.second.volume; //avg_price was a sum in previous loop
-                market_history_day_to_json(json, day.second);
+                json_writer.value(day.second);
             }
 
-            json.EndArray();
+            json_writer.end_arr();
         }
     }
-    json.EndObject();
+    json_writer.end_obj();
     auto end = std::chrono::high_resolution_clock::now();
     log_info() << "Cache lookup took "
         << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
@@ -186,7 +189,7 @@ http::HttpResponse http_get_bulk_market_history_aggregated(CrestCache &cache, ht
     http::HttpResponse resp;
     resp.status_code = 200;
     resp.body.assign(
-        (const uint8_t*)buffer.GetString(),
-        (const uint8_t*)buffer.GetString() + buffer.GetSize());
+        (const uint8_t*)json_writer.str().data(),
+        (const uint8_t*)json_writer.str().data() + json_writer.str().size());
     return resp;
 }

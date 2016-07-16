@@ -9,7 +9,7 @@ struct MarketOrder
     long long id;
     int duration;
     std::string issued;
-    int station_id;
+    long long station_id;
     std::string station_name;
     int min_volume;
     int volume;

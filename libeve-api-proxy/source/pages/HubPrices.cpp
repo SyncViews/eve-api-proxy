@@ -3,8 +3,7 @@
 #include "CrestBulkMarketOrders.hpp"
 #include "EveRegions.hpp"
 #include "lib/Params.hpp"
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/writer.h>
+#include <json/Writer.hpp>
 
 template<bool buy>
 http::HttpResponse http_get_hub_prices(CrestCache &cache, http::HttpRequest &request)
@@ -32,15 +31,13 @@ http::HttpResponse http_get_hub_prices(CrestCache &cache, http::HttpRequest &req
         << "ms." << std::endl;
 
     // Response
-    rapidjson::StringBuffer buffer;
-    rapidjson::Writer<rapidjson::StringBuffer> json(buffer);
-    json.StartObject();
+    json::Writer json_writer;
+    json_writer.start_obj();
     auto it = order_sets.begin();
     for (auto type : types)
     {
-        auto stype = std::to_string(type);
-        json.Key(stype.data(), (unsigned)stype.size(), true);
-        json.StartObject();
+        json_writer.key(std::to_string(type));
+        json_writer.start_obj();
         for (int j = 0; j < REGION_COUNT; ++j)
         {
             auto region = REGIONS[j];
@@ -63,21 +60,19 @@ http::HttpResponse http_get_hub_prices(CrestCache &cache, http::HttpRequest &req
             if (found)
             {
                 //output
-                auto sregion = std::to_string(region);
-                json.Key(sregion.data(), (unsigned)sregion.size(), true);
-                json.Double(best);
+                json_writer.prop(std::to_string(region), best);
             }
             ++it;
         }
-        json.EndObject();
+        json_writer.end_obj();
     }
-    json.EndObject();
+    json_writer.end_obj();
 
     http::HttpResponse resp;
     resp.status_code = 200;
     resp.body.assign(
-        (const uint8_t*)buffer.GetString(),
-        (const uint8_t*)buffer.GetString() + buffer.GetSize());
+        (const uint8_t*)json_writer.str().data(),
+        (const uint8_t*)json_writer.str().data() + json_writer.str().size());
     return resp;
 }
 
