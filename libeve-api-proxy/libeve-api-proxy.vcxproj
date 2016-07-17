@@ -27,7 +27,6 @@
     <ClInclude Include="source\CrestHttpRequest.hpp" />
     <ClInclude Include="source\CrestJson.hpp" />
     <ClInclude Include="source\Error.hpp" />
-    <ClInclude Include="source\EveRegions.hpp" />
     <ClInclude Include="source\Gzip.hpp" />
     <ClInclude Include="source\http\core\HttpStatusCode.hpp" />
     <ClInclude Include="source\http\core\HttpHeader.hpp" />
@@ -42,6 +41,10 @@
     <ClInclude Include="source\http\HttpStatusErrors.hpp" />
     <ClInclude Include="source\Init.hpp" />
     <ClInclude Include="source\Log.hpp" />
+    <ClInclude Include="source\model\CrestPage.hpp" />
+    <ClInclude Include="source\model\EveRegions.hpp" />
+    <ClInclude Include="source\model\MarketHistoryDay.hpp" />
+    <ClInclude Include="source\model\MarketOrder.hpp" />
     <ClInclude Include="source\pages\BulkMarketHistory.hpp" />
     <ClInclude Include="source\pages\BulkMarketOrders.hpp" />
     <ClInclude Include="source\pages\Errors.hpp" />

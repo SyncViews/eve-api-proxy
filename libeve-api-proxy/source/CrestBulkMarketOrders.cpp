@@ -5,64 +5,6 @@
 #include <json/Writer.hpp>
 #include "CrestJson.hpp"
 
-struct Location
-{
-    long long id;
-    std::string name;
-};
-void read_json(json::Parser &parser, Location *out)
-{
-    static const auto reader = json::ObjectFieldReader<Location, json::IgnoreUnknown>()
-        .add<decltype(Location::id), &Location::id>("id")
-        .add<decltype(Location::name), &Location::name>("name");
-    reader.read(parser, out);
-}
-void read_json(json::Parser &parser, MarketOrder *out)
-{
-    const auto location_f = [](json::Parser &parser, MarketOrder *out) -> void
-    {
-        Location tmp;
-        read_json(parser, &tmp);
-        out->station_id = tmp.id;
-        out->station_name = tmp.name;
-    };
-    static const auto reader = json::ObjectFieldReader<MarketOrder, json::IgnoreUnknown>()
-        .add<decltype(MarketOrder::id), &MarketOrder::id>("id")
-        .add<decltype(MarketOrder::duration), &MarketOrder::duration>("duration")
-        .add<decltype(MarketOrder::issued), &MarketOrder::issued>("issued")
-        .add<decltype(MarketOrder::volume), &MarketOrder::volume>("volume")
-        .add<decltype(MarketOrder::range), &MarketOrder::range>("range")
-        .add<decltype(MarketOrder::price), &MarketOrder::price>("price")
-        .add("location", location_f)
-        ;
-    Location location;
-    reader.read(parser, out);
-}
-void write_json(json::Writer &writer, const MarketOrder &val)
-{
-    writer.start_obj();
-    writer.prop("id", val.id);
-    writer.prop("duration", val.duration);
-    writer.prop("issued", val.issued);
-    writer.prop("station_id", val.station_id);
-    writer.prop("station_name", val.station_name);
-    writer.prop("min_volume", val.min_volume);
-    writer.prop("volume", val.volume);
-    writer.prop("volume_entered", val.volume_entered);
-    writer.prop("range", val.range);
-    writer.prop("price", val.price);
-    writer.end_obj();
-}
-void write_json(json::Writer &writer, const MarketOrderList &val)
-{
-    writer.start_obj();
-    writer.prop("buy", val.buy);
-    writer.prop("region", val.region_id);
-    writer.prop("type", val.type_id);
-    writer.prop("items", val.orders);
-    writer.end_obj();
-}
-
 void parse_crest_orders(
     std::vector<MarketOrder> &out,
     const std::vector<uint8_t> &crest_data)
@@ -71,10 +13,7 @@ void parse_crest_orders(
         (const char*)crest_data.data(),
         (const char*)crest_data.data() + crest_data.size());
 
-    read_crest_items(parser, [&parser, &out]() -> void
-    {
-        read_json(parser, &out);
-    });
+    read_crest_items(parser, &out);
 }
 
 void get_crest_bulk_market_orders(
@@ -106,9 +45,4 @@ void get_crest_bulk_market_orders(
             parse_crest_orders(out.orders, entry->data);
         }
     }
-}
-
-std::string market_order_lists_json(const std::vector<MarketOrderList> &order_sets)
-{
-    return json::to_json(order_sets);
 }

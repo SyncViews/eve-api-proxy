@@ -17,7 +17,7 @@ BOOST_AUTO_TEST_CASE(test)
     BOOST_CHECK(!orders[0].orders.empty());
     BOOST_CHECK(!orders[1].orders.empty());
 
-    std::string json = market_order_lists_json(orders);
+    std::string json = json::to_json(orders);
     std::cout << "market_order_lists_json" << std::endl;
     std::cout.write(json.data(), std::min((size_t)100, json.size()));
     std::cout << std::endl << std::endl;

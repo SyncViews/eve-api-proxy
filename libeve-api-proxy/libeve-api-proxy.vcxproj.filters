@@ -23,6 +23,9 @@
     <Filter Include="source\pages\lib">
       <UniqueIdentifier>{01997dfa-ae8b-4833-b129-d006a0aa3aa8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\model">
+      <UniqueIdentifier>{783367ca-3bca-49cd-8c03-54081e16f972}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\CppServers.hpp">
@@ -109,9 +112,6 @@
     <ClInclude Include="source\pages\Errors.hpp">
       <Filter>source\pages</Filter>
     </ClInclude>
-    <ClInclude Include="source\EveRegions.hpp">
-      <Filter>source</Filter>
-    </ClInclude>
     <ClInclude Include="source\socket\WinTlsSocket.hpp">
       <Filter>source\socket</Filter>
     </ClInclude>
@@ -133,9 +133,23 @@
     <ClInclude Include="source\pages\BulkMarketHistory.hpp">
       <Filter>source\pages</Filter>
     </ClInclude>
-    <ClInclude Include="source\pages\HubPrices.hpp" />
     <ClInclude Include="source\CrestJson.hpp">
       <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model\MarketOrder.hpp">
+      <Filter>source\model</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model\MarketHistoryDay.hpp">
+      <Filter>source\model</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model\CrestPage.hpp">
+      <Filter>source\model</Filter>
+    </ClInclude>
+    <ClInclude Include="source\pages\HubPrices.hpp">
+      <Filter>source\pages</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model\EveRegions.hpp">
+      <Filter>source\model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +219,8 @@
     <ClCompile Include="source\pages\BulkMarketHistory.cpp">
       <Filter>source\pages</Filter>
     </ClCompile>
-    <ClCompile Include="source\pages\HubPrices.cpp" />
+    <ClCompile Include="source\pages\HubPrices.cpp">
+      <Filter>source\pages</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

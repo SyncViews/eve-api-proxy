@@ -2,7 +2,7 @@
 #include "Errors.hpp"
 #include "Jita5pSell.hpp"
 #include "CrestBulkMarketOrders.hpp"
-#include "EveRegions.hpp"
+#include "model/EveRegions.hpp"
 #include <iostream>
 #include <chrono>
 #include <json/Writer.hpp>
@@ -74,8 +74,6 @@ http::HttpResponse http_get_jita_5p_sell(CrestCache &cache, http::HttpRequest &r
 
     http::HttpResponse resp;
     resp.status_code = 200;
-    resp.body.assign(
-        (const uint8_t*)json_writer.str().data(),
-        (const uint8_t*)json_writer.str().data() + json_writer.str().size());
+    resp.body_str(json_writer.str());
     return resp;
 }

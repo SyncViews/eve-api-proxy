@@ -2,7 +2,7 @@
 #include "Errors.hpp"
 #include "BulkMarketOrders.hpp"
 #include "CrestBulkMarketOrders.hpp"
-#include "EveRegions.hpp"
+#include "model/EveRegions.hpp"
 #include "lib/Params.hpp"
 #include "../String.hpp"
 #include <iostream>
@@ -57,13 +57,11 @@ http::HttpResponse http_get_bulk_market_orders(CrestCache &cache, http::HttpRequ
         << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
         << "ms." << std::endl;
     // Response
-    std::string resp_str = market_order_lists_json(order_sets);
+    std::string resp_str = json::to_json(order_sets);
 
 
     http::HttpResponse resp;
     resp.status_code = 200;
-    resp.body.assign(
-        (const uint8_t*)resp_str.data(),
-        (const uint8_t*)resp_str.data() + resp_str.size());
+    resp.body_str(resp_str);
     return resp;
 }

@@ -1,7 +1,7 @@
 #include "Precompiled.hpp"
 #include "http/HttpStatusErrors.hpp"
 #include "http/core/HttpRequest.hpp"
-#include "EveRegions.hpp"
+#include "model/EveRegions.hpp"
 
 std::vector<int> params_regions(http::HttpRequest &request)
 {
