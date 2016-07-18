@@ -13,7 +13,7 @@ debug: CC_VARIATION_FLAGS = -ggdb -Og -D_DEBUG
 debug: all
 
 LD_FLAGS := -pthread
-CC_FLAGS := -std=c++11 -pthread -Ilibeve-api-proxy/source/ -Ithird-party/rapidjson/include -DBOOST_TEST_DYN_LINK
+CC_FLAGS := -std=c++11 -pthread -Ilibeve-api-proxy/source/ -Ithird-party/cpp-json/include -DBOOST_TEST_DYN_LINK
 
 LIBS := -lz -lssl -lcrypto
 TEST_LIBS := -lboost_unit_test_framework
