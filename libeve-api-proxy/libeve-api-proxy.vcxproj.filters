@@ -26,6 +26,9 @@
     <Filter Include="source\model">
       <UniqueIdentifier>{783367ca-3bca-49cd-8c03-54081e16f972}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\crest">
+      <UniqueIdentifier>{be38d99e-bbd2-4976-9bd6-76b12ebfcc56}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\CppServers.hpp">
@@ -151,6 +154,15 @@
     <ClInclude Include="source\model\EveRegions.hpp">
       <Filter>source\model</Filter>
     </ClInclude>
+    <ClInclude Include="source\crest\Urls.hpp">
+      <Filter>source\crest</Filter>
+    </ClInclude>
+    <ClInclude Include="source\crest\MarketCache.hpp">
+      <Filter>source\crest</Filter>
+    </ClInclude>
+    <ClInclude Include="source\crest\MarketOrderSlim.hpp">
+      <Filter>source\crest</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Init.cpp">
@@ -221,6 +233,12 @@
     </ClCompile>
     <ClCompile Include="source\pages\HubPrices.cpp">
       <Filter>source\pages</Filter>
+    </ClCompile>
+    <ClCompile Include="source\crest\Urls.cpp">
+      <Filter>source\crest</Filter>
+    </ClCompile>
+    <ClCompile Include="source\crest\MarketCache.cpp">
+      <Filter>source\crest</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

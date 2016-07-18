@@ -26,6 +26,9 @@
     <ClInclude Include="source\CrestConnectionPool.hpp" />
     <ClInclude Include="source\CrestHttpRequest.hpp" />
     <ClInclude Include="source\CrestJson.hpp" />
+    <ClInclude Include="source\crest\MarketCache.hpp" />
+    <ClInclude Include="source\crest\MarketOrderSlim.hpp" />
+    <ClInclude Include="source\crest\Urls.hpp" />
     <ClInclude Include="source\Error.hpp" />
     <ClInclude Include="source\Gzip.hpp" />
     <ClInclude Include="source\http\core\HttpStatusCode.hpp" />
@@ -65,6 +68,8 @@
     <ClCompile Include="source\CrestBulkMarketOrders.cpp" />
     <ClCompile Include="source\CrestCache.cpp" />
     <ClCompile Include="source\CrestConnectionPool.cpp" />
+    <ClCompile Include="source\crest\MarketCache.cpp" />
+    <ClCompile Include="source\crest\Urls.cpp" />
     <ClCompile Include="source\Error.cpp" />
     <ClCompile Include="source\Gzip.cpp" />
     <ClCompile Include="source\http\core\HttpParser.cpp" />
