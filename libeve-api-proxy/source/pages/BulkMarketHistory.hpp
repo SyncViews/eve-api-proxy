@@ -1,7 +1,10 @@
 #pragma once
 #include "http/core/HttpRequest.hpp"
 #include "http/core/HttpResponse.hpp"
-class CrestCache;
+namespace crest
+{
+    class Cache;
+}
 
 /**GET /bulk-market-history
  *
@@ -9,7 +12,7 @@ class CrestCache;
  *   - region = array of region ids
  *   - type = array of type ids
  */
-http::HttpResponse http_get_bulk_market_history(CrestCache &cache, http::HttpRequest &request);
+http::HttpResponse http_get_bulk_market_history(crest::Cache &cache, http::HttpRequest &request);
 /**GET /bulk-market-history-aggregated
  * 
  * Returns just a single value for each type, with multiple regions combined as min/max/sum/averages
@@ -17,5 +20,5 @@ http::HttpResponse http_get_bulk_market_history(CrestCache &cache, http::HttpReq
  *   - region = array of region ids
  *   - type = array of type ids
  */
-http::HttpResponse http_get_bulk_market_history_aggregated(CrestCache &cache, http::HttpRequest &request);
+http::HttpResponse http_get_bulk_market_history_aggregated(crest::Cache &cache, http::HttpRequest &request);
 

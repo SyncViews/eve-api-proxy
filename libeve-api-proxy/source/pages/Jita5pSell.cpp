@@ -6,7 +6,7 @@
 #include <iostream>
 #include <chrono>
 #include <json/Writer.hpp>
-http::HttpResponse http_get_jita_5p_sell(CrestCache &cache, http::HttpRequest &request)
+http::HttpResponse http_get_jita_5p_sell(crest::Cache &cache, http::HttpRequest &request)
 {
     // Get params
     std::vector<MarketOrderList> order_sets;

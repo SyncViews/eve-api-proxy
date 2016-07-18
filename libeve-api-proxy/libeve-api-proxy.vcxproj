@@ -21,13 +21,13 @@
   <ItemGroup>
     <ClInclude Include="source\CppServers.hpp" />
     <ClInclude Include="source\CrestBulkMarketOrders.hpp" />
-    <ClInclude Include="source\CrestCache.hpp" />
-    <ClInclude Include="source\CrestCacheEntry.hpp" />
-    <ClInclude Include="source\CrestConnectionPool.hpp" />
-    <ClInclude Include="source\CrestHttpRequest.hpp" />
-    <ClInclude Include="source\CrestJson.hpp" />
+    <ClInclude Include="source\crest\Cache.hpp" />
+    <ClInclude Include="source\crest\CacheEntry.hpp" />
+    <ClInclude Include="source\crest\ConnectionPool.hpp" />
+    <ClInclude Include="source\crest\JsonHelpers.hpp" />
     <ClInclude Include="source\crest\MarketCache.hpp" />
     <ClInclude Include="source\crest\MarketOrderSlim.hpp" />
+    <ClInclude Include="source\crest\Request.hpp" />
     <ClInclude Include="source\crest\Urls.hpp" />
     <ClInclude Include="source\Error.hpp" />
     <ClInclude Include="source\Gzip.hpp" />
@@ -66,10 +66,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\CrestBulkMarketOrders.cpp" />
-    <ClCompile Include="source\CrestCache.cpp" />
-    <ClCompile Include="source\CrestConnectionPool.cpp" />
+    <ClCompile Include="source\crest\ConnectionPool.cpp" />
+    <ClCompile Include="source\crest\CrestCache.cpp" />
     <ClCompile Include="source\crest\MarketCache.cpp" />
-    <ClCompile Include="source\crest\Urls.cpp" />
     <ClCompile Include="source\Error.cpp" />
     <ClCompile Include="source\Gzip.cpp" />
     <ClCompile Include="source\http\core\HttpParser.cpp" />

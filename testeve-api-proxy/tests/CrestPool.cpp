@@ -1,12 +1,12 @@
 #include <boost/test/unit_test.hpp>
 #include <iostream>
-#include "CrestConnectionPool.hpp"
+#include "crest/ConnectionPool.hpp"
 
 BOOST_AUTO_TEST_SUITE(CrestPool)
 
 BOOST_AUTO_TEST_CASE(start_stop)
 {
-    CrestConnectionPool pool;
+    crest::ConnectionPool pool;
     pool.exit();
 }
 
@@ -14,8 +14,8 @@ BOOST_AUTO_TEST_CASE(single_request)
 {
     std::cout << "CrestPool::single_request" << std::endl;
 
-    CrestConnectionPool pool;
-    CrestHttpRequest request("/market/10000002/orders/buy/?type=https://crest-tq.eveonline.com/inventory/types/34/");
+    crest::ConnectionPool pool;
+    crest::Request request("/market/10000002/orders/buy/?type=https://crest-tq.eveonline.com/inventory/types/34/");
     pool.queue(&request);
     
     auto response = request.wait();
@@ -33,8 +33,8 @@ BOOST_AUTO_TEST_CASE(single_request)
 BOOST_AUTO_TEST_CASE(bulk_request)
 {
     std::cout << "CrestPool::bulk_request" << std::endl;
-    std::list<CrestHttpRequest> requests;
-    CrestConnectionPool pool;
+    std::list<crest::Request> requests;
+    crest::ConnectionPool pool;
     for (int i = 0; i < 100; ++i)
     {
         std::string type = "?type=https://crest-tq.eveonline.com/inventory/types/" + std::to_string(34 + i) + "/";

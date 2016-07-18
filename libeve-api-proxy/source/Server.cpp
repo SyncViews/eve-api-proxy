@@ -240,7 +240,7 @@ http::HttpResponse Server::ServerConnection::process_request(http::HttpRequest &
         }
         else return http_simple_error_page(request, 404, request.url.path + " was not found");
     }
-    catch (const CrestRequestFailed &)
+    catch (const crest::RequestFailed &)
     {
         return http_simple_error_page(request, 500, "A request to public-crest FAILED. The EVE CREST servers may be down.");
     }

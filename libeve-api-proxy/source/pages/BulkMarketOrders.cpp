@@ -7,7 +7,7 @@
 #include "../String.hpp"
 #include <iostream>
 #include <chrono>
-http::HttpResponse http_get_bulk_market_orders(CrestCache &cache, http::HttpRequest &request)
+http::HttpResponse http_get_bulk_market_orders(crest::Cache &cache, http::HttpRequest &request)
 {
     // Get params
     std::vector<MarketOrderList> order_sets;

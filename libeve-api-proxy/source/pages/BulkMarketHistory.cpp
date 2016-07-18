@@ -2,7 +2,8 @@
 #include "Errors.hpp"
 #include "BulkMarketHistory.hpp"
 #include "CrestBulkMarketOrders.hpp"
-#include "CrestCache.hpp"
+#include "crest/Cache.hpp"
+#include "crest/JsonHelpers.hpp"
 #include "lib/Params.hpp"
 #include "http/HttpStatusErrors.hpp"
 #include <iostream>
@@ -10,18 +11,17 @@
 #include <json/Reader.hpp>
 #include <json/Writer.hpp>
 #include <json/Copy.hpp>
-#include "CrestJson.hpp"
 #include "model/MarketHistoryDay.hpp"
 
-std::vector<CrestCacheEntry*> get_bulk_market_history(
-    CrestCache &cache, http::HttpRequest &request,
+std::vector<crest::CacheEntry*> get_bulk_market_history(
+    crest::Cache &cache, http::HttpRequest &request,
     const std::vector<int> &regions, const std::vector<int> &types)
 {
     // Build requests
     size_t count = regions.size() * types.size();
     log_info() << "GET /" << request.url.path << " with " << count << " histories" << std::endl;
 
-    std::vector<CrestCacheEntry*> cache_entries;
+    std::vector<crest::CacheEntry*> cache_entries;
     cache_entries.reserve(count);
     for (auto i : types)
     {
@@ -36,7 +36,7 @@ std::vector<CrestCacheEntry*> get_bulk_market_history(
     return cache_entries;
 }
 
-http::HttpResponse http_get_bulk_market_history(CrestCache &cache, http::HttpRequest &request)
+http::HttpResponse http_get_bulk_market_history(crest::Cache &cache, http::HttpRequest &request)
 {
     auto start = std::chrono::high_resolution_clock::now();
     std::vector<int> regions = params_regions(request);
@@ -68,7 +68,7 @@ http::HttpResponse http_get_bulk_market_history(CrestCache &cache, http::HttpReq
                 json::Parser parser(
                     (const char*)cache_entry->data.data(),
                     (const char*)cache_entry->data.data() + cache_entry->data.size());
-                read_crest_items(parser, [&parser, &json_writer]() -> void
+                crest::read_crest_items(parser, [&parser, &json_writer]() -> void
                 {
                     json::copy(json_writer, parser);
                 });
@@ -89,7 +89,7 @@ http::HttpResponse http_get_bulk_market_history(CrestCache &cache, http::HttpReq
     return resp;
 }
 
-http::HttpResponse http_get_bulk_market_history_aggregated(CrestCache &cache, http::HttpRequest &request)
+http::HttpResponse http_get_bulk_market_history_aggregated(crest::Cache &cache, http::HttpRequest &request)
 {
     auto start = std::chrono::high_resolution_clock::now();
     std::vector<int> regions = params_regions(request);
@@ -111,7 +111,7 @@ http::HttpResponse http_get_bulk_market_history_aggregated(CrestCache &cache, ht
             // Process
             if (cache_entry->is_data_valid())
             {
-                auto day = read_crest_items<MarketHistoryDay>(cache_entry->data);
+                auto day = crest::read_crest_items<MarketHistoryDay>(cache_entry->data);
                 
                 auto ret = days.emplace(day.date, day);
                 if (!ret.second)

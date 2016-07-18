@@ -6,7 +6,7 @@
 #include <json/Writer.hpp>
 
 template<bool buy>
-http::HttpResponse http_get_hub_prices(CrestCache &cache, http::HttpRequest &request)
+http::HttpResponse http_get_hub_prices(crest::Cache &cache, http::HttpRequest &request)
 {
     static const int REGIONS[] = { EVE_THE_FORGE_ID, EVE_HEIMATAR_ID, EVE_METROPOLIS_ID, EVE_DOMAIN_ID, EVE_SINQ_LAISON_ID };
     static const int REGION_COUNT = sizeof(REGIONS) / sizeof(REGIONS[0]);
@@ -74,11 +74,11 @@ http::HttpResponse http_get_hub_prices(CrestCache &cache, http::HttpRequest &req
     return resp;
 }
 
-http::HttpResponse http_get_hub_buy_prices(CrestCache &cache, http::HttpRequest &request)
+http::HttpResponse http_get_hub_buy_prices(crest::Cache &cache, http::HttpRequest &request)
 {
     return http_get_hub_prices<true>(cache, request);
 }
-http::HttpResponse http_get_hub_sell_prices(CrestCache &cache, http::HttpRequest &request)
+http::HttpResponse http_get_hub_sell_prices(crest::Cache &cache, http::HttpRequest &request)
 {
     return http_get_hub_prices<false>(cache, request);
 }
