@@ -3,7 +3,7 @@
 #include "Error.hpp"
 #include "Cache.hpp"
 #include "CppServers.hpp"
-#include "http/CrestRequest.hpp"
+#include "Request.hpp"
 #include "http/core/HttpParser.hpp"
 #include "Gzip.hpp"
 #include <iostream>
@@ -179,7 +179,7 @@ namespace crest
             log_debug() << "Connected to public-crest" << std::endl;
         }
         //request
-        send_crest_get_request(&socket, request->get_uri_path());
+        send_get_request(&socket, request->get_uri_path());
         //response
         http::HttpParser response(false);
         while (!response.is_completed())

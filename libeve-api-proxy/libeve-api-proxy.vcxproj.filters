@@ -70,9 +70,6 @@
     <ClInclude Include="source\http\core\HttpRequest.hpp">
       <Filter>source\http\core</Filter>
     </ClInclude>
-    <ClInclude Include="source\http\CrestRequest.hpp">
-      <Filter>source\http</Filter>
-    </ClInclude>
     <ClInclude Include="source\Gzip.hpp">
       <Filter>source</Filter>
     </ClInclude>
@@ -142,9 +139,6 @@
     <ClInclude Include="source\crest\Urls.hpp">
       <Filter>source\crest</Filter>
     </ClInclude>
-    <ClInclude Include="source\crest\MarketCache.hpp">
-      <Filter>source\crest</Filter>
-    </ClInclude>
     <ClInclude Include="source\crest\MarketOrderSlim.hpp">
       <Filter>source\crest</Filter>
     </ClInclude>
@@ -163,6 +157,7 @@
     <ClInclude Include="source\crest\Cache.hpp">
       <Filter>source\crest</Filter>
     </ClInclude>
+    <ClInclude Include="source\crest\MarketOrdersCache.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Init.cpp">
@@ -182,9 +177,6 @@
     </ClCompile>
     <ClCompile Include="source\socket\Socket.cpp">
       <Filter>source\socket</Filter>
-    </ClCompile>
-    <ClCompile Include="source\http\CrestRequest.cpp">
-      <Filter>source\http</Filter>
     </ClCompile>
     <ClCompile Include="source\Gzip.cpp">
       <Filter>source</Filter>
@@ -228,13 +220,14 @@
     <ClCompile Include="source\pages\HubPrices.cpp">
       <Filter>source\pages</Filter>
     </ClCompile>
-    <ClCompile Include="source\crest\MarketCache.cpp">
-      <Filter>source\crest</Filter>
-    </ClCompile>
     <ClCompile Include="source\crest\ConnectionPool.cpp">
       <Filter>source\crest</Filter>
     </ClCompile>
     <ClCompile Include="source\crest\CrestCache.cpp">
+      <Filter>source\crest</Filter>
+    </ClCompile>
+    <ClCompile Include="source\crest\MarketOrdersCache.cpp" />
+    <ClCompile Include="source\crest\Request.cpp">
       <Filter>source\crest</Filter>
     </ClCompile>
   </ItemGroup>

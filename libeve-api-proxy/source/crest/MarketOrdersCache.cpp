@@ -1,11 +1,11 @@
 #include "Precompiled.hpp"
-#include "MarketCache.hpp"
+#include "MarketOrdersCache.hpp"
 namespace crest
 {
-    const std::shared_ptr<const MarketOrdersSlim> MarketCache::EMPTY_ORDERS
+    const std::shared_ptr<const MarketOrdersSlim> MarketCacheStore::EMPTY_ORDERS
         = std::make_shared<MarketOrdersSlim>();
 
-    std::shared_ptr<MarketCacheRegion> MarketCache::do_get_region(int region_id)
+    std::shared_ptr<MarketCacheStore::Region> MarketCacheStore::get_region(int region_id)
     {
         std::unique_lock<std::mutex> lock(mutex);
         auto region = regions.find(region_id);
@@ -17,7 +17,7 @@ namespace crest
         {
             auto orders = get_orders(region_id);
 
-            auto new_region = std::make_shared<MarketCacheRegion>();
+            auto new_region = std::make_shared<Region>();
             new_region->expires = time(nullptr) + 300;
 
             for (auto &order : orders)

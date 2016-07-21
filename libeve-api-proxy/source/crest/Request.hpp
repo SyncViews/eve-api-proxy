@@ -2,6 +2,7 @@
 #include <functional>
 #include <future>
 #include <string>
+class Socket;
 namespace crest
 {
     /**A request for the crest::ConnectionPool to execute.*/
@@ -37,4 +38,5 @@ namespace crest
         std::string uri_path;
         Response response;
     };
+    void send_get_request(Socket *socket, const std::string &path);
 }

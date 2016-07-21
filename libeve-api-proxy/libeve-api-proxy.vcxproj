@@ -25,7 +25,7 @@
     <ClInclude Include="source\crest\CacheEntry.hpp" />
     <ClInclude Include="source\crest\ConnectionPool.hpp" />
     <ClInclude Include="source\crest\JsonHelpers.hpp" />
-    <ClInclude Include="source\crest\MarketCache.hpp" />
+    <ClInclude Include="source\crest\MarketOrdersCache.hpp" />
     <ClInclude Include="source\crest\MarketOrderSlim.hpp" />
     <ClInclude Include="source\crest\Request.hpp" />
     <ClInclude Include="source\crest\Urls.hpp" />
@@ -40,7 +40,6 @@
     <ClInclude Include="source\http\core\HttpResponse.hpp" />
     <ClInclude Include="source\http\core\HttpWriter.hpp" />
     <ClInclude Include="source\http\core\UrlParser.hpp" />
-    <ClInclude Include="source\http\CrestRequest.hpp" />
     <ClInclude Include="source\http\HttpStatusErrors.hpp" />
     <ClInclude Include="source\Init.hpp" />
     <ClInclude Include="source\Log.hpp" />
@@ -68,12 +67,12 @@
     <ClCompile Include="source\CrestBulkMarketOrders.cpp" />
     <ClCompile Include="source\crest\ConnectionPool.cpp" />
     <ClCompile Include="source\crest\CrestCache.cpp" />
-    <ClCompile Include="source\crest\MarketCache.cpp" />
+    <ClCompile Include="source\crest\MarketOrdersCache.cpp" />
+    <ClCompile Include="source\crest\Request.cpp" />
     <ClCompile Include="source\Error.cpp" />
     <ClCompile Include="source\Gzip.cpp" />
     <ClCompile Include="source\http\core\HttpParser.cpp" />
     <ClCompile Include="source\http\core\HttpStatusCode.cpp" />
-    <ClCompile Include="source\http\CrestRequest.cpp" />
     <ClCompile Include="source\Init.cpp" />
     <ClCompile Include="source\Log.cpp" />
     <ClCompile Include="source\pages\BulkMarketHistory.cpp" />

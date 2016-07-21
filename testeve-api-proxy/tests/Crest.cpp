@@ -1,6 +1,6 @@
 #include <boost/test/unit_test.hpp>
 #include "socket/TlsSocket.hpp"
-#include "http/CrestRequest.hpp"
+#include "crest/Request.hpp"
 #include "http/core/HttpParser.hpp"
 #include "Error.hpp"
 #include "Gzip.hpp"
@@ -13,7 +13,7 @@ BOOST_AUTO_TEST_CASE(index)
     std::cout << "GET https://crest-tq.eveonline.com/" << std::endl;
     TlsSocket sock;
     sock.connect("crest-tq.eveonline.com", 443);
-    send_crest_get_request(&sock, "/");
+    crest::send_get_request(&sock, "/");
 
     http::HttpParser response(false);
     while (!response.is_completed())
