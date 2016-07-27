@@ -4,6 +4,7 @@
 #include "CrestBulkMarketOrders.hpp"
 #include "crest/Cache.hpp"
 #include "crest/JsonHelpers.hpp"
+#include "crest/Urls.hpp"
 #include "lib/Params.hpp"
 #include <iostream>
 #include <chrono>
@@ -26,9 +27,7 @@ std::vector<crest::CacheEntry*> get_bulk_market_history(
     {
         for (auto j : regions)
         {
-            std::stringstream ss;
-            ss << "/market/" << j << "/history/?type=https://crest-tq.eveonline.com/inventory/types/" << i << "/";
-            cache_entries.push_back(cache.get(ss.str()));
+            cache_entries.push_back(cache.get(crest::market_history_url(j, i)));
         }
     }
 
