@@ -1,5 +1,5 @@
 #pragma once
-#include "Request.hpp"
+#include <http/client/AsyncClient.hpp>
 #include <condition_variable>
 #include <ctime>
 #include <mutex>
@@ -68,7 +68,7 @@ namespace crest
         /**The cached data (gzipped)*/
         std::vector<uint8_t> data;
 
-        Request http_request;
+        http::AsyncRequest http_request;
 
         void wait(std::unique_lock<std::mutex> &lock)
         {

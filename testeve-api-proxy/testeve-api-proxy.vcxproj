@@ -156,10 +156,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TcpSocket.cpp" />
-    <ClCompile Include="tests\Crest.cpp" />
     <ClCompile Include="tests\CrestBulkMarketOrders.cpp" />
     <ClCompile Include="tests\CrestCache.cpp" />
-    <ClCompile Include="tests\CrestPool.cpp" />
     <ClCompile Include="tests\HttpParser.cpp" />
     <ClCompile Include="tests\Main.cpp" />
     <ClCompile Include="tests\String.cpp" />

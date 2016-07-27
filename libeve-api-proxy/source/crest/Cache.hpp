@@ -40,11 +40,6 @@ namespace crest
         */
         CacheLookupFutureResults get_future(const std::string &path);
         CacheLookupResults get_now(const std::string &path);
-
-        /**Used by CrestConnectionPool to use up spare bandwidth by getting requests to cache in
-         * advance.
-         */
-        Request *get_preload_request();
     private:
         typedef std::unique_lock<std::mutex> unique_lock;
         typedef std::unordered_map<std::string, CacheEntry> CacheMap;
@@ -65,7 +60,7 @@ namespace crest
         CacheEntry &get_entry(const std::string &path);
         CacheEntry *get_locked(const std::string &path, std::unique_lock<std::mutex> &lock);
         void update_entry(CacheEntry &entry);
-        void update_entry_completion(CacheEntry *entry, Request *request);
+        void update_entry_completion(CacheEntry *entry, http::Response *response);
         /**With the cache already locked, see if any data must be purged to remaining within
         * cache size limits.
         */

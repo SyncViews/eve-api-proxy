@@ -20,3 +20,7 @@
 /kernel.etl
 /profile.bat
 /profile.etl
+/x64-Debug
+/Win32-Release
+/x64-Release
+/Win32-Debug

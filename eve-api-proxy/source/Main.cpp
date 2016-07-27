@@ -1,10 +1,12 @@
 #include "Precompiled.hpp"
 #include "Init.hpp"
 #include "Server.hpp"
+#include <http/net/Net.hpp>
 #include <iostream>
 
 int main()
 {
+    http::init_net();
     init();
     
     Server server;

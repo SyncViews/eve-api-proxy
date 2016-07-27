@@ -1,3 +1,6 @@
 [submodule "third-party/cpp-json"]
 	path = third-party/cpp-json
 	url = https://github.com/wnewbery/cpp-json.git
+[submodule "third-party/cpp-http"]
+	path = third-party/cpp-http
+	url = https://github.com/wnewbery/cpphttp.git

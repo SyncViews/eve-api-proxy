@@ -27,7 +27,6 @@
     <ClInclude Include="source\crest\JsonHelpers.hpp" />
     <ClInclude Include="source\crest\MarketOrdersCache.hpp" />
     <ClInclude Include="source\crest\MarketOrderSlim.hpp" />
-    <ClInclude Include="source\crest\Request.hpp" />
     <ClInclude Include="source\crest\Urls.hpp" />
     <ClInclude Include="source\Error.hpp" />
     <ClInclude Include="source\Gzip.hpp" />
@@ -68,7 +67,6 @@
     <ClCompile Include="source\crest\ConnectionPool.cpp" />
     <ClCompile Include="source\crest\CrestCache.cpp" />
     <ClCompile Include="source\crest\MarketOrdersCache.cpp" />
-    <ClCompile Include="source\crest\Request.cpp" />
     <ClCompile Include="source\Error.cpp" />
     <ClCompile Include="source\Gzip.cpp" />
     <ClCompile Include="source\http\core\HttpParser.cpp" />
@@ -168,6 +166,9 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>cpphttp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -182,6 +183,9 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>cpphttp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -200,6 +204,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <Lib>
+      <AdditionalDependencies>cpphttp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -218,6 +225,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <Lib>
+      <AdditionalDependencies>cpphttp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

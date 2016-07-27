@@ -1,5 +1,6 @@
 #include "Precompiled.hpp"
 #include "Cache.hpp"
+#include "../Gzip.hpp"
 
 namespace crest
 {
@@ -55,31 +56,6 @@ namespace crest
         return{ entry, std::move(entry_lock) };
     }
 
-
-    Request *Cache::get_preload_request()
-    {
-        std::unique_lock<std::mutex> lock(cache_mutex);
-        if (preload_entries.empty()) return nullptr;
-        size_t i = preload_request_next;
-        do
-        {
-            auto entry = preload_entries[i];
-            std::unique_lock<std::mutex> entry_lock(entry->mutex);
-
-            if (entry->status != CacheEntry::UPDATING && !entry->is_current_data())
-            {
-                entry->status = CacheEntry::UPDATING;
-                entry->http_request = Request(entry->path,
-                    std::bind(&Cache::update_entry_completion, this, entry, std::placeholders::_1));
-                log_debug() << "Preloading " << entry->path << std::endl;
-                return &entry->http_request;
-            }
-
-            i = (i + 1) % preload_entries.size();
-        } while (i != preload_request_next);
-        return nullptr;
-    }
-
     CacheEntry &Cache::get_entry(const std::string &path)
     {
         auto &entry = cache[path];
@@ -117,23 +93,35 @@ namespace crest
 
     void Cache::update_entry(CacheEntry &entry)
     {
+        auto entryp = &entry;
         entry.status = CacheEntry::UPDATING;
-        entry.http_request = Request(entry.path,
+        entry.http_request = http::AsyncRequest();
+        entry.http_request.method = http::GET;
+        entry.http_request.raw_url = entry.path;
+        entry.http_request.on_completion = [this, entryp](http::AsyncRequest *request, http::Response &response)
+        {
+            this->update_entry_completion(entryp, &response);
+        };
+        entry.http_request.on_exception = [this, entryp](http::AsyncRequest *request)
+        {
+            this->update_entry_completion(entryp, nullptr);
+        };
+
+        (entry.path,
             std::bind(&Cache::update_entry_completion, this, &entry, std::placeholders::_1));
         crest_connection_pool.queue(&entry.http_request);
     }
 
-    void Cache::update_entry_completion(CacheEntry *entry, Request *request)
+    void Cache::update_entry_completion(CacheEntry *entry, http::Response *response)
     {
         std::unique_lock<std::mutex> cache_lock(cache_mutex);
         {
             std::unique_lock<std::mutex> entry_lock(entry->mutex);
-            auto response = request->get_response();
-            if (!response.http_success)
+            if (!response || response->status.code != http::SC_OK)
             {
                 entry->status = CacheEntry::FAILED;
             }
-            else if (response.status_code == 200)
+            else
             {
                 if (!entry->data.empty())
                 {
@@ -141,20 +129,16 @@ namespace crest
                     if (cache_size < entry->data.size()) cache_size = 0; //just to be safe
                     else cache_size -= entry->data.size();
                 }
-                cache_size += response.body.size();
+                auto data = gzip_decompress({
+                    (const uint8_t*)response->body.data(),
+                    (const uint8_t*)response->body.data() + response->body.size()
+                });
+                cache_size += data.size();
 
-                entry->data = response.body;
+                entry->data = std::move(data);
                 entry->last_used = time(nullptr);
                 entry->cache_until = entry->last_used + 300; //TODO: take this from the response
                 entry->status = CacheEntry::UPDATED;
-            }
-            else if (entry->cache_until)
-            {
-                entry->status = CacheEntry::EXPIRED;
-            }
-            else
-            {
-                entry->status = CacheEntry::FAILED;
             }
             entry->update_wait.notify_all();
         }

@@ -145,9 +145,6 @@
     <ClInclude Include="source\crest\ConnectionPool.hpp">
       <Filter>source\crest</Filter>
     </ClInclude>
-    <ClInclude Include="source\crest\Request.hpp">
-      <Filter>source\crest</Filter>
-    </ClInclude>
     <ClInclude Include="source\crest\JsonHelpers.hpp">
       <Filter>source\crest</Filter>
     </ClInclude>
@@ -227,8 +224,5 @@
       <Filter>source\crest</Filter>
     </ClCompile>
     <ClCompile Include="source\crest\MarketOrdersCache.cpp" />
-    <ClCompile Include="source\crest\Request.cpp">
-      <Filter>source\crest</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

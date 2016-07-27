@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eve-api-proxy", "eve-api-proxy\eve-api-proxy.vcxproj", "{A84BC611-B9FB-444C-AD81-7F5A676198C3}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -9,6 +9,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eve-api-proxy", "eve-api-pr
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libeve-api-proxy", "libeve-api-proxy\libeve-api-proxy.vcxproj", "{DA8D6A13-0477-4A7F-9297-C81A5ABC4B4A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{53A098C1-A321-4D50-AB68-1B46FF556100} = {53A098C1-A321-4D50-AB68-1B46FF556100}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testeve-api-proxy", "testeve-api-proxy\testeve-api-proxy.vcxproj", "{A55F83FC-6FEA-4E85-9752-45CA95B41616}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -19,6 +22,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		common.props = common.props
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cpphttp", "third-party\cpp-http\cpphttp.vcxproj", "{53A098C1-A321-4D50-AB68-1B46FF556100}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +57,14 @@ Global
 		{A55F83FC-6FEA-4E85-9752-45CA95B41616}.Release|x64.Build.0 = Release|x64
 		{A55F83FC-6FEA-4E85-9752-45CA95B41616}.Release|x86.ActiveCfg = Release|Win32
 		{A55F83FC-6FEA-4E85-9752-45CA95B41616}.Release|x86.Build.0 = Release|Win32
+		{53A098C1-A321-4D50-AB68-1B46FF556100}.Debug|x64.ActiveCfg = Debug|x64
+		{53A098C1-A321-4D50-AB68-1B46FF556100}.Debug|x64.Build.0 = Debug|x64
+		{53A098C1-A321-4D50-AB68-1B46FF556100}.Debug|x86.ActiveCfg = Debug|Win32
+		{53A098C1-A321-4D50-AB68-1B46FF556100}.Debug|x86.Build.0 = Debug|Win32
+		{53A098C1-A321-4D50-AB68-1B46FF556100}.Release|x64.ActiveCfg = Release|x64
+		{53A098C1-A321-4D50-AB68-1B46FF556100}.Release|x64.Build.0 = Release|x64
+		{53A098C1-A321-4D50-AB68-1B46FF556100}.Release|x86.ActiveCfg = Release|Win32
+		{53A098C1-A321-4D50-AB68-1B46FF556100}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
