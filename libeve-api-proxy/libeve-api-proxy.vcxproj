@@ -50,7 +50,7 @@
   <ItemGroup>
     <ClCompile Include="source\CrestBulkMarketOrders.cpp" />
     <ClCompile Include="source\crest\ConnectionPool.cpp" />
-    <ClCompile Include="source\crest\CrestCache.cpp" />
+    <ClCompile Include="source\crest\Cache.cpp" />
     <ClCompile Include="source\crest\MarketOrdersCache.cpp" />
     <ClCompile Include="source\Error.cpp" />
     <ClCompile Include="source\Gzip.cpp" />
