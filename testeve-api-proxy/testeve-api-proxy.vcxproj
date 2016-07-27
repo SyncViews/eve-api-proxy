@@ -155,14 +155,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="TcpSocket.cpp" />
     <ClCompile Include="tests\CrestBulkMarketOrders.cpp" />
     <ClCompile Include="tests\CrestCache.cpp" />
-    <ClCompile Include="tests\HttpParser.cpp" />
     <ClCompile Include="tests\Main.cpp" />
     <ClCompile Include="tests\String.cpp" />
-    <ClCompile Include="tests\TlsSocket.cpp" />
-    <ClCompile Include="tests\UrlParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tests\MarketCache.hpp" />

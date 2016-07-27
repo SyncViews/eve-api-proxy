@@ -5,7 +5,6 @@
 #include "crest/Cache.hpp"
 #include "crest/JsonHelpers.hpp"
 #include "lib/Params.hpp"
-#include "http/HttpStatusErrors.hpp"
 #include <iostream>
 #include <chrono>
 #include <json/Reader.hpp>
@@ -14,7 +13,7 @@
 #include "model/MarketHistoryDay.hpp"
 
 std::vector<crest::CacheEntry*> get_bulk_market_history(
-    crest::Cache &cache, http::HttpRequest &request,
+    crest::Cache &cache, http::Request &request,
     const std::vector<int> &regions, const std::vector<int> &types)
 {
     // Build requests
@@ -36,7 +35,7 @@ std::vector<crest::CacheEntry*> get_bulk_market_history(
     return cache_entries;
 }
 
-http::HttpResponse http_get_bulk_market_history(crest::Cache &cache, http::HttpRequest &request)
+http::Response http_get_bulk_market_history(crest::Cache &cache, http::Request &request)
 {
     auto start = std::chrono::high_resolution_clock::now();
     std::vector<int> regions = params_regions(request);
@@ -81,15 +80,13 @@ http::HttpResponse http_get_bulk_market_history(crest::Cache &cache, http::HttpR
         << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
         << "ms." << std::endl;
 
-    http::HttpResponse resp;
-    resp.status_code = 200;
-    resp.body.assign(
-        (const uint8_t*)json_writer.str().data(),
-        (const uint8_t*)json_writer.str().data() + json_writer.str().size());
+    http::Response resp;
+    resp.status_code(http::SC_OK);
+    resp.body = json_writer.str();
     return resp;
 }
 
-http::HttpResponse http_get_bulk_market_history_aggregated(crest::Cache &cache, http::HttpRequest &request)
+http::Response http_get_bulk_market_history_aggregated(crest::Cache &cache, http::Request &request)
 {
     auto start = std::chrono::high_resolution_clock::now();
     std::vector<int> regions = params_regions(request);
@@ -148,8 +145,8 @@ http::HttpResponse http_get_bulk_market_history_aggregated(crest::Cache &cache, 
         << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
         << "ms." << std::endl;
 
-    http::HttpResponse resp;
-    resp.status_code = 200;
-    resp.body_str(json_writer.str());
+    http::Response resp;
+    resp.status_code(http::SC_OK);
+    resp.body = json_writer.str();
     return resp;
 }

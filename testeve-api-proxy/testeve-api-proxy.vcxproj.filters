@@ -24,22 +24,10 @@
     <ClCompile Include="tests\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TcpSocket.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tests\TlsSocket.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="tests\CrestCache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="tests\CrestBulkMarketOrders.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tests\HttpParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tests\UrlParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="tests\String.cpp">

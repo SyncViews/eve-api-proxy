@@ -7,7 +7,6 @@ struct Startup
 {
     Startup()
     {
-        http::init_net();
         init();
     }
 }startup;

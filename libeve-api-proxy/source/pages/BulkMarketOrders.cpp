@@ -7,12 +7,12 @@
 #include "../String.hpp"
 #include <iostream>
 #include <chrono>
-http::HttpResponse http_get_bulk_market_orders(crest::Cache &cache, http::HttpRequest &request)
+http::Response http_get_bulk_market_orders(crest::Cache &cache, http::Request &request)
 {
     // Get params
     std::vector<MarketOrderList> order_sets;
 
-    auto order_params = request.url.query_array_param("order");
+    auto order_params = request.url.query_param_list("order");
     if (order_params.empty())
     {
         bool buy = request.url.has_query_param("buy");
@@ -57,11 +57,8 @@ http::HttpResponse http_get_bulk_market_orders(crest::Cache &cache, http::HttpRe
         << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
         << "ms." << std::endl;
     // Response
-    std::string resp_str = json::to_json(order_sets);
-
-
-    http::HttpResponse resp;
-    resp.status_code = 200;
-    resp.body_str(resp_str);
+    http::Response resp;
+    resp.status_code(http::SC_OK);
+    resp.body = json::to_json(order_sets);
     return resp;
 }

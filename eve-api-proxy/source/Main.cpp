@@ -6,7 +6,6 @@
 
 int main()
 {
-    http::init_net();
     init();
     
     Server server;
@@ -25,7 +24,8 @@ int main()
     sigwait(&sigset, &sig);
 #endif
     log_info() << "Stopping" << std::endl;
-    server.stop();
+    //TODO: Not implemented
+    //server.stop();
     log_info() << "Stopped" << std::endl;
 
     return 0;

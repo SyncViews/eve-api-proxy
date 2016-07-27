@@ -1,6 +1,6 @@
 #pragma once
-#include "http/core/HttpRequest.hpp"
-#include "http/core/HttpResponse.hpp"
+#include <http/Request.hpp>
+#include <http/Response.hpp>
 namespace crest
 {
     class Cache;
@@ -15,5 +15,5 @@ namespace crest
  *   - region = array of region ids
  *   - type = array of type ids
  */
-http::HttpResponse http_get_bulk_market_orders(crest::Cache &cache, http::HttpRequest &request);
+http::Response http_get_bulk_market_orders(crest::Cache &cache, http::Request &request);
 

@@ -1,9 +1,9 @@
 #include "Precompiled.hpp"
-#include "http/HttpStatusErrors.hpp"
-#include "http/core/HttpRequest.hpp"
+#include "Params.hpp"
+#include <http/Error.hpp>
 #include "model/EveRegions.hpp"
 
-std::vector<int> params_regions(http::HttpRequest &request)
+std::vector<int> params_regions(http::Request &request)
 {
     std::vector<int> regions;
     if (request.url.query_param("region") == "all")
@@ -12,22 +12,22 @@ std::vector<int> params_regions(http::HttpRequest &request)
     }
     else
     {
-        for (auto &i : request.url.query_array_param("region"))
+        for (auto &i : request.url.query_param_list("region"))
         {
             regions.push_back(std::stoi(i));
         }
-        if (regions.empty()) throw http::HttpBadRequest("At least one region required.");
+        if (regions.empty()) throw http::BadRequest("At least one region required.");
     }
     return regions;
 }
 
-std::vector<int> params_inv_types(http::HttpRequest &request)
+std::vector<int> params_inv_types(http::Request &request)
 {
     std::vector<int> types;
-    for (auto &i : request.url.query_array_param("type"))
+    for (auto &i : request.url.query_param_list("type"))
     {
         types.push_back(std::stoi(i));
     }
-    if (types.empty()) throw http::HttpBadRequest("At least one type required.");
+    if (types.empty()) throw http::BadRequest("At least one type required.");
     return types;
 }

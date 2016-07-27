@@ -6,11 +6,11 @@
 #include <iostream>
 #include <chrono>
 #include <json/Writer.hpp>
-http::HttpResponse http_get_jita_5p_sell(crest::Cache &cache, http::HttpRequest &request)
+http::Response http_get_jita_5p_sell(crest::Cache &cache, http::Request &request)
 {
     // Get params
     std::vector<MarketOrderList> order_sets;
-    for (auto &i : request.url.query_array_param("type"))
+    for (auto &i : request.url.query_param_list("type"))
     {
         auto type = std::stoi(i);
         order_sets.emplace_back(false, EVE_THE_FORGE_ID, type);
@@ -72,8 +72,8 @@ http::HttpResponse http_get_jita_5p_sell(crest::Cache &cache, http::HttpRequest 
     }
     json_writer.end_obj();
 
-    http::HttpResponse resp;
-    resp.status_code = 200;
-    resp.body_str(json_writer.str());
+    http::Response resp;
+    resp.status_code(http::SC_OK);
+    resp.body = json_writer.str();
     return resp;
 }

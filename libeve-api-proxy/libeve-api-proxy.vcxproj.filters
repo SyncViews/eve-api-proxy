@@ -8,15 +8,6 @@
     <Filter Include="source">
       <UniqueIdentifier>{377c61cc-d083-4ab7-9d80-bce27eb64aaa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\socket">
-      <UniqueIdentifier>{52e85b13-e895-4cdb-b695-2a795a74aea0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\http">
-      <UniqueIdentifier>{8a9337d8-7ef7-4423-8024-817a58ddc9d8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\http\core">
-      <UniqueIdentifier>{2092a21d-494f-4c30-aca5-44f14c18511b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="source\pages">
       <UniqueIdentifier>{ab85c7df-cba6-42ad-9e7a-d55bd9ac118e}</UniqueIdentifier>
     </Filter>
@@ -49,50 +40,14 @@
     <ClInclude Include="source\SmartPtr.hpp">
       <Filter>source</Filter>
     </ClInclude>
-    <ClInclude Include="source\socket\TcpSocket.hpp">
-      <Filter>source\socket</Filter>
-    </ClInclude>
-    <ClInclude Include="source\socket\Socket.hpp">
-      <Filter>source\socket</Filter>
-    </ClInclude>
-    <ClInclude Include="source\socket\TlsSocket.hpp">
-      <Filter>source\socket</Filter>
-    </ClInclude>
-    <ClInclude Include="source\http\core\HttpWriter.hpp">
-      <Filter>source\http\core</Filter>
-    </ClInclude>
-    <ClInclude Include="source\http\core\HttpHeader.hpp">
-      <Filter>source\http\core</Filter>
-    </ClInclude>
-    <ClInclude Include="source\http\core\HttpHeaders.hpp">
-      <Filter>source\http\core</Filter>
-    </ClInclude>
-    <ClInclude Include="source\http\core\HttpRequest.hpp">
-      <Filter>source\http\core</Filter>
-    </ClInclude>
     <ClInclude Include="source\Gzip.hpp">
       <Filter>source</Filter>
-    </ClInclude>
-    <ClInclude Include="source\http\core\HttpClientPipeline.hpp">
-      <Filter>source\http\core</Filter>
     </ClInclude>
     <ClInclude Include="source\CrestBulkMarketOrders.hpp">
       <Filter>source</Filter>
     </ClInclude>
-    <ClInclude Include="source\http\core\HttpParser.hpp">
-      <Filter>source\http\core</Filter>
-    </ClInclude>
     <ClInclude Include="source\Server.hpp">
       <Filter>source</Filter>
-    </ClInclude>
-    <ClInclude Include="source\http\core\HttpResponse.hpp">
-      <Filter>source\http\core</Filter>
-    </ClInclude>
-    <ClInclude Include="source\http\core\HttpStatusCode.hpp">
-      <Filter>source\http\core</Filter>
-    </ClInclude>
-    <ClInclude Include="source\http\core\UrlParser.hpp">
-      <Filter>source\http\core</Filter>
     </ClInclude>
     <ClInclude Include="source\pages\BulkMarketOrders.hpp">
       <Filter>source\pages</Filter>
@@ -100,20 +55,11 @@
     <ClInclude Include="source\pages\Errors.hpp">
       <Filter>source\pages</Filter>
     </ClInclude>
-    <ClInclude Include="source\socket\WinTlsSocket.hpp">
-      <Filter>source\socket</Filter>
-    </ClInclude>
-    <ClInclude Include="source\socket\OpenSslSocket.hpp">
-      <Filter>source\socket</Filter>
-    </ClInclude>
     <ClInclude Include="source\Log.hpp">
       <Filter>source</Filter>
     </ClInclude>
     <ClInclude Include="source\pages\Jita5pSell.hpp">
       <Filter>source\pages</Filter>
-    </ClInclude>
-    <ClInclude Include="source\http\HttpStatusErrors.hpp">
-      <Filter>source\http</Filter>
     </ClInclude>
     <ClInclude Include="source\pages\lib\Params.hpp">
       <Filter>source\pages\lib</Filter>
@@ -169,38 +115,20 @@
     <ClCompile Include="source\String.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="source\socket\TcpSocket.cpp">
-      <Filter>source\socket</Filter>
-    </ClCompile>
-    <ClCompile Include="source\socket\Socket.cpp">
-      <Filter>source\socket</Filter>
-    </ClCompile>
     <ClCompile Include="source\Gzip.cpp">
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="source\CrestBulkMarketOrders.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="source\http\core\HttpParser.cpp">
-      <Filter>source\http\core</Filter>
-    </ClCompile>
     <ClCompile Include="source\Server.cpp">
       <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="source\http\core\HttpStatusCode.cpp">
-      <Filter>source\http\core</Filter>
     </ClCompile>
     <ClCompile Include="source\pages\BulkMarketOrders.cpp">
       <Filter>source\pages</Filter>
     </ClCompile>
     <ClCompile Include="source\pages\Errors.cpp">
       <Filter>source\pages</Filter>
-    </ClCompile>
-    <ClCompile Include="source\socket\WinTlsSocket.cpp">
-      <Filter>source\socket</Filter>
-    </ClCompile>
-    <ClCompile Include="source\socket\OpenSslSocket.cpp">
-      <Filter>source\socket</Filter>
     </ClCompile>
     <ClCompile Include="source\Log.cpp">
       <Filter>source</Filter>

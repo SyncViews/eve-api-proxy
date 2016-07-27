@@ -3,7 +3,6 @@
 #include "Error.hpp"
 #include "Cache.hpp"
 #include "CppServers.hpp"
-#include "http/core/HttpParser.hpp"
 #include "Gzip.hpp"
 #include <iostream>
 namespace crest
