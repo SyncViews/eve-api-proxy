@@ -4,10 +4,10 @@
 #include "model/MarketOrder.hpp"
 namespace crest
 {
-    class Cache;
+    class CacheOld;
 }
 
 /**Populates the orders vectors in the MarketOrderLists.*/
 void get_crest_bulk_market_orders(
-    crest::Cache &cache,
+    crest::CacheOld &cache,
     std::vector<MarketOrderList> &order_lists);

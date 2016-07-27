@@ -3,7 +3,7 @@
 #include <http/Response.hpp>
 namespace crest
 {
-    class Cache;
+    class CacheOld;
 }
 
 /**GET /jita-5p-sell
@@ -11,4 +11,4 @@ namespace crest
  * params:
  *   - type = array of type ids
  */
-http::Response http_get_jita_5p_sell(crest::Cache &cache, http::Request &request);
+http::Response http_get_jita_5p_sell(crest::CacheOld &cache, http::Request &request);

@@ -3,7 +3,7 @@
 #include <http/Response.hpp>
 namespace crest
 {
-    class Cache;
+    class CacheOld;
 }
 
 
@@ -15,5 +15,5 @@ namespace crest
  *   - region = array of region ids
  *   - type = array of type ids
  */
-http::Response http_get_bulk_market_orders(crest::Cache &cache, http::Request &request);
+http::Response http_get_bulk_market_orders(crest::CacheOld &cache, http::Request &request);
 

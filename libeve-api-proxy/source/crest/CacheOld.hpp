@@ -7,7 +7,7 @@
 
 namespace crest
 {
-    class Cache
+    class CacheOld
     {
     public:
         struct CacheLookupResults
@@ -30,8 +30,8 @@ namespace crest
             }
         };
 
-        Cache();
-        ~Cache();
+        CacheOld();
+        ~CacheOld();
         void stop();
 
         CacheEntry *get(const std::string &path);

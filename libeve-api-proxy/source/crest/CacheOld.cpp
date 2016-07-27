@@ -1,10 +1,10 @@
 #include "Precompiled.hpp"
-#include "Cache.hpp"
+#include "CacheOld.hpp"
 #include "../Gzip.hpp"
 
 namespace crest
 {
-    Cache::Cache()
+    CacheOld::CacheOld()
         : cache_mutex(), cache_size(0), cache(), preload_entries()
         , preload_request_next(0)
         , crest_connection_pool()
@@ -25,30 +25,30 @@ namespace crest
         log_info() << "Got " << preload_entries.size() << " CREST requests to keep preloaded" << std::endl;
     }
 
-    Cache::~Cache()
+    CacheOld::~CacheOld()
     {
         stop();
     }
 
-    void Cache::stop()
+    void CacheOld::stop()
     {
         crest_connection_pool.exit();
     }
 
-    CacheEntry *Cache::get(const std::string &path)
+    CacheEntry *CacheOld::get(const std::string &path)
     {
         std::unique_lock<std::mutex> entry_lock;
         return get_locked(path, entry_lock);
     }
 
-    Cache::CacheLookupFutureResults Cache::get_future(const std::string &path)
+    CacheOld::CacheLookupFutureResults CacheOld::get_future(const std::string &path)
     {
         std::unique_lock<std::mutex> entry_lock;
         auto entry = get_locked(path, entry_lock);
         return{ entry, CacheEntry::NEW,{} };
     }
 
-    Cache::CacheLookupResults Cache::get_now(const std::string &path)
+    CacheOld::CacheLookupResults CacheOld::get_now(const std::string &path)
     {
         std::unique_lock<std::mutex> entry_lock;
         auto entry = get_locked(path, entry_lock);
@@ -56,7 +56,7 @@ namespace crest
         return{ entry, std::move(entry_lock) };
     }
 
-    CacheEntry &Cache::get_entry(const std::string &path)
+    CacheEntry &CacheOld::get_entry(const std::string &path)
     {
         auto &entry = cache[path];
         if (entry.path.empty())
@@ -66,7 +66,7 @@ namespace crest
         return entry;
     }
 
-    CacheEntry *Cache::get_locked(const std::string &path, std::unique_lock<std::mutex> &entry_lock)
+    CacheEntry *CacheOld::get_locked(const std::string &path, std::unique_lock<std::mutex> &entry_lock)
     {
         std::unique_lock<std::mutex> lock(cache_mutex);
         auto &entry = get_entry(path);
@@ -91,7 +91,7 @@ namespace crest
         return &entry;
     }
 
-    void Cache::update_entry(CacheEntry &entry)
+    void CacheOld::update_entry(CacheEntry &entry)
     {
         auto entryp = &entry;
         entry.status = CacheEntry::UPDATING;
@@ -108,11 +108,11 @@ namespace crest
         };
 
         (entry.path,
-            std::bind(&Cache::update_entry_completion, this, &entry, std::placeholders::_1));
+            std::bind(&CacheOld::update_entry_completion, this, &entry, std::placeholders::_1));
         crest_connection_pool.queue(&entry.http_request);
     }
 
-    void Cache::update_entry_completion(CacheEntry *entry, http::Response *response)
+    void CacheOld::update_entry_completion(CacheEntry *entry, http::Response *response)
     {
         std::unique_lock<std::mutex> cache_lock(cache_mutex);
         {
@@ -145,7 +145,7 @@ namespace crest
         check_cache_purge();
     }
 
-    void Cache::check_cache_purge()
+    void CacheOld::check_cache_purge()
     {
         if (cache_size <= MAX_CACHE_SIZE) return;
 

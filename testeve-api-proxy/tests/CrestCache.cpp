@@ -1,17 +1,17 @@
 #include <boost/test/unit_test.hpp>
 #include <iostream>
-#include "crest/Cache.hpp"
+#include "crest/CacheOld.hpp"
 
 BOOST_AUTO_TEST_SUITE(TestCrestCache)
 
 BOOST_AUTO_TEST_CASE(start_stop)
 {
-    crest::Cache cache;
+    crest::CacheOld cache;
 }
 
 BOOST_AUTO_TEST_CASE(test_sequential)
 {
-    crest::Cache cache;
+    crest::CacheOld cache;
     {
         auto a = cache.get_now("/market/10000002/orders/buy/?type=https://crest-tq.eveonline.com/inventory/types/34/");
         BOOST_CHECK_EQUAL(crest::CacheEntry::UPDATED, a.entry->status);
@@ -32,8 +32,8 @@ BOOST_AUTO_TEST_CASE(test_sequential)
 
 BOOST_AUTO_TEST_CASE(test_parallel)
 {
-    crest::Cache cache;
-    std::vector<crest::Cache::CacheLookupFutureResults> results;
+    crest::CacheOld cache;
+    std::vector<crest::CacheOld::CacheLookupFutureResults> results;
     for (int i = 0; i < 100; ++i)
     {
         std::string type = "?type=https://crest-tq.eveonline.com/inventory/types/" + std::to_string(34 + i) + "/";

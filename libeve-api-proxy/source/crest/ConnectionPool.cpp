@@ -1,7 +1,7 @@
 #include "Precompiled.hpp"
 #include "ConnectionPool.hpp"
 #include "Error.hpp"
-#include "Cache.hpp"
+#include "CacheOld.hpp"
 #include "CppServers.hpp"
 #include "Gzip.hpp"
 #include <iostream>

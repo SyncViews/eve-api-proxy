@@ -1,6 +1,6 @@
 #include "Precompiled.hpp"
 #include "CrestBulkMarketOrders.hpp"
-#include "crest/Cache.hpp"
+#include "crest/CacheOld.hpp"
 #include "crest/JsonHelpers.hpp"
 #include <json/Reader.hpp>
 #include <json/Writer.hpp>
@@ -17,7 +17,7 @@ void parse_crest_orders(
 }
 
 void get_crest_bulk_market_orders(
-    crest::Cache &cache,
+    crest::CacheOld &cache,
     std::vector<MarketOrderList> &order_lists)
 {
     std::vector<crest::CacheEntry*> cache_entries;

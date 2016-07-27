@@ -1,13 +1,13 @@
 #include <boost/test/unit_test.hpp>
 #include <iostream>
-#include "crest/Cache.hpp"
+#include "crest/CacheOld.hpp"
 #include "CrestBulkMarketOrders.hpp"
 
 BOOST_AUTO_TEST_SUITE(TestCrestBulkMarketOrders)
 
 BOOST_AUTO_TEST_CASE(test)
 {
-    crest::Cache cache;
+    crest::CacheOld cache;
     std::vector<MarketOrderList> orders;
     orders.emplace_back(true, 10000002, 34);
     orders.emplace_back(false, 10000002, 34);
