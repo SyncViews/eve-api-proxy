@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClCompile Include="tests\CrestBulkMarketOrders.cpp" />
     <ClCompile Include="tests\CrestCache.cpp" />
+    <ClCompile Include="tests\crest\MarketOrdersAll.cpp" />
     <ClCompile Include="tests\crest\MarketOrderSlim.cpp" />
     <ClCompile Include="tests\Main.cpp" />
     <ClCompile Include="tests\String.cpp" />

@@ -129,10 +129,10 @@ namespace crest
                     if (cache_size < entry->data.size()) cache_size = 0; //just to be safe
                     else cache_size -= entry->data.size();
                 }
-                auto data = gzip_decompress({
+                auto data = gzip_decompress(std::vector<uint8_t>(
                     (const uint8_t*)response->body.data(),
                     (const uint8_t*)response->body.data() + response->body.size()
-                });
+                ));
                 cache_size += data.size();
 
                 entry->data = std::move(data);

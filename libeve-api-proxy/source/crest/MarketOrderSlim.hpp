@@ -10,7 +10,8 @@ namespace crest
     struct MarketOrderSlim
     {
         static const int RANGE_STATION = -1;
-        static const int RANGE_REGION = -2;
+        static const int RANGE_SYSTEM = -2;
+        static const int RANGE_REGION = -3;
         MarketOrderSlim() {}
 
         long long id;
@@ -30,6 +31,7 @@ namespace crest
     {
         auto str = json::read_json<std::string>(parser);
         if (str == "station") *range = MarketOrderSlim::RANGE_STATION;
+        else if (str == "solarsystem") *range = MarketOrderSlim::RANGE_SYSTEM;
         else if (str == "region") *range = MarketOrderSlim::RANGE_REGION;
         else *range = std::stoi(str);
     }
@@ -60,6 +62,8 @@ namespace crest
         writer.prop("station_id", order.station_id);
         if (order.range == MarketOrderSlim::RANGE_REGION)
             writer.prop("range", "region");
+        else if (order.range == MarketOrderSlim::RANGE_SYSTEM)
+            writer.prop("range", "solarsystem");
         else if (order.range == MarketOrderSlim::RANGE_STATION)
             writer.prop("range", "station");
         else writer.prop("range", std::to_string(order.range));

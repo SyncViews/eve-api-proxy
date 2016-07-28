@@ -5,11 +5,6 @@
 using namespace crest;
 BOOST_AUTO_TEST_SUITE(TestCrestMarketOrderSlim)
 
-#define CHECK_VEC(a, b) { \
-    auto &&a2 = a; \
-    auto &&b2 = b; \
-    BOOST_CHECK_EQUAL_COLLECTIONS(a2.begin(), a2.end(), b2.begin(), b2.end()); \
-}
 BOOST_AUTO_TEST_CASE(read)
 {
     MarketOrderSlim order;
