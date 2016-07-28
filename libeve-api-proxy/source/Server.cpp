@@ -53,7 +53,7 @@ http::Response Server::handle_request(http::Request &request)
         }
         else if (request.url.path == "/jita-5p-sell")
         {
-            response = http_get_jita_5p_sell(crest_cache, request);
+            response = http_get_jita_5p_sell(cache, request);
         }
         else response = http_simple_error_page(request, 404, request.url.path + " was not found");
     }

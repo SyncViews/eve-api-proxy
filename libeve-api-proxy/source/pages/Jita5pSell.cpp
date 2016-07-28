@@ -1,76 +1,76 @@
 #include "Precompiled.hpp"
 #include "Errors.hpp"
 #include "Jita5pSell.hpp"
-#include "CrestBulkMarketOrders.hpp"
+#include "crest/Cache.hpp"
 #include "model/EveRegions.hpp"
 #include <iostream>
 #include <chrono>
 #include <json/Writer.hpp>
-http::Response http_get_jita_5p_sell(crest::CacheOld &cache, http::Request &request)
+http::Response http_get_jita_5p_sell(crest::Cache &cache, http::Request &request)
 {
     // Get params
-    std::vector<MarketOrderList> order_sets;
+    std::vector<int> types;
     for (auto &i : request.url.query_param_list("type"))
     {
-        auto type = std::stoi(i);
-        order_sets.emplace_back(false, EVE_THE_FORGE_ID, type);
+        types.push_back(std::stoi(i));
     }
-    if (order_sets.empty()) return http_bad_request(request, "At least one type required.");
+    if (types.empty()) return http_bad_request(request, "At least one type required.");
 
     // Build requests
-    log_info() << "GET /jita-5p-sell with " << order_sets.size() << " types" << std::endl;
+    log_info() << "GET /jita-5p-sell with " << types.size() << " types" << std::endl;
     
     // Make requests
     auto start = std::chrono::high_resolution_clock::now();
-    get_crest_bulk_market_orders(cache, order_sets);
+    json::Writer json_writer;
+    json_writer.start_obj();
+    for (auto type : types)
+    {
+        auto orders = cache.get_orders(EVE_THE_FORGE_ID, type, false);
+        std::vector<const crest::MarketOrderSlim*> jita_orders;
+        for (auto &j : *orders)
+        {
+            if (j.station_id == EVE_JITA_4_4_ID) jita_orders.push_back(&j);
+        }
+
+        //total volume
+        int64_t total_volume = 0;
+        for (auto &a : jita_orders) total_volume += a->volume;
+        if (!total_volume) continue; //no orders
+
+        //sort by price
+        std::sort(jita_orders.begin(), jita_orders.end(),
+            [](const crest::MarketOrderSlim* a, const crest::MarketOrderSlim* b) {
+            return a->price < b->price;
+        });
+
+        //5% price
+        auto avg_volume = (total_volume + 20 - 1) / 20;
+        auto remaining_volume = avg_volume;
+        double total_price = 0;
+        for (auto &a : jita_orders)
+        {
+            if (remaining_volume > a->volume)
+            {
+                remaining_volume -= a->volume;
+                total_price += a->price * a->volume;
+            }
+            else
+            {
+                total_price += a->price * remaining_volume;
+                break;
+            }
+        }
+        //output
+        double avg_price = total_price / avg_volume;
+        json_writer.prop(std::to_string(type), avg_price);
+
+    }
+    json_writer.end_obj();
+
     auto end = std::chrono::high_resolution_clock::now();
     log_info() << "Cache lookup took "
         << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
         << "ms." << std::endl;
-    
-    // Response
-    json::Writer json_writer;
-    json_writer.start_obj();
-    for (auto &i : order_sets)
-    {
-        //only jita 4-4
-        std::vector<MarketOrder> orders;
-        for (auto &j : i.orders)
-        {
-            if (j.station_id == EVE_JITA_4_4_ID) orders.push_back(j);
-        }
-
-        std::sort(orders.begin(), orders.end(),
-            [](const MarketOrder &a, const MarketOrder &b) {
-                return a.price < b.price;
-            });
-        int64_t total_volume = 0;
-        for (auto &a : orders) total_volume += a.volume;
-
-        if (!total_volume) continue; //no orders
-
-        auto avg_volume = (total_volume + 20 - 1) / 20;
-        auto remaining_volume = avg_volume;
-        double total_price = 0;
-        for (auto &a : orders)
-        {
-            if (remaining_volume > a.volume)
-            {
-                remaining_volume -= a.volume;
-                total_price += a.price * a.volume;
-            }
-            else
-            {
-                total_price += a.price * remaining_volume;
-                break;
-            }
-        }
-        double avg_price = total_price / avg_volume;
-        auto key = std::to_string(i.type_id);
-
-        json_writer.prop(key, avg_price);
-    }
-    json_writer.end_obj();
 
     http::Response resp;
     resp.status_code(http::SC_OK);
