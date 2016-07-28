@@ -41,7 +41,7 @@ http::Response Server::handle_request(http::Request &request)
         }
         else if (request.url.path == "/bulk-market-orders")
         {
-            response = http_get_bulk_market_orders(crest_cache, request);
+            response = http_get_bulk_market_orders(cache, request);
         }
         else if (request.url.path == "/hub-buy-prices")
         {

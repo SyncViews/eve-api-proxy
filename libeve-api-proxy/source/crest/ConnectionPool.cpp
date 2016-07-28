@@ -4,7 +4,9 @@
 #include "CacheOld.hpp"
 #include "CppServers.hpp"
 #include "Gzip.hpp"
+#include "Log.hpp"
 #include <iostream>
+#include <chrono>
 namespace crest
 {
     namespace
@@ -42,6 +44,19 @@ namespace crest
 
     void ConnectionPool::queue(http::AsyncRequest *request)
     {
+        auto cb_tmp = request->on_completion;
+        auto start = std::chrono::steady_clock::now();
+        request->on_completion = [start, cb_tmp](http::AsyncRequest *request, http::Response &response)
+        {
+            auto end = std::chrono::steady_clock::now();
+            auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+            log_info()
+                << elapsed.count() << "ms "
+                << response.status.code << " " << response.status.msg
+                << " " << request->raw_url << std::endl;
+            if (cb_tmp) cb_tmp(request, response);
+        };
+        log_info() << "CREST GET " << request->raw_url << std::endl;
         http_client.make_request(request);
     }
 }

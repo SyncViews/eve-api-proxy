@@ -106,6 +106,9 @@
     <ClInclude Include="source\crest\MarketOrdersCache.hpp">
       <Filter>source\crest</Filter>
     </ClInclude>
+    <ClInclude Include="source\crest\Cache.hpp">
+      <Filter>source\crest</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Init.cpp">
@@ -160,6 +163,9 @@
       <Filter>source\crest</Filter>
     </ClCompile>
     <ClCompile Include="source\crest\MarketOrdersCache.cpp">
+      <Filter>source\crest</Filter>
+    </ClCompile>
+    <ClCompile Include="source\crest\Cache.cpp">
       <Filter>source\crest</Filter>
     </ClCompile>
   </ItemGroup>

@@ -34,6 +34,7 @@ namespace crest
             conn_pool.queue(&req);
         }
     }
+
     std::vector<MarketOrderSlim> get_market_orders_all(
         ConnectionPool &conn_pool,
         int region_id)
@@ -45,6 +46,7 @@ namespace crest
         auto first_page_resp = first_page_req.wait();
         auto page = json::read_json<Page>(gzip_decompress(first_page_resp->body));
         int page_count = page.page_count;
+        if (page_count <= 1) return std::move(page.items);
 
         //Send all requests
         std::unique_ptr<http::AsyncRequest[]> page_reqs(new http::AsyncRequest[page_count - 1]);

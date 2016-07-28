@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="source\CppServers.hpp" />
     <ClInclude Include="source\CrestBulkMarketOrders.hpp" />
+    <ClInclude Include="source\crest\Cache.hpp" />
     <ClInclude Include="source\crest\CacheOld.hpp" />
     <ClInclude Include="source\crest\CacheEntry.hpp" />
     <ClInclude Include="source\crest\ConnectionPool.hpp" />
@@ -50,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\CrestBulkMarketOrders.cpp" />
+    <ClCompile Include="source\crest\Cache.cpp" />
     <ClCompile Include="source\crest\ConnectionPool.cpp" />
     <ClCompile Include="source\crest\CacheOld.cpp" />
     <ClCompile Include="source\crest\MarketOrdersAll.cpp" />

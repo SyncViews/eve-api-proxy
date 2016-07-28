@@ -36,8 +36,5 @@
     <ClCompile Include="tests\crest\MarketOrderSlim.cpp">
       <Filter>Source Files\crest</Filter>
     </ClCompile>
-    <ClCompile Include="tests\crest\MarketOrdersAll.cpp">
-      <Filter>Source Files\crest</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

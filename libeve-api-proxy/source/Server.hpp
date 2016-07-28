@@ -1,5 +1,6 @@
 #pragma once
 #include "crest/CacheOld.hpp"
+#include "crest/Cache.hpp"
 #include <http/server/CoreServer.hpp>
 #include <thread>
 
@@ -14,5 +15,6 @@ public:
     virtual http::Response parser_error_page(const http::ParserError &err)override;
 private:
     crest::CacheOld crest_cache;
+    crest::Cache cache;
 
 };
