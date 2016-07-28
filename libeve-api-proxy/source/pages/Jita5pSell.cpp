@@ -3,18 +3,14 @@
 #include "Jita5pSell.hpp"
 #include "crest/Cache.hpp"
 #include "model/EveRegions.hpp"
+#include "lib/Params.hpp"
 #include <iostream>
 #include <chrono>
 #include <json/Writer.hpp>
 http::Response http_get_jita_5p_sell(crest::Cache &cache, http::Request &request)
 {
     // Get params
-    std::vector<int> types;
-    for (auto &i : request.url.query_param_list("type"))
-    {
-        types.push_back(std::stoi(i));
-    }
-    if (types.empty()) return http_bad_request(request, "At least one type required.");
+    std::vector<int> types = params_inv_types(request);
 
     // Build requests
     log_info() << "GET /jita-5p-sell with " << types.size() << " types" << std::endl;

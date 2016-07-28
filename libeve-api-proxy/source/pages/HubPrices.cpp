@@ -1,52 +1,67 @@
 #include "Precompiled.hpp"
 #include "HubPrices.hpp"
-#include "CrestBulkMarketOrders.hpp"
+#include "crest/Cache.hpp"
 #include "model/EveRegions.hpp"
 #include "lib/Params.hpp"
 #include <json/Writer.hpp>
 
-template<bool buy>
-http::Response http_get_hub_prices(crest::CacheOld &cache, http::Request &request)
+namespace
 {
     static const int REGIONS[] = { EVE_THE_FORGE_ID, EVE_HEIMATAR_ID, EVE_METROPOLIS_ID, EVE_DOMAIN_ID, EVE_SINQ_LAISON_ID };
     static const int REGION_COUNT = sizeof(REGIONS) / sizeof(REGIONS[0]);
     static const int STATIONS[] = { EVE_JITA_4_4_ID, EVE_RENS_HUB_ID, EVE_HEK_HUB_ID, EVE_AMARR_HUB_ID, EVE_DODIXIE_HUB_ID };
 
+    struct OrderSet
+    {
+        int region_id;
+        int type_id;
+        std::future<std::shared_ptr<const crest::MarketOrdersSlim>> future;
+
+        OrderSet(int region_id, int type_id)
+            : region_id(region_id), type_id(type_id)
+            , future()
+        {}
+    };
+}
+
+template<bool buy>
+http::Response http_get_hub_prices(crest::Cache &cache, http::Request &request)
+{
+
     std::vector<int> types = params_inv_types(request);
-    std::vector<MarketOrderList> order_sets;
-    for (auto type : types)
+    std::vector<std::future<std::shared_ptr<const crest::MarketOrdersSlim>>> futures;
+    futures.reserve(types.size() * REGION_COUNT);
+
+    log_info() << "GET /hub-(buy|sell)-prices with " << (types.size() * REGION_COUNT) << " order_sets" << std::endl;
+    auto start = std::chrono::high_resolution_clock::now();
+    //Make requests
+    for (auto &type : types)
     {
         for (auto region : REGIONS)
         {
-            order_sets.emplace_back(buy, region, type);
+            futures.push_back(cache.get_orders_async(region, type, buy));
         }
     }
-
-    log_info() << "GET /hub-(buy|sell)-prices with " << order_sets.size() << " order_sets" << std::endl;
-    auto start = std::chrono::high_resolution_clock::now();
-    get_crest_bulk_market_orders(cache, order_sets);
-    auto end = std::chrono::high_resolution_clock::now();
-    log_info() << "Cache lookup took "
-        << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-        << "ms." << std::endl;
-
-    // Response
-    json::Writer json_writer;
-    json_writer.start_obj();
-    auto it = order_sets.begin();
-    for (auto type : types)
+    // Process results
+    json::Writer writer;
+    writer.start_arr();
+    for (size_t i = 0; i < types.size(); ++i)
     {
-        json_writer.key(std::to_string(type));
-        json_writer.start_obj();
+        auto type = types[i];
+        writer.key(std::to_string(type));
+        writer.start_obj();
         for (int j = 0; j < REGION_COUNT; ++j)
         {
             auto region = REGIONS[j];
             auto station = STATIONS[j];
-            assert(it->type_id == type && it->region_id == region);
-            assert(it->buy == buy);
+
+            auto &future = futures[i * REGION_COUNT + j];
+            future.wait();
+            auto orders = future.get();
+
             bool found = false;
             float best = 0;
-            for (auto &order : it->orders)
+            for (auto &order : *orders)
             {
                 if (order.station_id == station)
                 {
@@ -60,25 +75,29 @@ http::Response http_get_hub_prices(crest::CacheOld &cache, http::Request &reques
             if (found)
             {
                 //output
-                json_writer.prop(std::to_string(region), best);
+                writer.prop(std::to_string(region), best);
             }
-            ++it;
         }
-        json_writer.end_obj();
+        writer.end_obj();
     }
-    json_writer.end_obj();
+    writer.end_arr();
+
+    auto end = std::chrono::high_resolution_clock::now();
+    log_info() << "Cache lookup took "
+        << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+        << "ms." << std::endl;
 
     http::Response resp;
     resp.status_code(http::SC_OK);
-    resp.body = json_writer.str();
+    resp.body = writer.str();
     return resp;
 }
 
-http::Response http_get_hub_buy_prices(crest::CacheOld &cache, http::Request &request)
+http::Response http_get_hub_buy_prices(crest::Cache &cache, http::Request &request)
 {
     return http_get_hub_prices<true>(cache, request);
 }
-http::Response http_get_hub_sell_prices(crest::CacheOld &cache, http::Request &request)
+http::Response http_get_hub_sell_prices(crest::Cache &cache, http::Request &request)
 {
     return http_get_hub_prices<false>(cache, request);
 }

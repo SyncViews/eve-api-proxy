@@ -3,7 +3,7 @@
 #include <http/Response.hpp>
 namespace crest
 {
-    class CacheOld;
+    class Cache;
 }
 
 
@@ -12,11 +12,11 @@ namespace crest
  * params:
  *   - type = array of type ids
  */
-http::Response http_get_hub_buy_prices(crest::CacheOld &cache, http::Request &request);
+http::Response http_get_hub_buy_prices(crest::Cache &cache, http::Request &request);
 
 /**GET /hub-sell-prices
  *
  * params:
  *   - type = array of type ids
  */
-http::Response http_get_hub_sell_prices(crest::CacheOld &cache, http::Request &request);
+http::Response http_get_hub_sell_prices(crest::Cache &cache, http::Request &request);

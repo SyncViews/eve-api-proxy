@@ -45,11 +45,11 @@ http::Response Server::handle_request(http::Request &request)
         }
         else if (request.url.path == "/hub-buy-prices")
         {
-            response = http_get_hub_buy_prices(crest_cache, request);
+            response = http_get_hub_buy_prices(cache, request);
         }
         else if (request.url.path == "/hub-sell-prices")
         {
-            response = http_get_hub_sell_prices(crest_cache, request);
+            response = http_get_hub_sell_prices(cache, request);
         }
         else if (request.url.path == "/jita-5p-sell")
         {
