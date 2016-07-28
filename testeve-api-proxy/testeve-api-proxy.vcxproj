@@ -157,11 +157,9 @@
   <ItemGroup>
     <ClCompile Include="tests\CrestBulkMarketOrders.cpp" />
     <ClCompile Include="tests\CrestCache.cpp" />
+    <ClCompile Include="tests\crest\MarketOrderSlim.cpp" />
     <ClCompile Include="tests\Main.cpp" />
     <ClCompile Include="tests\String.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="tests\MarketCache.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
