@@ -43,6 +43,7 @@ namespace crest
             }
             
             // Get updated data
+            region_ref.data = nullptr;
             auto orders = get_orders(region_id);
 
             auto new_data = std::make_shared<RegionData>();
