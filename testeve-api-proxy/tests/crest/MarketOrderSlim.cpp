@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE(read)
     BOOST_CHECK_EQUAL(1469656701, order.issued);
     BOOST_CHECK_EQUAL(1, order.min_volume);
     BOOST_CHECK_CLOSE(120.72, order.price, 0.00001);
-    BOOST_CHECK_EQUAL(MarketOrderSlim::RANGE_STATION, order.range);
+    BOOST_CHECK_EQUAL((int)MarketOrderSlim::RANGE_STATION, order.range);
     BOOST_CHECK_EQUAL(60000382, order.station_id);
     BOOST_CHECK_EQUAL(3673, order.type);
     BOOST_CHECK_EQUAL(70156, order.volume);
@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE(read)
         "   \"volumeEntered\": 70376"
         "}"
         , &order);
-    BOOST_CHECK_EQUAL(MarketOrderSlim::RANGE_REGION, order.range);
+    BOOST_CHECK_EQUAL((int)MarketOrderSlim::RANGE_REGION, order.range);
 
     json::read_json(
         "{"

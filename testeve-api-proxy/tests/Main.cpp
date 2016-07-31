@@ -9,4 +9,6 @@ struct Startup
     {
         init();
     }
-}startup;
+};
+BOOST_GLOBAL_FIXTURE(Startup);
+

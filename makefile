@@ -12,10 +12,10 @@ CC_VARIATION_FLAGS = -O3 -DNDEBUG
 debug: CC_VARIATION_FLAGS = -ggdb -Og -D_DEBUG
 debug: all
 
-LD_FLAGS := -pthread
-CC_FLAGS := -std=c++11 -pthread -Ilibeve-api-proxy/source/ -Ithird-party/cpp-json/include -DBOOST_TEST_DYN_LINK
+LD_FLAGS := -pthread -Lthird-party/cpp-http/bin
+CC_FLAGS := -std=c++11 -pthread -Ilibeve-api-proxy/source/ -Ithird-party/cpp-json/include -Ithird-party/cpp-http/include -DBOOST_TEST_DYN_LINK
 
-LIBS := -lz -lssl -lcrypto
+LIBS := -lhttp -lz -lssl -lcrypto
 TEST_LIBS := -lboost_unit_test_framework
 
 all: bin/eve-api-proxy test
