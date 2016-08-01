@@ -2,8 +2,10 @@
 #include <functional>
 #include <mutex>
 #include <future>
+#include <fstream>
 #include <ctime>
 #include "MarketOrderSlim.hpp"
+#include "MarketOrdersAll.hpp"
 
 
 namespace crest
@@ -15,58 +17,59 @@ namespace crest
     {
     public:
         /**Function to get all orders in a region. */
-        typedef std::function<MarketOrdersSlim(int region_id)> GetOrdersFunc;
-        static const std::shared_ptr<const MarketOrdersSlim> EMPTY_ORDERS;
+        
+        typedef std::function<void(int region_id, GetMarketOrdersAllCb cb)>GetOrdersFunc;
 
-        MarketOrdersCache(GetOrdersFunc get_orders) : get_orders(get_orders) {}
+        MarketOrdersCache(GetOrdersFunc get_orders);
 
-        /**Gets the market orders for a given type and region. */
-        std::shared_ptr<const MarketOrdersSlim> get_type(int region_id, int type_id, bool buy)
-        {
-            auto region = get_region(region_id);
-
-            auto type = region->types.find(type_id);
-            if (type == region->types.end()) return EMPTY_ORDERS;
-
-            return buy ? type->second.buy : type->second.sell;
-        }
-
-        std::future<std::shared_ptr<const MarketOrdersSlim>> get_type_async(int region_id, int type_id, bool buy);
+        std::shared_ptr<const MarketOrdersSlim> get_type(int region_id, int type_id, bool buy);
+        std::future<void> update_region_async(int region_id);
     private:
-        struct RegionData
-        {
-            struct Type
-            {
-                std::shared_ptr<MarketOrdersSlim> buy;
-                std::shared_ptr<MarketOrdersSlim> sell;
-            };
-            std::unordered_map<int, Type> types;
-        };
         /**A region a cached market orders. */
         struct Region
         {
-            Region() : data(), expires(0), update_mutex() {}
+            struct Entry
+            {
+                int id;
+                unsigned start_byte;
+                unsigned count;
+
+
+                friend bool operator < (const Entry &a, const Entry &b)
+                {
+                    return a.id < b.id;
+                }
+            };
+
+            Region(int region_id)
+                : region_id(region_id), expires(0), access_mutex()
+            {}
             Region(Region &&mv)
-                : data(mv.data)
+                : region_id(mv.region_id)
                 , expires(mv.expires.load())
-                , update_mutex()
+                , access_mutex()
             {}
             Region& operator = (Region &&mv)
             {
-                data = mv.data;
+                region_id = mv.region_id;
                 expires = mv.expires.load();
                 return *this;
             }
 
-            std::shared_ptr<RegionData> data;
+            int region_id;
+            std::vector<Entry> entries;
+            std::fstream fs;
             std::atomic<time_t> expires;
-            std::mutex update_mutex;
+            std::mutex access_mutex;
         };
-
+     
         GetOrdersFunc get_orders;
         std::unordered_map<int, Region> regions;
         std::mutex mutex;
+        std::atomic<int> updates_in_progress;
+        std::condition_variable updates_in_progress_cvar;
 
-        std::shared_ptr<RegionData> get_region(int region_id);
+        /**Updates a regions data if expired, must already hold region.access_lock.*/
+        void update_region(int region_id);
     };
 }

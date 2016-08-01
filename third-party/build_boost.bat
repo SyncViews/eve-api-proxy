@@ -19,6 +19,7 @@ call b2 --build-dir=build32 --stagedir=stage-Win32 ^
     address-model=32 ^
     runtime-link=shared ^
     --with-test ^
+    --with-filesystem ^
     -j 16 stage
 
 call %VCVARSALL% amd64
@@ -30,6 +31,7 @@ call b2 --build-dir=build64 --stagedir=stage-x64 ^
     address-model=64 ^
     runtime-link=shared ^
     --with-test ^
+    --with-filesystem ^
     -j 16 stage
 
 popd

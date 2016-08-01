@@ -155,7 +155,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="tests\CrestBulkMarketOrders.cpp" />
     <ClCompile Include="tests\CrestCache.cpp" />
     <ClCompile Include="tests\crest\MarketOrderSlim.cpp" />
     <ClCompile Include="tests\Main.cpp" />

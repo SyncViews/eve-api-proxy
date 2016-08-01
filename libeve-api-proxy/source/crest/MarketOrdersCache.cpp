@@ -1,68 +1,127 @@
 #include "Precompiled.hpp"
 #include "MarketOrdersCache.hpp"
+#include "Error.hpp"
 #include <thread>
+#include <boost/filesystem.hpp>
 namespace crest
 {
-    const std::shared_ptr<const MarketOrdersSlim> MarketOrdersCache::EMPTY_ORDERS
-        = std::make_shared<MarketOrdersSlim>();
+    namespace
+    {
+        namespace fs = boost::filesystem;
+        const auto EMPTY_ORDERS = std::make_shared<const MarketOrdersSlim>();
+        static const int MAX_UPDATES_IN_PROGRESS = 50;
+        const std::string CACHE_DIR = "cache/market_orders/";
 
-    std::future<std::shared_ptr<const MarketOrdersSlim>>
-    MarketOrdersCache::get_type_async(int region_id, int type_id, bool buy)
+        void delete_dir_contents(const std::string &dir)
+        {
+            fs::path path(dir);
+            if (fs::exists(path))
+            {
+                for (fs::directory_iterator i(path), end; i != end; ++i)
+                {
+                    fs::remove_all(i->path());
+                }
+            }
+        }
+        std::string get_region_cache_path(int region_id)
+        {
+            return CACHE_DIR + std::to_string(region_id);
+        }
+    }
+
+    MarketOrdersCache::MarketOrdersCache(GetOrdersFunc get_orders)
+        : get_orders(get_orders), regions(), mutex(), updates_in_progress(0)
+    {
+        delete_dir_contents(CACHE_DIR);
+    }
+
+    std::shared_ptr<const MarketOrdersSlim> MarketOrdersCache::get_type(int region_id, int type_id, bool buy)
+    {
+        std::unique_lock<std::mutex> lock(mutex);
+        //Get cache entry, and create a blank placeholder if needed
+        auto region = regions.find(region_id);
+        if (region == regions.end()) return EMPTY_ORDERS;
+        auto &region_ref = region->second;
+
+        lock.unlock();
+        std::unique_lock<std::mutex> access_lock(region_ref.access_mutex);
+
+        //Find entry
+        auto id = type_id;
+        if (buy) id = -id;
+        auto entry = std::lower_bound(
+            region_ref.entries.begin(),
+            region_ref.entries.end(),
+            id,
+            [](const Region::Entry &entry, int id) { return entry.id < id; });
+        if (entry == region_ref.entries.end() || entry->id != id)
+            return EMPTY_ORDERS;
+        //Read cache
+        auto bytes = entry->count * sizeof(MarketOrderSlim);
+        region_ref.fs.seekg(entry->start_byte);
+        auto data = std::make_shared<MarketOrdersSlim>();
+        data->resize(entry->count);
+        region_ref.fs.read((char*)data->data(), bytes);
+        if (region_ref.fs.gcount() != bytes) throw std::runtime_error("Failed to read cache file");
+        //Done
+        return data;
+    }
+
+    std::future<void> MarketOrdersCache::update_region_async(int region_id)
     {
         return std::async(std::launch::async,
-            [this, region_id, type_id, buy]() -> std::shared_ptr<const MarketOrdersSlim>
-        {
-            return get_type(region_id, type_id, buy);
+            [this, region_id]() {
+            update_region(region_id);
         });
     }
 
-    std::shared_ptr<MarketOrdersCache::RegionData> MarketOrdersCache::get_region(int region_id)
+    void MarketOrdersCache::update_region(int region_id)
     {
         std::unique_lock<std::mutex> lock(mutex);
-        //try and get cached results
-        auto region = regions.find(region_id);
-        if (region != regions.end() && region->second.expires >= time(nullptr))
+        //Get cache entry, and create a blank placeholder if needed
+        auto &region = regions.emplace(region_id, Region(region_id)).first->second;
+        //updates_in_progress_cvar.wait(lock,
+        //    [this]() { return updates_in_progress < MAX_UPDATES_IN_PROGRESS; });
+        //++updates_in_progress;
+        lock.unlock();
+        //Refresh cache
+        std::unique_lock<std::mutex> access_lock(region.access_mutex);
+
+        // Check if valid
+        if (region.expires >= time(nullptr))
+            return;
+
+        //Get updated data
+
+        std::unordered_map<int, std::vector<MarketOrderSlim>> files;
+        get_orders(region.region_id, [&files](const MarketOrderSlim &order) -> void
         {
-            return region->second.data;
-        }
-        else
+            int id = order.type;
+            if (order.buy) id = -id;
+
+            auto &file = files[id];
+            file.push_back(order);
+        });
+
+        region.entries.clear();
+        region.entries.reserve(files.size());
+
+        auto path = get_region_cache_path(region.region_id);
+        fs::create_directories(CACHE_DIR);
+        region.fs.open(path, std::ios::in | std::ios::out | std::ios::trunc | std::ios::binary);
+        for (auto &type : files)
         {
-            // Get cache entry
-            if (region == regions.end())
-            {
-                region = regions.emplace(region_id, Region()).first;
-            }
-            auto &region_ref = region->second;
-            lock.unlock();
-
-            std::unique_lock<std::mutex> update_lock(region_ref.update_mutex);
-            // Check expires again, may have blocked while another thread did the update
-            if (region_ref.expires >= time(nullptr))
-            {
-                return region_ref.data;
-            }
-            
-            // Get updated data
-            region_ref.data = nullptr;
-            auto orders = get_orders(region_id);
-
-            auto new_data = std::make_shared<RegionData>();
-
-            for (auto &order : orders)
-            {
-                auto &type = new_data->types[order.type];
-                if (!type.buy) type.buy = std::make_shared<MarketOrdersSlim>();
-                if (!type.sell) type.sell = std::make_shared<MarketOrdersSlim>();
-
-                if (order.buy) type.buy->push_back(order);
-                else type.sell->push_back(order);
-            }
-
-            //update cache under both locks
-            lock.lock();
-            region_ref.expires = time(nullptr) + 300;
-            region_ref.data = new_data;
-            return region_ref.data;
+            Region::Entry entry = {
+                type.first,
+                (unsigned)region.fs.tellp(),
+                (unsigned)type.second.size()
+            };
+            region.entries.push_back(entry);
+            region.fs.write((const char*)type.second.data(), sizeof(MarketOrderSlim)*type.second.size());
         }
+        std::sort(region.entries.begin(), region.entries.end());
+
+        region.expires = time(nullptr) + 300;
+        //if (--updates_in_progress <= 0) updates_in_progress_cvar.notify_one();
     }
 }

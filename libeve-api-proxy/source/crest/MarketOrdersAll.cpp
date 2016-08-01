@@ -4,6 +4,7 @@
 #include "ConnectionPool.hpp"
 #include "Urls.hpp"
 #include "Gzip.hpp"
+#include "Log.hpp"
 
 namespace crest
 {
@@ -33,34 +34,113 @@ namespace crest
 
             conn_pool.queue(&req);
         }
+
+        void my_read_json(
+            const std::string &json,
+            unsigned *page_count,
+            std::function<void(const MarketOrderSlim &order)> cb)
+        {
+            using namespace json;
+            Parser parser(json.c_str(), json.c_str() + json.size());
+            bool read_page_count = false;
+            bool read_items = false;
+
+            auto tok = parser.next();
+            if (tok.type != Token::OBJ_START) throw ParseError("Expected object");
+            do
+            {
+                tok = parser.next();
+                if (tok.type != Token::STRING) throw ParseError("Expected object key");
+                auto name = std::move(tok.str);
+
+                tok = parser.next();
+                if (tok.type != Token::KEY_SEP) throw ParseError("Expected ':'");
+
+                if (name == "pageCount")
+                {
+                    if (read_page_count) throw ParseError("Multiple pageCount");
+                    read_page_count = true;
+                    read_json(parser, page_count);
+                }
+                else if (name == "items")
+                {
+                    if (read_items) throw ParseError("Multiple items");
+                    read_items = true;
+                    
+                    tok = parser.next();
+                    if (tok.type != Token::ARR_START) throw ParseError("Expected array");
+                    if (!parser.try_next_arr_end())
+                    {
+                        do
+                        {
+                            MarketOrderSlim order;
+                            read_json(parser, &order);
+                            cb(order);
+
+                            tok = parser.next();
+                        }
+                        while (tok.type == Token::ELEMENT_SEP);
+                        if (tok.type != Token::ARR_END) throw ParseError("Expected array end");
+                    }
+                }
+                else skip_value(parser);
+
+                tok = parser.next();
+            }
+            while (tok.type == Token::ELEMENT_SEP);
+            if (tok.type != Token::OBJ_END) throw ParseError("Expected object end");
+            tok = parser.next();
+            if (tok.type != Token::END) throw ParseError("Expected JSON end");
+            if (!read_items) throw ParseError("Missing items");
+            if (!read_page_count) throw ParseError("Missing pageCount");
+        }
+    
     }
 
     std::vector<MarketOrderSlim> get_market_orders_all(
         ConnectionPool &conn_pool,
         int region_id)
     {
+        std::vector<MarketOrderSlim> out;
+        get_market_orders_all(conn_pool, region_id,
+            [&out](const MarketOrderSlim &order) { out.push_back(order); });
+        return out;
+    }
+
+    void get_market_orders_all(
+        ConnectionPool &conn_pool,
+        int region_id,
+        std::function<void(const MarketOrderSlim &order)> cb)
+    {
         auto url = market_orders_all_url(region_id);
+        unsigned page_count;
         //Get first page
-        http::AsyncRequest first_page_req;
-        send_page_request(first_page_req, conn_pool, url, 1);
-        auto first_page_resp = first_page_req.wait();
-        auto page = json::read_json<Page>(gzip_decompress(first_page_resp->body));
-        int page_count = page.page_count;
-        if (page_count <= 1) return std::move(page.items);
-
-        //Send all requests
-        std::unique_ptr<http::AsyncRequest[]> page_reqs(new http::AsyncRequest[page_count - 1]);
-        for (int i = 0; i < page_count - 1; ++i)
         {
-            send_page_request(page_reqs[i], conn_pool, url, i + 2);
+            http::AsyncRequest first_page_req;
+            send_page_request(first_page_req, conn_pool, url, 1);
+            auto first_page_resp = first_page_req.wait();
+            auto decompressed = gzip_decompress(first_page_resp->body);
+            first_page_resp->body.clear();
+            my_read_json(decompressed, &page_count, cb);
         }
-        //Process responses
-        for (int i = 0; i < page_count - 1; ++i)
+        if (page_count > 1)
         {
-            auto resp = page_reqs[i].wait();
-            json::read_json(gzip_decompress(resp->body), &page);
+            //Send all requests
+            std::unique_ptr<http::AsyncRequest[]> page_reqs(new http::AsyncRequest[page_count - 1]);
+            for (unsigned i = 0; i < page_count - 1; ++i)
+            {
+                send_page_request(page_reqs[i], conn_pool, url, i + 2);
+            }
+            //Process responses
+            for (unsigned i = 0; i < page_count - 1; ++i)
+            {
+                unsigned ignore;
+                auto resp = page_reqs[i].wait();
+                auto decompressed = gzip_decompress(resp->body);
+                resp->body.clear();
+                my_read_json(decompressed, &ignore, cb);
+            }
         }
-
-        return std::move(page.items);
+        log_info() << "Completed get_market_orders_all for " << region_id << std::endl;
     }
 }

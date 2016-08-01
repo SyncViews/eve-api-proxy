@@ -12,7 +12,8 @@
 
 Server::Server()
     : http::CoreServer(5000)
-    , crest_cache()
+    , cache()
+    , crest_cache(cache.get_conn_pool())
 {
 }
 
@@ -64,6 +65,10 @@ http::Response Server::handle_request(http::Request &request)
     catch (const http::ErrorResponse &err)
     {
         response = http_simple_error_page(request, err.status_code(), err.what());
+    }
+    catch (const std::exception &err)
+    {
+        response = http_simple_error_page(request, 500, err.what());
     }
 
 

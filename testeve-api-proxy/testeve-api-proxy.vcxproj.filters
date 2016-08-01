@@ -27,9 +27,6 @@
     <ClCompile Include="tests\CrestCache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tests\CrestBulkMarketOrders.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="tests\String.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

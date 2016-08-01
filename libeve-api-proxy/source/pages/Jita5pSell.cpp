@@ -17,6 +17,8 @@ http::Response http_get_jita_5p_sell(crest::Cache &cache, http::Request &request
     
     // Make requests
     auto start = std::chrono::high_resolution_clock::now();
+    cache.update_region_orders(EVE_THE_FORGE_ID);
+    // Response
     json::Writer json_writer;
     json_writer.start_obj();
     for (auto type : types)

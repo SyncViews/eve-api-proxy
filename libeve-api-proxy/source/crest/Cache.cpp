@@ -4,18 +4,17 @@
 
 namespace crest
 {
+    namespace
+    {
+        using namespace std::placeholders;
+    }
     Cache::Cache()
         : conn_pool()
-        , market_orders(std::bind(&Cache::get_region_orders, this, std::placeholders::_1))
+        , market_orders(std::bind(&get_market_orders_all_cb, std::ref(conn_pool), _1, _2))
     {
     }
 
     Cache::~Cache()
     {
-    }
-
-    MarketOrdersSlim Cache::get_region_orders(int region_id)
-    {
-        return get_market_orders_all(conn_pool, region_id);
     }
 }

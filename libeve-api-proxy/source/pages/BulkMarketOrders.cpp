@@ -9,6 +9,7 @@
 #include "../String.hpp"
 #include <iostream>
 #include <chrono>
+#include <unordered_set>
 namespace
 {
     struct OrderSet
@@ -28,6 +29,7 @@ http::Response http_get_bulk_market_orders(crest::Cache &cache, http::Request &r
 {
     // Get params
     std::vector<OrderSet> order_sets;
+    std::vector<int> regions;
 
     auto order_params = request.url.query_param_list("order");
     if (order_params.empty())
@@ -37,7 +39,7 @@ http::Response http_get_bulk_market_orders(crest::Cache &cache, http::Request &r
 
         if (!buy && !sell && order_params.empty()) return http_bad_request(request, "At least 'buy' or 'sell' param required.");
 
-        std::vector<int> regions = params_regions(request);
+        regions = params_regions(request);
         std::vector<int> types = params_inv_types(request);
 
         // Build requests
@@ -55,6 +57,7 @@ http::Response http_get_bulk_market_orders(crest::Cache &cache, http::Request &r
     }
     else
     {
+        std::unordered_set<int> regions_set;
         for (auto &param : order_params)
         {
             auto parts = splitString(param, ',');
@@ -62,24 +65,24 @@ http::Response http_get_bulk_market_orders(crest::Cache &cache, http::Request &r
             bool buy = parts[0] == "buy";
             int region_id = std::stoi(parts[1]);
             int type_id = std::stoi(parts[2]);
+            regions_set.insert(region_id);
             order_sets.emplace_back(buy, region_id, type_id);
         }
+        for (int region : regions_set) regions.push_back(region);
     }
     log_info() << "GET /bulk-market-orders with " << order_sets.size() << " order sets" << std::endl;
     // Make requests
     auto start = std::chrono::high_resolution_clock::now();
-    for (auto &order_set : order_sets)
-    {
-        order_set.future = cache.get_orders_async(order_set.region_id, order_set.type_id, order_set.buy);
-    }
+    cache.update_region_orders(regions);
     
     // Process results
     json::Writer writer;
     writer.start_arr();
     for (auto &order_set : order_sets)
     {
-        order_set.future.wait();
-        auto orders = order_set.future.get();
+        //order_set.future.wait();
+        //auto orders = order_set.future.get();
+        auto orders = cache.get_orders(order_set.region_id, order_set.type_id, order_set.buy);
 
         writer.start_obj();
         writer.prop("buy", order_set.buy);

@@ -35,13 +35,7 @@ http::Response http_get_hub_prices(crest::Cache &cache, http::Request &request)
     log_info() << "GET /hub-(buy|sell)-prices with " << (types.size() * REGION_COUNT) << " order_sets" << std::endl;
     auto start = std::chrono::high_resolution_clock::now();
     //Make requests
-    for (auto &type : types)
-    {
-        for (auto region : REGIONS)
-        {
-            futures.push_back(cache.get_orders_async(region, type, buy));
-        }
-    }
+    cache.update_region_orders(REGIONS, REGION_COUNT);
     // Process results
     json::Writer writer;
     writer.start_arr();
@@ -55,9 +49,7 @@ http::Response http_get_hub_prices(crest::Cache &cache, http::Request &request)
             auto region = REGIONS[j];
             auto station = STATIONS[j];
 
-            auto &future = futures[i * REGION_COUNT + j];
-            future.wait();
-            auto orders = future.get();
+            auto orders = cache.get_orders(region, type, buy);
 
             bool found = false;
             float best = 0;

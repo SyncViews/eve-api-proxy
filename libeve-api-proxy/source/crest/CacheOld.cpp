@@ -4,10 +4,10 @@
 
 namespace crest
 {
-    CacheOld::CacheOld()
+    CacheOld::CacheOld(ConnectionPool &crest_connection_pool)
         : cache_mutex(), cache_size(0), cache(), preload_entries()
         , preload_request_next(0)
-        , crest_connection_pool()
+        , crest_connection_pool(crest_connection_pool)
     {
         std::unique_lock<std::mutex> lock(cache_mutex);
         std::ifstream is("preload_requests.txt");

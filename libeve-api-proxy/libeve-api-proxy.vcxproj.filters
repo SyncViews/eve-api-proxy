@@ -43,9 +43,6 @@
     <ClInclude Include="source\Gzip.hpp">
       <Filter>source</Filter>
     </ClInclude>
-    <ClInclude Include="source\CrestBulkMarketOrders.hpp">
-      <Filter>source</Filter>
-    </ClInclude>
     <ClInclude Include="source\Server.hpp">
       <Filter>source</Filter>
     </ClInclude>
@@ -124,9 +121,6 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="source\Gzip.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="source\CrestBulkMarketOrders.cpp">
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="source\Server.cpp">

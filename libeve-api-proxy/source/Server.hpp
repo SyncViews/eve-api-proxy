@@ -14,7 +14,7 @@ public:
     virtual http::Response handle_request(http::Request &request)override;
     virtual http::Response parser_error_page(const http::ParserError &err)override;
 private:
-    crest::CacheOld crest_cache;
     crest::Cache cache;
+    crest::CacheOld crest_cache;
 
 };

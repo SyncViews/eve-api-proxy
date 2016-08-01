@@ -30,7 +30,7 @@ namespace crest
             }
         };
 
-        CacheOld();
+        CacheOld(ConnectionPool &crest_connection_pool);
         ~CacheOld();
         void stop();
 
@@ -55,7 +55,7 @@ namespace crest
         /**CrestConnectionPool for updating cache entries.*/
         std::vector<CacheEntry*> preload_entries;
         size_t preload_request_next;
-        ConnectionPool crest_connection_pool;
+        ConnectionPool &crest_connection_pool;
 
         CacheEntry &get_entry(const std::string &path);
         CacheEntry *get_locked(const std::string &path, std::unique_lock<std::mutex> &lock);

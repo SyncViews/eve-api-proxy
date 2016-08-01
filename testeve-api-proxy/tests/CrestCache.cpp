@@ -6,12 +6,14 @@ BOOST_AUTO_TEST_SUITE(TestCrestCache)
 
 BOOST_AUTO_TEST_CASE(start_stop)
 {
-    crest::CacheOld cache;
+    crest::ConnectionPool conn_pool;
+    crest::CacheOld cache(conn_pool);
 }
 
 BOOST_AUTO_TEST_CASE(test_sequential)
 {
-    crest::CacheOld cache;
+    crest::ConnectionPool conn_pool;
+    crest::CacheOld cache(conn_pool);
     {
         auto a = cache.get_now("/market/10000002/orders/buy/?type=https://crest-tq.eveonline.com/inventory/types/34/");
         BOOST_CHECK_EQUAL(crest::CacheEntry::UPDATED, a.entry->status);
@@ -32,7 +34,8 @@ BOOST_AUTO_TEST_CASE(test_sequential)
 
 BOOST_AUTO_TEST_CASE(test_parallel)
 {
-    crest::CacheOld cache;
+    crest::ConnectionPool conn_pool;
+    crest::CacheOld cache(conn_pool);
     std::vector<crest::CacheOld::CacheLookupFutureResults> results;
     for (int i = 0; i < 100; ++i)
     {
