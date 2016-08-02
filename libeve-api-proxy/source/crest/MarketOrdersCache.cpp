@@ -92,36 +92,46 @@ namespace crest
             return;
 
         //Get updated data
-
-        std::unordered_map<int, std::vector<MarketOrderSlim>> files;
-        get_orders(region.region_id, [&files](const MarketOrderSlim &order) -> void
+        try
         {
-            int id = order.type;
-            if (order.buy) id = -id;
+            std::unordered_map<int, std::vector<MarketOrderSlim>> files;
+            get_orders(region.region_id, [&files](const MarketOrderSlim &order) -> void
+            {
+                int id = order.type;
+                if (order.buy) id = -id;
 
-            auto &file = files[id];
-            file.push_back(order);
-        });
+                auto &file = files[id];
+                file.push_back(order);
+            });
 
-        region.entries.clear();
-        region.entries.reserve(files.size());
+            region.entries.clear();
+            region.entries.reserve(files.size());
 
-        auto path = get_region_cache_path(region.region_id);
-        fs::create_directories(CACHE_DIR);
-        region.fs.open(path, std::ios::in | std::ios::out | std::ios::trunc | std::ios::binary);
-        for (auto &type : files)
-        {
-            Region::Entry entry = {
-                type.first,
-                (unsigned)region.fs.tellp(),
-                (unsigned)type.second.size()
-            };
-            region.entries.push_back(entry);
-            region.fs.write((const char*)type.second.data(), sizeof(MarketOrderSlim)*type.second.size());
+            auto path = get_region_cache_path(region.region_id);
+            fs::create_directories(CACHE_DIR);
+            region.fs.close();
+            region.fs.open(path, std::ios::in | std::ios::out | std::ios::trunc | std::ios::binary);
+            if (!region.fs.good()) throw std::runtime_error("Failed to open cache file");
+            for (auto &type : files)
+            {
+                Region::Entry entry = {
+                    type.first,
+                    (unsigned)region.fs.tellp(),
+                    (unsigned)type.second.size()
+                };
+                region.entries.push_back(entry);
+                region.fs.write((const char*)type.second.data(), sizeof(MarketOrderSlim)*type.second.size());
+            }
+            std::sort(region.entries.begin(), region.entries.end());
+            if (!region.fs.good()) throw std::runtime_error("Failed to write cache file");
+
+            region.expires = time(nullptr) + 300;
+            //if (--updates_in_progress <= 0) updates_in_progress_cvar.notify_one();
         }
-        std::sort(region.entries.begin(), region.entries.end());
-
-        region.expires = time(nullptr) + 300;
-        //if (--updates_in_progress <= 0) updates_in_progress_cvar.notify_one();
+        catch (const std::exception &e)
+        {
+            log_error() << "Failed to update orders cache for " << region_id << ": " << e.what() << std::endl;
+            throw;
+        }
     }
 }

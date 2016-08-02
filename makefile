@@ -15,7 +15,7 @@ debug: all
 LD_FLAGS := -pthread -Lthird-party/cpp-http/bin
 CC_FLAGS := -std=c++11 -pthread -Ilibeve-api-proxy/source/ -Ithird-party/cpp-json/include -Ithird-party/cpp-http/include -DBOOST_TEST_DYN_LINK
 
-LIBS := -lhttp -lz -lssl -lcrypto
+LIBS := -lhttp -lz -lssl -lcrypto -lboost_filesystem -lboost_system
 TEST_LIBS := -lboost_unit_test_framework
 
 all: bin/eve-api-proxy test
