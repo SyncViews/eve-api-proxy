@@ -1,6 +1,7 @@
 #include "Precompiled.hpp"
 #include "MarketOrdersCache.hpp"
 #include "Error.hpp"
+#include "model/EveRegions.hpp"
 #include <thread>
 #include <boost/filesystem.hpp>
 namespace crest
@@ -29,73 +30,98 @@ namespace crest
         }
     }
 
-    MarketOrdersCache::MarketOrdersCache(GetOrdersFunc get_orders)
-        : get_orders(get_orders), regions(), mutex(), updates_in_progress(0)
+    std::unordered_map<int, MarketOrdersCache::Region> MarketOrdersCache::create_regions_map()
+    {
+        std::unordered_map<int, Region> ret;
+        for (auto id : EVE_REGION_IDS)
+        {
+            ret.emplace(id, id);
+        }
+        return ret;
+    }
+    MarketOrdersCache::MarketOrdersCache(GetOrdersFunc get_region_orders)
+        : get_region_orders(get_region_orders), regions(create_regions_map())
+        , update_thread(), update_thread_exit(false), update_thread_exit_cv(), update_thread_exit_cv_mutex()
     {
         delete_dir_contents(CACHE_DIR);
+        update_thread = std::thread(std::bind(&MarketOrdersCache::update_thread_main, this));
     }
 
-    std::shared_ptr<const MarketOrdersSlim> MarketOrdersCache::get_type(int region_id, int type_id, bool buy)
+    MarketOrdersCache::~MarketOrdersCache()
     {
-        std::unique_lock<std::mutex> lock(mutex);
+        exit();
+    }
+
+    void MarketOrdersCache::exit()
+    {
+        if (update_thread.joinable())
+        {
+            update_thread_exit = true;
+            update_thread_exit_cv.notify_all();
+            update_thread.join();
+        }
+    }
+
+    std::shared_ptr<const MarketOrdersSlim> MarketOrdersCache::get_orders(int region_id, int type_id, bool buy)
+    {
         //Get cache entry, and create a blank placeholder if needed
-        auto region = regions.find(region_id);
-        if (region == regions.end()) return EMPTY_ORDERS;
-        auto &region_ref = region->second;
+        auto it = regions.find(region_id);
+        if (it == regions.end()) throw std::runtime_error("Unknown region " + std::to_string(region_id));
+        auto &region = it->second;
 
-        lock.unlock();
-        std::unique_lock<std::mutex> access_lock(region_ref.access_mutex);
-
+        std::unique_lock<std::mutex> lock(region.access_mutex);
         //Find entry
         auto id = type_id;
         if (buy) id = -id;
         auto entry = std::lower_bound(
-            region_ref.entries.begin(),
-            region_ref.entries.end(),
+            region.entries.begin(),
+            region.entries.end(),
             id,
             [](const Region::Entry &entry, int id) { return entry.id < id; });
-        if (entry == region_ref.entries.end() || entry->id != id)
+        if (entry == region.entries.end() || entry->id != id)
             return EMPTY_ORDERS;
         //Read cache
         auto bytes = entry->count * sizeof(MarketOrderSlim);
-        region_ref.fs.seekg(entry->start_byte);
+        region.fs.seekg(entry->start_byte);
         auto data = std::make_shared<MarketOrdersSlim>();
         data->resize(entry->count);
-        region_ref.fs.read((char*)data->data(), bytes);
-        if (region_ref.fs.gcount() != bytes) throw std::runtime_error("Failed to read cache file");
+        region.fs.read((char*)data->data(), bytes);
+        if (region.fs.gcount() != bytes) throw std::runtime_error("Failed to read cache file");
         //Done
         return data;
     }
 
-    std::future<void> MarketOrdersCache::update_region_async(int region_id)
+    void MarketOrdersCache::update_thread_main()
     {
-        return std::async(std::launch::async,
-            [this, region_id]() {
-            update_region(region_id);
-        });
+        set_thread_name("MarketOrdersCache update");
+        auto update_next = regions.begin();
+        while (true)
+        {
+            if (update_next == regions.end()) update_next = regions.begin();
+            auto &region = update_next->second;
+
+            auto now = time(nullptr);
+            if (now < region.expires)
+            {
+                log_debug() << "Waiting " << (region.expires - now) << " seconds until next region update" << std::endl;
+                std::this_thread::sleep_until(std::chrono::system_clock::from_time_t(region.expires));
+                assert(time(nullptr) >= region.expires);
+            }
+
+            update_region(region);
+
+            ++update_next;
+        }
     }
 
-    void MarketOrdersCache::update_region(int region_id)
+    void MarketOrdersCache::update_region(Region &region)
     {
-        std::unique_lock<std::mutex> lock(mutex);
-        //Get cache entry, and create a blank placeholder if needed
-        auto &region = regions.emplace(region_id, Region(region_id)).first->second;
-        //updates_in_progress_cvar.wait(lock,
-        //    [this]() { return updates_in_progress < MAX_UPDATES_IN_PROGRESS; });
-        //++updates_in_progress;
-        lock.unlock();
-        //Refresh cache
-        std::unique_lock<std::mutex> access_lock(region.access_mutex);
-
-        // Check if valid
-        if (region.expires >= time(nullptr))
-            return;
-
+        assert(region.expires <= time(nullptr));
         //Get updated data
         try
         {
             std::unordered_map<int, std::vector<MarketOrderSlim>> files;
-            get_orders(region.region_id, [&files](const MarketOrderSlim &order) -> void
+            get_region_orders(region.region_id, [&files](const MarketOrderSlim &order) -> void
             {
                 int id = order.type;
                 if (order.buy) id = -id;
@@ -104,6 +130,8 @@ namespace crest
                 file.push_back(order);
             });
 
+            //Got all data ready, just hold lock while updating Region and the filesystem
+            std::unique_lock<std::mutex> lock(region.access_mutex);
             region.entries.clear();
             region.entries.reserve(files.size());
 
@@ -126,12 +154,10 @@ namespace crest
             if (!region.fs.good()) throw std::runtime_error("Failed to write cache file");
 
             region.expires = time(nullptr) + 300;
-            //if (--updates_in_progress <= 0) updates_in_progress_cvar.notify_one();
         }
         catch (const std::exception &e)
         {
-            log_error() << "Failed to update orders cache for " << region_id << ": " << e.what() << std::endl;
-            throw;
+            log_error() << "Failed to update orders cache for " << region.region_id << ": " << e.what() << std::endl;
         }
     }
 }

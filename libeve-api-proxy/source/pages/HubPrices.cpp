@@ -34,9 +34,7 @@ http::Response http_get_hub_prices(crest::Cache &cache, http::Request &request)
 
     log_info() << "GET /hub-(buy|sell)-prices with " << (types.size() * REGION_COUNT) << " order_sets" << std::endl;
     auto start = std::chrono::high_resolution_clock::now();
-    //Make requests
-    cache.update_region_orders(REGIONS, REGION_COUNT);
-    // Process results
+    // Process
     json::Writer writer;
     writer.start_arr();
     for (size_t i = 0; i < types.size(); ++i)

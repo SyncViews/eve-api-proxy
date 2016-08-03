@@ -16,5 +16,12 @@ namespace crest
 
     Cache::~Cache()
     {
+        exit();
+    }
+
+    void Cache::exit()
+    {
+        market_orders.exit();
+        conn_pool.exit();
     }
 }

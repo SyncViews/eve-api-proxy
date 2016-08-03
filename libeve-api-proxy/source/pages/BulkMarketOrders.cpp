@@ -71,11 +71,8 @@ http::Response http_get_bulk_market_orders(crest::Cache &cache, http::Request &r
         for (int region : regions_set) regions.push_back(region);
     }
     log_info() << "GET /bulk-market-orders with " << order_sets.size() << " order sets" << std::endl;
-    // Make requests
     auto start = std::chrono::high_resolution_clock::now();
-    cache.update_region_orders(regions);
-    
-    // Process results
+    // Process
     json::Writer writer;
     writer.start_arr();
     for (auto &order_set : order_sets)
