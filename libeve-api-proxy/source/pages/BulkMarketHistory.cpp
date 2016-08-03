@@ -112,7 +112,12 @@ http::Response http_get_bulk_market_history_aggregated(crest::CacheOld &cache, h
                 for (auto &day : region_days)
                 {
                     auto ret = days.emplace(day.date, day);
-                    if (!ret.second)
+                    if (ret.second)
+                    {
+                        auto &added = ret.first->second;
+                        added.avg_price *= added.volume;
+                    }
+                    else
                     {
                         auto &aggregate = ret.first->second;
                         if (day.high_price > aggregate.high_price) aggregate.high_price = day.high_price;
