@@ -17,4 +17,5 @@ private:
     crest::Cache cache;
     crest::CacheOld crest_cache;
 
+    void log_request_error(http::Request &request, const std::exception &e);
 };

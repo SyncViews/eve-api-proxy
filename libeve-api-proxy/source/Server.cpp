@@ -64,10 +64,12 @@ http::Response Server::handle_request(http::Request &request)
     }
     catch (const http::ErrorResponse &err)
     {
+        if (err.status_code() >= 500) log_request_error(request, err);
         response = http_simple_error_page(request, err.status_code(), err.what());
     }
     catch (const std::exception &err)
     {
+        log_request_error(request, err);
         response = http_simple_error_page(request, 500, err.what());
     }
 
@@ -87,4 +89,12 @@ http::Response Server::parser_error_page(const http::ParserError &err)
     response.headers.set("Content-Type", "text/plain");
     response.body = err.what();
     return response;
+}
+
+void Server::log_request_error(http::Request &request, const std::exception &e)
+{
+    log_error()
+        << std::to_string(request.method) << " " << request.raw_url << " "
+        << "exception: " << e.what()
+        << std::endl;
 }
