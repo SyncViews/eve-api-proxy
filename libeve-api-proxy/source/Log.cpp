@@ -58,4 +58,4 @@ log_fatal::log_fatal()      : LogStream("Fatal") {}
 log_error::log_error()      : LogStream("Error") {}
 log_warning::log_warning()  : LogStream("Warning") {}
 log_info::log_info()        : LogStream("Info") {}
-log_debug::log_debug()      : LogStream("Debug") {}
+log_debug::log_debug()      : LogStream(nullptr) {}
