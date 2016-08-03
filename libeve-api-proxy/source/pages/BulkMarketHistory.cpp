@@ -7,6 +7,7 @@
 #include "lib/Params.hpp"
 #include <iostream>
 #include <chrono>
+#include <map>
 #include <json/Reader.hpp>
 #include <json/Writer.hpp>
 #include <json/Copy.hpp>
@@ -97,7 +98,7 @@ http::Response http_get_bulk_market_history_aggregated(crest::CacheOld &cache, h
     size_t k = 0;
     for (auto i : types)
     {
-        std::unordered_map<std::string, MarketHistoryDay> days;
+        std::map<std::string, MarketHistoryDay> days;
         for (auto j : regions)
         {
             auto &cache_entry = cache_entries[k];
