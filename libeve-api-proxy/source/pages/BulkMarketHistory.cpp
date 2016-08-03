@@ -18,7 +18,7 @@ std::vector<crest::CacheEntry*> get_bulk_market_history(
 {
     // Build requests
     size_t count = regions.size() * types.size();
-    log_info() << "GET /" << request.url.path << " with " << count << " histories" << std::endl;
+    log_info() << "GET " << request.url.path << " with " << count << " histories" << std::endl;
 
     std::vector<crest::CacheEntry*> cache_entries;
     cache_entries.reserve(count);
@@ -106,17 +106,20 @@ http::Response http_get_bulk_market_history_aggregated(crest::CacheOld &cache, h
             // Process
             if (cache_entry->is_data_valid())
             {
-                auto day = crest::read_crest_items<MarketHistoryDay>(cache_entry->data);
+                auto region_days = crest::read_crest_items<std::vector<MarketHistoryDay>>(cache_entry->data);
                 
-                auto ret = days.emplace(day.date, day);
-                if (!ret.second)
+                for (auto &day : region_days)
                 {
-                    auto &aggregate = ret.first->second;
-                    if (day.high_price > aggregate.high_price) aggregate.high_price = day.high_price;
-                    if (day.low_price < aggregate.low_price) aggregate.low_price = day.low_price;
-                    aggregate.order_count += day.order_count;
-                    aggregate.volume += day.volume;
-                    aggregate.avg_price += day.avg_price * day.volume;
+                    auto ret = days.emplace(day.date, day);
+                    if (!ret.second)
+                    {
+                        auto &aggregate = ret.first->second;
+                        if (day.high_price > aggregate.high_price) aggregate.high_price = day.high_price;
+                        if (day.low_price < aggregate.low_price) aggregate.low_price = day.low_price;
+                        aggregate.order_count += day.order_count;
+                        aggregate.volume += day.volume;
+                        aggregate.avg_price += day.avg_price * day.volume;
+                    }
                 }
             }
 
