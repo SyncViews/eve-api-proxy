@@ -74,7 +74,11 @@ namespace crest
         {
             if (status == CacheEntry::UPDATING)
             {
-                update_wait.wait(lock);
+                do //loop to protect against unreliability of POSIX condition_variable
+                {
+                  update_wait.wait(lock);
+                } while(status == CacheEntry::UPDATING);
+                http_request.wait();
             }
             if (status == FAILED)
             {
