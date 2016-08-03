@@ -117,8 +117,31 @@ namespace crest
         std::unique_lock<std::mutex> cache_lock(cache_mutex);
         {
             std::unique_lock<std::mutex> entry_lock(entry->mutex);
+            std::vector<uint8_t> data;
+            if (response)
+            {
+                data = gzip_decompress(std::vector<uint8_t>(
+                    (const uint8_t*)response->body.data(),
+                    (const uint8_t*)response->body.data() + response->body.size()));
+            }
             if (!response || response->status.code != http::SC_OK)
             {
+                log_error log;
+                log << "CREST " << entry->path << " failed ";
+                if (response)
+                {
+                    log << response->status.code << " " << response->status.msg << "\n";
+                    log.write((const char*)data.data(), data.size());
+                    log << std::endl;
+                }
+                else
+                {
+                    try { throw; }
+                    catch (const std::exception &e)
+                    {
+                        log << "with exception: " << e.what() << std::endl;
+                    }
+                }
                 entry->status = CacheEntry::FAILED;
             }
             else
@@ -129,10 +152,7 @@ namespace crest
                     if (cache_size < entry->data.size()) cache_size = 0; //just to be safe
                     else cache_size -= entry->data.size();
                 }
-                auto data = gzip_decompress(std::vector<uint8_t>(
-                    (const uint8_t*)response->body.data(),
-                    (const uint8_t*)response->body.data() + response->body.size()
-                ));
+
                 cache_size += data.size();
 
                 entry->data = std::move(data);

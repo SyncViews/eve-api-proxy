@@ -23,6 +23,10 @@ public:
         if (sev) manipulator(get_os());
         return *this;
     }
+    void write(const char *str, std::streamsize len)
+    {
+        if (sev) get_os().write(str, len);
+    }
 private:
     const char *sev;
 };
