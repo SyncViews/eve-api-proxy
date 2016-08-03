@@ -35,7 +35,7 @@ namespace crest
         std::unordered_map<int, Region> ret;
         for (auto id : EVE_REGION_IDS)
         {
-            ret.emplace(id, id);
+            ret.emplace(std::piecewise_construct, std::make_tuple(id), std::make_tuple(id));
         }
         return ret;
     }
