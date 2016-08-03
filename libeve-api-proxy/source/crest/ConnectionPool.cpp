@@ -64,6 +64,6 @@ namespace crest
     void ConnectionPool::queue(http::AsyncRequest *request)
     {
         prepare_request(request);
-        http_client.make_request(request);
+        http_client.queue(request);
     }
 }

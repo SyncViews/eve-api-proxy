@@ -26,3 +26,4 @@
 /Win32-Debug
 /eve-api-proxy/cache
 /cache
+/eve-api-proxy/eve-api-proxy.vcxproj.user
