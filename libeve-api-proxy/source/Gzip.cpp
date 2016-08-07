@@ -48,7 +48,7 @@ std::string gzip_decompress(const std::string &compressed)
     std::string out;
     auto f = [&out](const uint8_t *bytes, size_t len)
     {
-        out.insert(out.end(), bytes, bytes + len);
+        out.append((const char*)bytes, len);
     };
     gzip_decompress((const uint8_t*)compressed.data(), compressed.size(), f);
     return out;
