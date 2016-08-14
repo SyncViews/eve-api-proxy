@@ -24,9 +24,6 @@
     <ClCompile Include="tests\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tests\CrestCache.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="tests\String.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

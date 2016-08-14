@@ -13,7 +13,6 @@
 Server::Server()
     : http::CoreServer(5000)
     , cache()
-    , crest_cache(cache.get_conn_pool())
 {
 }
 
@@ -34,11 +33,11 @@ http::Response Server::handle_request(http::Request &request)
     {
         if (request.url.path == "/bulk-market-history")
         {
-            response = http_get_bulk_market_history(crest_cache, request);
+            response = http_get_bulk_market_history(cache.get_conn_pool(), request);
         }
         else if (request.url.path == "/bulk-market-history-aggregated")
         {
-            response = http_get_bulk_market_history_aggregated(crest_cache, request);
+            response = http_get_bulk_market_history_aggregated(cache.get_conn_pool(), request);
         }
         else if (request.url.path == "/bulk-market-orders")
         {

@@ -44,4 +44,14 @@ namespace crest
         read_crest_items(parser, &tmp);
         return tmp;
     }
+
+    template<typename T> T read_crest_items(const std::string &data)
+    {
+        json::Parser parser(
+            (const char*)data.data(),
+            (const char*)data.data() + data.size());
+        T tmp;
+        read_crest_items(parser, &tmp);
+        return tmp;
+    }
 }

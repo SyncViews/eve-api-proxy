@@ -91,12 +91,6 @@
     <ClInclude Include="source\crest\JsonHelpers.hpp">
       <Filter>source\crest</Filter>
     </ClInclude>
-    <ClInclude Include="source\crest\CacheEntry.hpp">
-      <Filter>source\crest</Filter>
-    </ClInclude>
-    <ClInclude Include="source\crest\CacheOld.hpp">
-      <Filter>source\crest</Filter>
-    </ClInclude>
     <ClInclude Include="source\crest\MarketOrdersAll.hpp">
       <Filter>source\crest</Filter>
     </ClInclude>
@@ -154,9 +148,6 @@
       <Filter>source\pages</Filter>
     </ClCompile>
     <ClCompile Include="source\crest\ConnectionPool.cpp">
-      <Filter>source\crest</Filter>
-    </ClCompile>
-    <ClCompile Include="source\crest\CacheOld.cpp">
       <Filter>source\crest</Filter>
     </ClCompile>
     <ClCompile Include="source\crest\MarketOrdersAll.cpp">
