@@ -36,12 +36,12 @@ namespace crest
         }
 
         void my_read_json(
-            const std::string &json,
+            const GzipOut &json,
             unsigned *page_count,
             std::function<void(const MarketOrderSlim &order)> cb)
         {
             using namespace json;
-            Parser parser(json.c_str(), json.c_str() + json.size());
+            Parser parser(json.data.get(), json.data.get() + json.size);
             bool read_page_count = false;
             bool read_items = false;
 
@@ -119,7 +119,7 @@ namespace crest
             http::AsyncRequest first_page_req;
             send_page_request(first_page_req, conn_pool, url, 1);
             auto first_page_resp = first_page_req.wait();
-            auto decompressed = gzip_decompress(first_page_resp->body);
+            auto decompressed = gzip_decompress((const uint8_t*)first_page_resp->body.data(), first_page_resp->body.size());
             first_page_resp->body.clear();
             my_read_json(decompressed, &page_count, cb);
         }
@@ -136,7 +136,7 @@ namespace crest
             {
                 unsigned ignore;
                 auto resp = page_reqs[i].wait();
-                auto decompressed = gzip_decompress(resp->body);
+                auto decompressed = gzip_decompress((const uint8_t*)resp->body.data(), resp->body.size());
                 resp->body.clear();
                 my_read_json(decompressed, &ignore, cb);
             }

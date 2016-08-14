@@ -1,5 +1,6 @@
 #include "Precompiled.hpp"
 #include "MarketOrdersCache.hpp"
+#include "MarketSummaryCsv.hpp"
 #include "Error.hpp"
 #include "model/EveRegions.hpp"
 #include <thread>
@@ -64,7 +65,6 @@ namespace crest
 
     std::shared_ptr<const MarketOrdersSlim> MarketOrdersCache::get_orders(int region_id, int type_id, bool buy)
     {
-        //Get cache entry, and create a blank placeholder if needed
         auto it = regions.find(region_id);
         if (it == regions.end()) throw std::runtime_error("Unknown region " + std::to_string(region_id));
         auto &region = it->second;
@@ -91,13 +91,29 @@ namespace crest
         return data;
     }
 
+    MarketOrdersCache::RegionOrders MarketOrdersCache::get_orders(int region_id)
+    {
+        auto it = regions.find(region_id);
+        if (it == regions.end()) throw std::runtime_error("Unknown region " + std::to_string(region_id));
+        return RegionOrders(it->second);
+    }
+
     void MarketOrdersCache::update_thread_main()
     {
         set_thread_name("MarketOrdersCache update");
         auto update_next = regions.begin();
         while (true)
         {
-            if (update_next == regions.end()) update_next = regions.begin();
+            if (update_next == regions.end())
+            {
+                update_next = regions.begin();
+                auto now = time(nullptr);
+                if (now < update_next->second.expires)
+                {
+                    //update summary csv after completed update of all regions, and have spare time
+                    update_market_summary_csv(*this);
+                }
+            }
             auto &region = update_next->second;
 
             auto now = time(nullptr);
@@ -159,5 +175,51 @@ namespace crest
         {
             log_error() << "Failed to update orders cache for " << region.region_id << ": " << e.what() << std::endl;
         }
+    }
+
+
+    MarketOrdersCache::RegionOrders::iterator MarketOrdersCache::RegionOrders::begin()
+    {
+        return iterator(region, region.entries.begin());
+    }
+
+    MarketOrdersCache::RegionOrders::iterator MarketOrdersCache::RegionOrders::end()
+    {
+        return iterator(region, region.entries.end());
+    }
+
+    MarketOrdersCache::RegionOrders::RegionOrders(Region &region)
+        : lock(region.access_mutex), region(region)
+    {
+    }
+    MarketOrdersCache::RegionOrders::iterator & MarketOrdersCache::RegionOrders::iterator::operator++()
+    {
+        ++i;
+        load();
+        return *this;
+    }
+    MarketOrdersCache::RegionOrders::iterator::iterator(Region &region, inner_iterator i)
+        : region(region), i(i), value()
+    {
+        load();
+    }
+    void MarketOrdersCache::RegionOrders::iterator::load()
+    {
+        value.orders.clear();
+        if (i != region.entries.end())
+        {
+            value.buy = i->id < 0;
+            value.type_id = std::abs(i->id);
+            //Read cache
+            auto bytes = i->count * sizeof(MarketOrderSlim);
+            region.fs.seekg(i->start_byte);
+            value.orders.resize(i->count);
+            region.fs.read((char*)value.orders.data(), bytes);
+            if (region.fs.gcount() != bytes) throw std::runtime_error("Failed to read cache file");
+        }
+    }
+    bool operator!=(const MarketOrdersCache::RegionOrders::iterator &a, const MarketOrdersCache::RegionOrders::iterator &b)
+    {
+        return a.i != b.i;
     }
 }

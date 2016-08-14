@@ -2,6 +2,7 @@
 #include "Errors.hpp"
 #include "Jita5pSell.hpp"
 #include "crest/Cache.hpp"
+#include "crest/FivePercentPrice.hpp"
 #include "model/EveRegions.hpp"
 #include "lib/Params.hpp"
 #include <iostream>
@@ -29,36 +30,8 @@ http::Response http_get_jita_5p_sell(crest::Cache &cache, http::Request &request
             if (j.station_id == EVE_JITA_4_4_ID) jita_orders.push_back(&j);
         }
 
-        //total volume
-        int64_t total_volume = 0;
-        for (auto &a : jita_orders) total_volume += a->volume;
-        if (!total_volume) continue; //no orders
+        auto avg_price = crest::five_percent_price(jita_orders, false);
 
-        //sort by price
-        std::sort(jita_orders.begin(), jita_orders.end(),
-            [](const crest::MarketOrderSlim* a, const crest::MarketOrderSlim* b) {
-            return a->price < b->price;
-        });
-
-        //5% price
-        auto avg_volume = (total_volume + 20 - 1) / 20;
-        auto remaining_volume = avg_volume;
-        double total_price = 0;
-        for (auto &a : jita_orders)
-        {
-            if (remaining_volume > a->volume)
-            {
-                remaining_volume -= a->volume;
-                total_price += a->price * a->volume;
-            }
-            else
-            {
-                total_price += a->price * remaining_volume;
-                break;
-            }
-        }
-        //output
-        double avg_price = total_price / avg_volume;
         json_writer.prop(std::to_string(type), avg_price);
 
     }

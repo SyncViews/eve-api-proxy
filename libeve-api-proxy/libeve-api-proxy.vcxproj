@@ -24,10 +24,12 @@
     <ClInclude Include="source\crest\CacheOld.hpp" />
     <ClInclude Include="source\crest\CacheEntry.hpp" />
     <ClInclude Include="source\crest\ConnectionPool.hpp" />
+    <ClInclude Include="source\crest\FivePercentPrice.hpp" />
     <ClInclude Include="source\crest\JsonHelpers.hpp" />
     <ClInclude Include="source\crest\MarketOrdersAll.hpp" />
     <ClInclude Include="source\crest\MarketOrdersCache.hpp" />
     <ClInclude Include="source\crest\MarketOrderSlim.hpp" />
+    <ClInclude Include="source\crest\MarketSummaryCsv.hpp" />
     <ClInclude Include="source\crest\Urls.hpp" />
     <ClInclude Include="source\Error.hpp" />
     <ClInclude Include="source\Gzip.hpp" />
@@ -54,6 +56,7 @@
     <ClCompile Include="source\crest\CacheOld.cpp" />
     <ClCompile Include="source\crest\MarketOrdersAll.cpp" />
     <ClCompile Include="source\crest\MarketOrdersCache.cpp" />
+    <ClCompile Include="source\crest\MarketSummaryCsv.cpp" />
     <ClCompile Include="source\Error.cpp" />
     <ClCompile Include="source\Gzip.cpp" />
     <ClCompile Include="source\Init.cpp" />
