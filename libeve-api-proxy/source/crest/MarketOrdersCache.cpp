@@ -167,6 +167,7 @@ namespace crest
                 region.fs.write((const char*)type.second.data(), sizeof(MarketOrderSlim)*type.second.size());
             }
             std::sort(region.entries.begin(), region.entries.end());
+            region.fs.flush();
             if (!region.fs.good()) throw std::runtime_error("Failed to write cache file");
 
             region.expires = time(nullptr) + 300;
