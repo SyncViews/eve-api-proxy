@@ -32,7 +32,12 @@ http::Response http_get_jita_5p_sell(crest::Cache &cache, http::Request &request
 
         auto avg_price = crest::five_percent_price(jita_orders, false);
 
-        json_writer.prop(std::to_string(type), avg_price);
+        if (std::isnan(avg_price))
+        {
+            json_writer.key(std::to_string(type));
+            json_writer.null();
+        }
+        else json_writer.prop(std::to_string(type), avg_price);
 
     }
     json_writer.end_obj();

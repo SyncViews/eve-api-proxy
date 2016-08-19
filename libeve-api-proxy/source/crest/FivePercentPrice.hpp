@@ -19,6 +19,7 @@ namespace crest
     double five_percent_price(T &orders, bool buy, unsigned long long total_volume)
     {
         typedef typename T::value_type value_type;
+        if (!total_volume) return NAN;
         if (buy)
         {
             std::sort(orders.begin(), orders.end(), [](const value_type &a, const value_type &b) {
