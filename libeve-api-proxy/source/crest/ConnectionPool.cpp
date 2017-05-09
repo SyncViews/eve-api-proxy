@@ -20,7 +20,7 @@ namespace crest
             ret.rate_limit = PCREST_MAX_REQS_PER_SEC;
             ret.socket_factory = socket_factory;
             ret.default_headers.add("Accept-Encoding", "gzip");
-            ret.default_headers.add("User-Agent", "eve-api-proxy");
+            ret.default_headers.add("User-Agent", "https://github.com/wnewbery/eve-api-proxy");
 
             return ret;
         };
