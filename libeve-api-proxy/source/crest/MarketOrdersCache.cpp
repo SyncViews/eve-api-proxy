@@ -175,6 +175,7 @@ namespace crest
         catch (const std::exception &e)
         {
             log_error() << "Failed to update orders cache for " << region.region_id << ": " << e.what() << std::endl;
+            region.expires = time(nullptr) + 60;
         }
     }
 

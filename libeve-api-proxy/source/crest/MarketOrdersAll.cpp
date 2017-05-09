@@ -106,6 +106,24 @@ namespace crest
             [&out](const MarketOrderSlim &order) { out.push_back(order); });
         return out;
     }
+    // TODO: This is the most common automated request, but should integrate this with the client
+    // for all requests.
+    void process_response(http::Response *resp, unsigned *page_count,
+        std::function<void(const MarketOrderSlim &order)> &cb)
+    {
+        if (resp->status.code == 200)
+        {
+            auto decompressed = gzip_decompress((const uint8_t*)resp->body.data(), resp->body.size());
+            resp->body.clear();
+            my_read_json(decompressed, page_count, cb);
+        }
+        else
+        {
+            std::stringstream ss;
+            ss << "HTTP " << resp->status.code << " " << resp->status.msg;
+            throw std::runtime_error(ss.str());
+        }
+    }
 
     void get_market_orders_all(
         ConnectionPool &conn_pool,
@@ -118,10 +136,7 @@ namespace crest
         {
             http::AsyncRequest first_page_req;
             send_page_request(first_page_req, conn_pool, url, 1);
-            auto first_page_resp = first_page_req.wait();
-            auto decompressed = gzip_decompress((const uint8_t*)first_page_resp->body.data(), first_page_resp->body.size());
-            first_page_resp->body.clear();
-            my_read_json(decompressed, &page_count, cb);
+            process_response(first_page_req.wait(), &page_count, cb);
         }
         if (page_count > 1)
         {
@@ -135,10 +150,7 @@ namespace crest
             for (unsigned i = 0; i < page_count - 1; ++i)
             {
                 unsigned ignore;
-                auto resp = page_reqs[i].wait();
-                auto decompressed = gzip_decompress((const uint8_t*)resp->body.data(), resp->body.size());
-                resp->body.clear();
-                my_read_json(decompressed, &ignore, cb);
+                process_response(page_reqs[i].wait(), &ignore, cb);
             }
         }
         log_info() << "Completed get_market_orders_all for " << region_id << std::endl;
