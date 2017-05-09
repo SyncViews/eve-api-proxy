@@ -21,7 +21,7 @@ namespace
             _len += len;
             assert(_len <= _capacity);
         }
-        __declspec(noinline) void enlarge()
+        void enlarge()
         {
             auto new_cap = _capacity * 2;
             std::unique_ptr<char[]> new_ptr(new char[new_cap]);
